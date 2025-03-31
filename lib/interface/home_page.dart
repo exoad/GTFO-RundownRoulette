@@ -53,15 +53,37 @@ class _ManagerState extends State<Manager> {
                 <Widget>[
                   Scaffold(
                     body: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(
+                        parent: AlwaysScrollableScrollPhysics(),
+                      ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Center(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: 20) +
+                            const EdgeInsets.only(bottom: 80),
+                        child: SizedBox(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               const SizedBox(height: 48),
-                              const Icon(CommunityMaterialIcons.slot_machine, size: 48),
+                              ColorFiltered(
+                                colorFilter:
+                                    AdaptiveTheme.of(context).brightness ==
+                                            Brightness.light
+                                        ? const ColorFilter.matrix(<double>[
+                                          -1.0, 0.0, 0.0, 0.0, 255.0, //
+                                          0.0, -1.0, 0.0, 0.0, 255.0, //
+                                          0.0, 0.0, -1.0, 0.0, 255.0, //
+                                          0.0, 0.0, 0.0, 1.0, 0.0, //
+                                        ])
+                                        : const ColorFilter.matrix(<double>[
+                                          1.0, 0.0, 0.0, 0.0, 0.0, //
+                                          0.0, 1.0, 0.0, 0.0, 0.0, //
+                                          0.0, 0.0, 1.0, 0.0, 0.0, //
+                                          0.0, 0.0, 0.0, 1.0, 0.0, //
+                                        ]),
+                                child: Image.asset("assets/icon.png"),
+                              ),
                               const Text(
                                 "GTFO Rundown Roulette",
                                 style: TextStyle(
@@ -107,8 +129,56 @@ class _ManagerState extends State<Manager> {
                                   ),
                                 ],
                               ),
+                              const SizedBox(height: 18),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 40),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color:
+                                        AdaptiveTheme.of(
+                                          context,
+                                        ).theme.colorScheme.secondaryContainer,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 6,
+                                  ),
+                                  child: const Column(
+                                    children: <Widget>[
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Icon(Icons.warning_amber_rounded),
+                                          SizedBox(width: 6),
+                                          Text(
+                                            "Disclaimer",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontStyle: FontStyle.italic,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                          SizedBox(height: 4),
+                                        ],
+                                      ),
+                                      Text(
+                                        "This application is an independent creation and is not affiliated with, endorsed, or sponsored by 10 Chambers or the creators of GTFO. All game assets, including but not limited to images, sounds, character names, and logos, are the property of 10 Chambers.",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontStyle: FontStyle.italic,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                               const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 16),
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 16,
+                                  horizontal: 40,
+                                ),
                                 child: Divider(),
                               ),
                               const Icon(Icons.settings, size: 32),
