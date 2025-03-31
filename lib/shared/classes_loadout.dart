@@ -8,8 +8,9 @@ typedef Tools = List<ToolItem>;
 
 class Loadout {
   final MeleeWeapon melee;
+  final ToolItem tool;
 
-  const Loadout({required this.melee});
+  const Loadout({required this.melee, required this.tool});
 }
 
 sealed class LoadoutItem with EquatableMixin {

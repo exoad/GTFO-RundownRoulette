@@ -10,17 +10,44 @@ extension IterableRandomExtension<T> on Iterable<T> {
 }
 
 class Variant1Generator {
-  static GeneratedRun produceFrom(Preset preset) {
-    final Mission mission = preset.rundowns.pick().allMissions.pick();
+  static GeneratedRun produceFrom(
+    Preset preset, [
+    bool rollRundown = true,
+    bool rollWeapons = true,
+    GeneratedRun? previous,
+  ]) {
+    if ((!rollRundown || !rollWeapons) && previous == null) {
+      throw ArgumentError(
+        "Cannot not roll without providing a basis of the previous generated run!",
+      );
+    }
+    final Rundown rundown = preset.rundowns.pick();
+    final Mission mission = rundown.allMissions.pick();
     return GeneratedRun(
-      mission: mission,
-      sectors: mission.generate(),
-      players: PlayerPool(
-        player1: Loadout(melee: MeleeWeapon.generate()),
-        player2: Loadout(melee: MeleeWeapon.generate()),
-        player3: Loadout(melee: MeleeWeapon.generate()),
-        player4: Loadout(melee: MeleeWeapon.generate()),
-      ),
+      rundown: rollRundown ? rundown : previous!.rundown,
+      mission: rollRundown ? mission : previous!.mission,
+      sectors: rollRundown ? mission.generate() : previous!.sectors,
+      players:
+          rollWeapons
+              ? PlayerPool(
+                player1: Loadout(
+                  melee: MeleeWeapon.generate(),
+                  tool: preset.tools.pick(),
+                ),
+                player2: Loadout(
+                  melee: MeleeWeapon.generate(),
+                  tool: preset.tools.pick(),
+                ),
+                player3: Loadout(
+                  melee: MeleeWeapon.generate(),
+                  tool: preset.tools.pick(),
+                ),
+                player4: Loadout(
+                  melee: MeleeWeapon.generate(),
+                  tool: preset.tools.pick(),
+                ),
+              )
+              : previous!.players,
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -5,7 +7,9 @@ import 'package:gtfo_rundown_roulette/interface/current_run.dart';
 import 'package:gtfo_rundown_roulette/shared/classes_runs.dart';
 import 'package:gtfo_rundown_roulette/shared/generated.dart';
 import 'package:gtfo_rundown_roulette/shared/generator.dart';
+import 'package:gtfo_rundown_roulette/shared/shared.dart';
 import 'package:provider/provider.dart';
+import 'package:rnd/rnd.dart';
 
 class Variant1RootScaffold extends StatelessWidget {
   const Variant1RootScaffold({super.key});
@@ -123,6 +127,19 @@ class _ContentBodyState extends State<_ContentBody> {
                                   )
                                   .animate(autoPlay: true)
                                   .fade(duration: const Duration(milliseconds: 550)),
+                              const SizedBox(height: 4),
+                              Text(
+                                    Provider.of<CurrentRun>(
+                                      context,
+                                    ).run!.rundown.canonicalName,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  )
+                                  .animate(autoPlay: true)
+                                  .fade(duration: const Duration(milliseconds: 550)),
                               const SizedBox(height: 6),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -134,9 +151,6 @@ class _ContentBodyState extends State<_ContentBody> {
                                         child: Image.asset(
                                           "assets/ingame/sector_main.png",
                                           width: 48,
-                                          height: 48,
-                                          cacheWidth: 48,
-                                          cacheHeight: 48,
                                         ),
                                       )
                                       .animate(autoPlay: true)
@@ -149,9 +163,6 @@ class _ContentBodyState extends State<_ContentBody> {
                                           child: Image.asset(
                                             "assets/ingame/sector_secondary.png",
                                             width: 48,
-                                            height: 48,
-                                            cacheWidth: 48,
-                                            cacheHeight: 48,
                                           ),
                                         )
                                         .animate(autoPlay: true)
@@ -167,9 +178,6 @@ class _ContentBodyState extends State<_ContentBody> {
                                           child: Image.asset(
                                             "assets/ingame/sector_overload.png",
                                             width: 48,
-                                            height: 48,
-                                            cacheWidth: 48,
-                                            cacheHeight: 48,
                                           ),
                                         )
                                         .animate(autoPlay: true)
@@ -188,9 +196,6 @@ class _ContentBodyState extends State<_ContentBody> {
                                           child: Image.asset(
                                             "assets/ingame/prisoner_efficiency.png",
                                             width: 48,
-                                            height: 48,
-                                            cacheWidth: 48,
-                                            cacheHeight: 48,
                                           ),
                                         )
                                         .animate(autoPlay: true)
@@ -216,39 +221,35 @@ class _ContentBodyState extends State<_ContentBody> {
             children: <Widget>[
               const SizedBox(),
               Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 194, 107, 149),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(Icons.construction),
+                child: _PlayerCard(
+                  name: "Woods",
+                  bgImage: "assets/ingame/woods.png",
+                  color: const Color.fromARGB(255, 223, 88, 126),
+                  loadout: Provider.of<CurrentRun>(context).run?.players.player1,
                 ),
               ),
               Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 66, 194, 100),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(Icons.construction),
+                child: _PlayerCard(
+                  name: "Dauda",
+                  bgImage: "assets/ingame/dauda.png",
+                  color: const Color.fromARGB(255, 66, 194, 100),
+                  loadout: Provider.of<CurrentRun>(context).run?.players.player2,
                 ),
               ),
               Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 52, 114, 224),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(Icons.construction),
+                child: _PlayerCard(
+                  name: "Hackett",
+                  bgImage: "assets/ingame/hackett.png",
+                  color: const Color.fromARGB(255, 36, 108, 180),
+                  loadout: Provider.of<CurrentRun>(context).run?.players.player3,
                 ),
               ),
               Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 115, 61, 209),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(Icons.construction),
+                child: _PlayerCard(
+                  name: "Bishop",
+                  bgImage: "assets/ingame/bishop.png",
+                  color: const Color.fromARGB(255, 134, 33, 212),
+                  loadout: Provider.of<CurrentRun>(context).run?.players.player4,
                 ),
               ),
               const SizedBox(),
@@ -258,5 +259,129 @@ class _ContentBodyState extends State<_ContentBody> {
         const SizedBox(height: 10),
       ],
     );
+  }
+}
+
+class _PlayerCard extends StatelessWidget {
+  final String name;
+  final String bgImage;
+  final Color color;
+  final Loadout? loadout;
+
+  const _PlayerCard({
+    required this.name,
+    required this.bgImage,
+    required this.color,
+    this.loadout,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(8)),
+          child: Stack(
+            children: <Widget>[
+              ClipRRect(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(8),
+                  topLeft: Radius.circular(8),
+                ),
+                child: ShaderMask(
+                  shaderCallback: (Rect rect) {
+                    return const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: <Color>[Color.fromARGB(104, 0, 0, 0), Colors.transparent],
+                    ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+                  },
+                  blendMode: BlendMode.dstIn,
+                  child: Image.asset(bgImage, filterQuality: FilterQuality.low),
+                ),
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: Transform.rotate(
+                  angle: 45,
+                  child: Opacity(
+                    opacity: 0.36,
+                    child: Text(
+                      name,
+                      style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                ),
+              ),
+              if (loadout != null)
+                Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Column(
+                      children: <Widget>[
+                        Text.rich(
+                          TextSpan(
+                            children: <InlineSpan>[
+                              const TextSpan(
+                                text: "Melee: ",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              TextSpan(
+                                text: loadout!.melee.canonicalName,
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        Image.asset(
+                          height: MediaQuery.sizeOf(context).height * 0.12,
+                          loadout!.melee.assetPath,
+                        ),
+                        const SizedBox(height: 10),
+                        Text.rich(
+                          TextSpan(
+                            children: <InlineSpan>[
+                              const TextSpan(
+                                text: "Tool: ",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              TextSpan(
+                                text: loadout!.tool.canonicalName,
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        Image.asset(
+                          width: MediaQuery.sizeOf(context).height * 0.18,
+                          loadout!.tool.assetPath,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        )
+        .animate(autoPlay: true)
+        .fadeIn(
+          delay: const Duration(milliseconds: 80) * (rnd.nextDouble() + 1.56),
+          duration: const Duration(milliseconds: 320),
+          curve: Curves.easeIn,
+        )
+        .slideY(
+          begin: -0.12,
+          duration: const Duration(milliseconds: 340),
+          curve: Curves.easeIn,
+        );
   }
 }

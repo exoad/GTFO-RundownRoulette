@@ -4,8 +4,9 @@ import 'package:gtfo_rundown_roulette/shared/classes_runs.dart';
 final class Preset {
   final Rundowns rundowns;
   final Melees melees;
+  final Tools tools;
 
-  Preset(this.rundowns, this.melees);
+  Preset(this.rundowns, this.melees, this.tools);
 
   static final Preset vanilla = Preset(
     <Rundown>[
@@ -180,13 +181,40 @@ final class Preset {
       MeleeWeapon.knife(),
       MeleeWeapon.spear(),
     ],
+    const <ToolItem>[
+      ToolItem(assetPath: "assets/ingame/biotracker.png", canonicalName: "Bio Tracker"),
+      ToolItem(assetPath: "assets/ingame/cfoam.png", canonicalName: "C-Foam Launcher"),
+      ToolItem(
+        assetPath: "assets/ingame/minedeployer.png",
+        canonicalName: "Mine Deployer",
+      ),
+      ToolItem(
+        assetPath: "assets/ingame/snipersentry.png",
+        canonicalName: "Sniper Sentry",
+      ),
+      ToolItem(assetPath: "assets/ingame/burstsentry.png", canonicalName: "Burst Sentry"),
+      ToolItem(
+        assetPath: "assets/ingame/shotgunsentry.png",
+        canonicalName: "Shotgun Sentry",
+      ),
+      ToolItem(
+        assetPath: "assets/ingame/autosentry.png",
+        canonicalName: "HEL Auto Sentry",
+      ),
+    ],
   );
 }
 
 class GeneratedRun {
   final Mission mission;
+  final Rundown rundown;
   final PlayerPool players;
   final List<Sector> sectors;
 
-  GeneratedRun({required this.mission, required this.players, required this.sectors});
+  GeneratedRun({
+    required this.mission,
+    required this.players,
+    required this.sectors,
+    required this.rundown,
+  });
 }
