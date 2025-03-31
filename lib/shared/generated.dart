@@ -186,6 +186,7 @@ final class Preset {
 class GeneratedRun {
   final Mission mission;
   final PlayerPool players;
+  final List<Sector> sectors;
 
-  GeneratedRun({required this.mission, required this.players});
+  GeneratedRun({required this.mission, required this.players, required this.sectors});
 }

@@ -11,8 +11,10 @@ extension IterableRandomExtension<T> on Iterable<T> {
 
 class Variant1Generator {
   static GeneratedRun produceFrom(Preset preset) {
+    final Mission mission = preset.rundowns.pick().allMissions.pick();
     return GeneratedRun(
-      mission: preset.rundowns.pick().allMissions.pick(),
+      mission: mission,
+      sectors: mission.generate(),
       players: PlayerPool(
         player1: Loadout(melee: MeleeWeapon.generate()),
         player2: Loadout(melee: MeleeWeapon.generate()),
