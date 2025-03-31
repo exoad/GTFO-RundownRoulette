@@ -1,4 +1,6 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gtfo_rundown_roulette/interface/current_run.dart';
 import 'package:gtfo_rundown_roulette/shared/classes_runs.dart';
 import 'package:gtfo_rundown_roulette/shared/generated.dart';
@@ -89,81 +91,119 @@ class _ContentBodyState extends State<_ContentBody> {
               ),
             ),
             Expanded(
-              child:
-                  Provider.of<CurrentRun>(context).run == null
-                      ? const SizedBox()
-                      : Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            Provider.of<CurrentRun>(context).run!.mission.canonicalName,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 22,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
+              child: Padding(
+                padding:
+                    Provider.of<CurrentRun>(context).run == null
+                        ? const EdgeInsets.symmetric(horizontal: 8)
+                        : EdgeInsets.zero,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color:
+                        AdaptiveTheme.of(
+                          context,
+                        ).theme.buttonTheme.colorScheme?.onPrimary,
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                  child:
+                      Provider.of<CurrentRun>(context).run == null
+                          ? const SizedBox()
+                          : Column(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Tooltip(
-                                message: "MAIN",
-                                child: Image.asset(
-                                  "assets/ingame/sector_main.png",
-                                  width: 48,
-                                  height: 48,
-                                  cacheWidth: 48,
-                                  cacheHeight: 48,
-                                ),
-                              ),
-                              if (Provider.of<CurrentRun>(
-                                context,
-                              ).run!.sectors.contains(Sector.secondary))
-                                Tooltip(
-                                  message: "SECONDARY",
-                                  child: Image.asset(
-                                    "assets/ingame/sector_secondary.png",
-                                    width: 48,
-                                    height: 48,
-                                    cacheWidth: 48,
-                                    cacheHeight: 48,
-                                  ),
-                                ),
-                              if (Provider.of<CurrentRun>(
-                                context,
-                              ).run!.sectors.contains(Sector.overload))
-                                Tooltip(
-                                  message: "OVERLOAD",
-                                  child: Image.asset(
-                                    "assets/ingame/sector_overload.png",
-                                    width: 48,
-                                    height: 48,
-                                    cacheWidth: 48,
-                                    cacheHeight: 48,
-                                  ),
-                                ),
-                              if (Provider.of<CurrentRun>(
+                              Text(
+                                    Provider.of<CurrentRun>(
+                                      context,
+                                    ).run!.mission.canonicalName,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 22,
+                                    ),
+                                  )
+                                  .animate(autoPlay: true)
+                                  .fade(duration: const Duration(milliseconds: 550)),
+                              const SizedBox(height: 6),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                spacing: 6,
+                                children: <Widget>[
+                                  Tooltip(
+                                        message: "MAIN",
+                                        child: Image.asset(
+                                          "assets/ingame/sector_main.png",
+                                          width: 48,
+                                          height: 48,
+                                          cacheWidth: 48,
+                                          cacheHeight: 48,
+                                        ),
+                                      )
+                                      .animate(autoPlay: true)
+                                      .fade(duration: const Duration(milliseconds: 400)),
+                                  if (Provider.of<CurrentRun>(
                                     context,
-                                  ).run!.sectors.contains(Sector.secondary) &&
-                                  Provider.of<CurrentRun>(
+                                  ).run!.sectors.contains(Sector.secondary))
+                                    Tooltip(
+                                          message: "SECONDARY",
+                                          child: Image.asset(
+                                            "assets/ingame/sector_secondary.png",
+                                            width: 48,
+                                            height: 48,
+                                            cacheWidth: 48,
+                                            cacheHeight: 48,
+                                          ),
+                                        )
+                                        .animate(autoPlay: true)
+                                        .fade(
+                                          duration: const Duration(milliseconds: 400),
+                                          delay: const Duration(milliseconds: 300),
+                                        ),
+                                  if (Provider.of<CurrentRun>(
                                     context,
                                   ).run!.sectors.contains(Sector.overload))
-                                Tooltip(
-                                  message: "PRISONER EFFICIENCY",
-                                  child: Image.asset(
-                                    "assets/ingame/prisoner_efficiency.png",
-                                    width: 48,
-                                    height: 48,
-                                    cacheWidth: 48,
-                                    cacheHeight: 48,
-                                  ),
-                                ),
+                                    Tooltip(
+                                          message: "OVERLOAD",
+                                          child: Image.asset(
+                                            "assets/ingame/sector_overload.png",
+                                            width: 48,
+                                            height: 48,
+                                            cacheWidth: 48,
+                                            cacheHeight: 48,
+                                          ),
+                                        )
+                                        .animate(autoPlay: true)
+                                        .fade(
+                                          duration: const Duration(milliseconds: 400),
+                                          delay: const Duration(milliseconds: 480),
+                                        ),
+                                  if (Provider.of<CurrentRun>(
+                                        context,
+                                      ).run!.sectors.contains(Sector.secondary) &&
+                                      Provider.of<CurrentRun>(
+                                        context,
+                                      ).run!.sectors.contains(Sector.overload))
+                                    Tooltip(
+                                          message: "PRISONER EFFICIENCY",
+                                          child: Image.asset(
+                                            "assets/ingame/prisoner_efficiency.png",
+                                            width: 48,
+                                            height: 48,
+                                            cacheWidth: 48,
+                                            cacheHeight: 48,
+                                          ),
+                                        )
+                                        .animate(autoPlay: true)
+                                        .fade(
+                                          duration: const Duration(milliseconds: 400),
+                                          delay: const Duration(milliseconds: 500),
+                                        ),
+                                ],
+                              ),
                             ],
                           ),
-                        ],
-                      ),
+                ),
+              ),
             ),
           ],
         ),
