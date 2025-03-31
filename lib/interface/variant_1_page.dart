@@ -224,7 +224,7 @@ class _ContentBodyState extends State<_ContentBody> {
                 child: _PlayerCard(
                   name: "Woods",
                   bgImage: "assets/ingame/woods.png",
-                  color: const Color.fromARGB(255, 223, 88, 126),
+                  color: const Color.fromARGB(255, 116, 46, 66),
                   loadout: Provider.of<CurrentRun>(context).run?.players.player1,
                 ),
               ),
@@ -232,7 +232,7 @@ class _ContentBodyState extends State<_ContentBody> {
                 child: _PlayerCard(
                   name: "Dauda",
                   bgImage: "assets/ingame/dauda.png",
-                  color: const Color.fromARGB(255, 66, 194, 100),
+                  color: const Color.fromARGB(255, 32, 92, 48),
                   loadout: Provider.of<CurrentRun>(context).run?.players.player2,
                 ),
               ),
@@ -240,7 +240,7 @@ class _ContentBodyState extends State<_ContentBody> {
                 child: _PlayerCard(
                   name: "Hackett",
                   bgImage: "assets/ingame/hackett.png",
-                  color: const Color.fromARGB(255, 36, 108, 180),
+                  color: const Color.fromARGB(255, 22, 61, 100),
                   loadout: Provider.of<CurrentRun>(context).run?.players.player3,
                 ),
               ),
@@ -248,7 +248,7 @@ class _ContentBodyState extends State<_ContentBody> {
                 child: _PlayerCard(
                   name: "Bishop",
                   bgImage: "assets/ingame/bishop.png",
-                  color: const Color.fromARGB(255, 134, 33, 212),
+                  color: const Color.fromARGB(255, 76, 17, 120),
                   loadout: Provider.of<CurrentRun>(context).run?.players.player4,
                 ),
               ),
@@ -277,111 +277,117 @@ class _PlayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(8)),
-          child: Stack(
-            children: <Widget>[
-              ClipRRect(
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(8),
-                  topLeft: Radius.circular(8),
+    return DefaultTextStyle(
+      style: const TextStyle(fontFamily: "Shared Tech"),
+      child: Container(
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Stack(
+              children: <Widget>[
+                ClipRRect(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(8),
+                    topLeft: Radius.circular(8),
+                  ),
+                  child: ShaderMask(
+                    shaderCallback: (Rect rect) {
+                      return const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: <Color>[Color.fromARGB(24, 0, 0, 0), Colors.transparent],
+                      ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+                    },
+                    blendMode: BlendMode.dstIn,
+                    child: Image.asset(bgImage, filterQuality: FilterQuality.low),
+                  ),
                 ),
-                child: ShaderMask(
-                  shaderCallback: (Rect rect) {
-                    return const LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: <Color>[Color.fromARGB(104, 0, 0, 0), Colors.transparent],
-                    ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
-                  },
-                  blendMode: BlendMode.dstIn,
-                  child: Image.asset(bgImage, filterQuality: FilterQuality.low),
-                ),
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: Transform.rotate(
-                  angle: 45,
-                  child: Opacity(
-                    opacity: 0.36,
-                    child: Text(
-                      name,
-                      style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w800),
+                Align(
+                  alignment: Alignment.center,
+                  child: Transform.rotate(
+                    angle: 45,
+                    child: Opacity(
+                      opacity: 0.36,
+                      child: Text(
+                        name,
+                        style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w800),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              if (loadout != null)
-                Positioned.fill(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      children: <Widget>[
-                        Text.rich(
-                          TextSpan(
-                            children: <InlineSpan>[
-                              const TextSpan(
-                                text: "Melee: ",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey,
+                if (loadout != null)
+                  Positioned.fill(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        children: <Widget>[
+                          Text.rich(
+                            TextSpan(
+                              children: <InlineSpan>[
+                                const TextSpan(
+                                  text: "Melee: ",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                  ),
                                 ),
-                              ),
-                              TextSpan(
-                                text: loadout!.melee.canonicalName,
-                                style: const TextStyle(fontSize: 20),
-                              ),
-                            ],
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        Image.asset(
-                          height: MediaQuery.sizeOf(context).height * 0.12,
-                          loadout!.melee.assetPath,
-                        ),
-                        const SizedBox(height: 10),
-                        Text.rich(
-                          TextSpan(
-                            children: <InlineSpan>[
-                              const TextSpan(
-                                text: "Tool: ",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey,
+                                TextSpan(
+                                  text: loadout!.melee.canonicalName,
+                                  style: const TextStyle(fontSize: 20),
                                 ),
-                              ),
-                              TextSpan(
-                                text: loadout!.tool.canonicalName,
-                                style: const TextStyle(fontSize: 20),
-                              ),
-                            ],
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                        Image.asset(
-                          width: MediaQuery.sizeOf(context).height * 0.18,
-                          loadout!.tool.assetPath,
-                        ),
-                      ],
+                          Image.asset(
+                            height: MediaQuery.sizeOf(context).height * 0.12,
+                            loadout!.melee.assetPath,
+                          ),
+                          const SizedBox(height: 10),
+                          Text.rich(
+                            TextSpan(
+                              children: <InlineSpan>[
+                                const TextSpan(
+                                  text: "Tool: ",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: loadout!.tool.canonicalName,
+                                  style: const TextStyle(fontSize: 20),
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          Image.asset(
+                            width: MediaQuery.sizeOf(context).height * 0.18,
+                            loadout!.tool.assetPath,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-            ],
+              ],
+            ),
+          )
+          .animate()
+          .fadeIn(
+            delay: const Duration(milliseconds: 80) * (rnd.nextDouble() + 1.56),
+            duration: const Duration(milliseconds: 320),
+            curve: Curves.easeIn,
+          )
+          .slideY(
+            begin: -0.12,
+            duration: const Duration(milliseconds: 340),
+            curve: Curves.easeIn,
           ),
-        )
-        .animate(autoPlay: true)
-        .fadeIn(
-          delay: const Duration(milliseconds: 80) * (rnd.nextDouble() + 1.56),
-          duration: const Duration(milliseconds: 320),
-          curve: Curves.easeIn,
-        )
-        .slideY(
-          begin: -0.12,
-          duration: const Duration(milliseconds: 340),
-          curve: Curves.easeIn,
-        );
+    );
   }
 }

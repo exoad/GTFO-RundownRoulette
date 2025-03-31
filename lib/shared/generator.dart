@@ -33,18 +33,26 @@ class Variant1Generator {
                 player1: Loadout(
                   melee: MeleeWeapon.generate(),
                   tool: preset.tools.pick(),
+                  primary: preset.primaries.pick(),
+                  special: preset.specials.pick(),
                 ),
                 player2: Loadout(
                   melee: MeleeWeapon.generate(),
                   tool: preset.tools.pick(),
+                  primary: preset.primaries.pick(),
+                  special: preset.specials.pick(),
                 ),
                 player3: Loadout(
                   melee: MeleeWeapon.generate(),
                   tool: preset.tools.pick(),
+                  primary: preset.primaries.pick(),
+                  special: preset.specials.pick(),
                 ),
                 player4: Loadout(
                   melee: MeleeWeapon.generate(),
                   tool: preset.tools.pick(),
+                  primary: preset.primaries.pick(),
+                  special: preset.specials.pick(),
                 ),
               )
               : previous!.players,

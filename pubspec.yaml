@@ -28,3 +28,7 @@ flutter:
   assets:
     - assets/
     - assets/ingame/
+  fonts:
+    - family: "Shared Tech"
+      fonts:
+        - asset: fonts/shared_tech/ShareTech-Regular.ttf

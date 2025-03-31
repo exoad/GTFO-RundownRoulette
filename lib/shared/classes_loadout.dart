@@ -9,15 +9,27 @@ typedef Tools = List<ToolItem>;
 class Loadout {
   final MeleeWeapon melee;
   final ToolItem tool;
+  final Gun primary;
+  final Gun special;
 
-  const Loadout({required this.melee, required this.tool});
+  const Loadout({
+    required this.melee,
+    required this.tool,
+    required this.primary,
+    required this.special,
+  });
 }
 
 sealed class LoadoutItem with EquatableMixin {
   final String assetPath;
   final String canonicalName;
+  final String gameName;
 
-  const LoadoutItem({required this.assetPath, required this.canonicalName});
+  const LoadoutItem({
+    required this.assetPath,
+    required this.canonicalName,
+    String? gameName,
+  }) : gameName = gameName ?? canonicalName;
 
   @override
   List<Object?> get props => <Object?>[assetPath, canonicalName];
@@ -58,6 +70,7 @@ final class Gun extends LoadoutItem with EquatableMixin {
     this.firemode = GunFiremode.semi_auto,
     required this.isHEL,
     required this.isSpecial,
+    super.gameName,
   });
 
   bool get isPrimary => !isSpecial;
@@ -67,7 +80,11 @@ final class Gun extends LoadoutItem with EquatableMixin {
 }
 
 final class ToolItem extends LoadoutItem {
-  const ToolItem({required super.assetPath, required super.canonicalName});
+  const ToolItem({
+    required super.assetPath,
+    required super.canonicalName,
+    super.gameName,
+  });
 }
 
 enum Boosters { MUTED, AGGRESIVE, BOLD }
