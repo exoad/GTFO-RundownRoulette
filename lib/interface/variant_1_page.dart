@@ -5,7 +5,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gtfo_rundown_roulette/interface/current_run.dart';
 import 'package:gtfo_rundown_roulette/shared/shared.dart';
 import 'package:provider/provider.dart';
-import 'package:rnd/rnd.dart';
 
 class Variant1RootScaffold extends StatelessWidget {
   const Variant1RootScaffold({super.key});

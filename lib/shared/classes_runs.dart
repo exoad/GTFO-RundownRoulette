@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:gtfo_rundown_roulette/shared/classes_loadout.dart';
-import 'package:rnd/rnd.dart';
+import 'package:gtfo_rundown_roulette/shared/shared.dart';
 
 typedef Rundowns = List<Rundown>;
 

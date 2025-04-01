@@ -1,5 +1,5 @@
 import "package:equatable/equatable.dart";
-import "package:rnd/rnd.dart";
+import "package:gtfo_rundown_roulette/shared/shared.dart";
 
 typedef Melees = List<MeleeWeapon>;
 typedef PrimaryGuns = List<Gun>;

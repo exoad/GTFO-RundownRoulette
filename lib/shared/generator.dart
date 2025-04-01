@@ -1,7 +1,4 @@
-import 'package:gtfo_rundown_roulette/shared/classes_loadout.dart';
-import 'package:gtfo_rundown_roulette/shared/classes_runs.dart';
-import 'package:gtfo_rundown_roulette/shared/generated.dart';
-import 'package:rnd/rnd.dart';
+import 'package:gtfo_rundown_roulette/shared/shared.dart';
 
 extension IterableRandomExtension<T> on Iterable<T> {
   T pick() {
