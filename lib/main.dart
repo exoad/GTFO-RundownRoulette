@@ -1,8 +1,8 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:gtfo_rundown_roulette/interface/current_run.dart';
-import 'package:gtfo_rundown_roulette/interface/home_page.dart';
 import 'package:gtfo_rundown_roulette/interface/laf.dart';
+import 'package:gtfo_rundown_roulette/interface/root.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -45,4 +45,3 @@ class MainApp extends StatelessWidget {
     );
   }
 }
-

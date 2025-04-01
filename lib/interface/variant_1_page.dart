@@ -193,7 +193,7 @@ class _ContentBodyState extends State<_ContentBody> {
                         : EdgeInsets.zero,
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(16),
                     color:
                         AdaptiveTheme.of(
                           context,
