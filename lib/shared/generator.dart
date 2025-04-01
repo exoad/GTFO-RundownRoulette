@@ -7,6 +7,16 @@ extension IterableRandomExtension<T> on Iterable<T> {
   T pick() {
     return elementAt(rnd.nextInt(length));
   }
+
+  List<T> pickMultiple() {
+    final List<T> res = <T>[];
+    for (T item in this) {
+      if (rnd.nextBool()) {
+        res.add(item);
+      }
+    }
+    return res;
+  }
 }
 
 class Variant1Generator {
@@ -35,24 +45,28 @@ class Variant1Generator {
                   tool: preset.tools.pick(),
                   primary: preset.primaries.pick(),
                   special: preset.specials.pick(),
+                  boosters: Boosters.values.pickMultiple(),
                 ),
                 player2: Loadout(
                   melee: MeleeWeapon.generate(),
                   tool: preset.tools.pick(),
                   primary: preset.primaries.pick(),
                   special: preset.specials.pick(),
+                  boosters: Boosters.values.pickMultiple(),
                 ),
                 player3: Loadout(
                   melee: MeleeWeapon.generate(),
                   tool: preset.tools.pick(),
                   primary: preset.primaries.pick(),
                   special: preset.specials.pick(),
+                  boosters: Boosters.values.pickMultiple(),
                 ),
                 player4: Loadout(
                   melee: MeleeWeapon.generate(),
                   tool: preset.tools.pick(),
                   primary: preset.primaries.pick(),
                   special: preset.specials.pick(),
+                  boosters: Boosters.values.pickMultiple(),
                 ),
               )
               : previous!.players,

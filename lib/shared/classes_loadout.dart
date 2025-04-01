@@ -11,12 +11,14 @@ class Loadout {
   final ToolItem tool;
   final Gun primary;
   final Gun special;
+  final List<Boosters> boosters;
 
   const Loadout({
     required this.melee,
     required this.tool,
     required this.primary,
     required this.special,
+    required this.boosters,
   });
 }
 

@@ -1,12 +1,8 @@
-import 'dart:ui';
-
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gtfo_rundown_roulette/interface/current_run.dart';
-import 'package:gtfo_rundown_roulette/shared/classes_runs.dart';
-import 'package:gtfo_rundown_roulette/shared/generated.dart';
-import 'package:gtfo_rundown_roulette/shared/generator.dart';
 import 'package:gtfo_rundown_roulette/shared/shared.dart';
 import 'package:provider/provider.dart';
 import 'package:rnd/rnd.dart';
@@ -18,15 +14,6 @@ class Variant1RootScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Variant 1 \"Generic\"")),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.replay_rounded),
-        onPressed:
-            () =>
-                Provider.of<CurrentRun>(
-                  context,
-                  listen: false,
-                ).value = Variant1Generator.produceFrom(Preset.vanilla),
-      ),
       body: const _ContentBody(),
     );
   }
@@ -45,6 +32,7 @@ class _ContentBodyState extends State<_ContentBody> {
     return Column(
       children: <Widget>[
         Row(
+          spacing: 4,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             const Flexible(
@@ -89,6 +77,110 @@ class _ContentBodyState extends State<_ContentBody> {
                           ),
                         ],
                       ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            IntrinsicWidth(
+              child: Column(
+                spacing: 4,
+                children: <Widget>[
+                  Row(
+                    spacing: 4,
+                    children: <Widget>[
+                      Tooltip(
+                        message: "Randomize Loadout Only",
+                        child: FloatingActionButton(
+                          onPressed: () async {
+                            try {
+                              Provider.of<CurrentRun>(
+                                context,
+                                listen: false,
+                              ).value = Variant1Generator.produceFrom(
+                                Preset.vanilla,
+                                false,
+                                true,
+                                Provider.of<CurrentRun>(context, listen: false).run,
+                              );
+                            } catch (error) {
+                              await showDialog(
+                                context: context,
+                                builder:
+                                    (BuildContext context) => AlertDialog(
+                                      actions: <Widget>[
+                                        FilledButton(
+                                          onPressed: () => Navigator.pop(context),
+                                          child: const Text("Ok"),
+                                        ),
+                                      ],
+                                      title: const Text(
+                                        "Oh no!",
+                                        style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      content: Text(error.toString()),
+                                    ),
+                              );
+                            }
+                          },
+                          child: const Icon(CommunityMaterialIcons.pistol),
+                        ),
+                      ),
+                      Tooltip(
+                        message: "Randomize Everything",
+                        child: FloatingActionButton(
+                          onPressed:
+                              () =>
+                                  Provider.of<CurrentRun>(
+                                    context,
+                                    listen: false,
+                                  ).value = Variant1Generator.produceFrom(Preset.vanilla),
+                          child: const Icon(CommunityMaterialIcons.reload),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Tooltip(
+                    message: "Randomize Rundown Only",
+                    child: FloatingActionButton(
+                      onPressed: () async {
+                        try {
+                          Provider.of<CurrentRun>(
+                            context,
+                            listen: false,
+                          ).value = Variant1Generator.produceFrom(
+                            Preset.vanilla,
+                            true,
+                            false,
+                            Provider.of<CurrentRun>(context, listen: false).run,
+                          );
+                        } catch (error) {
+                          await showDialog(
+                            context: context,
+                            builder:
+                                (BuildContext context) => AlertDialog(
+                                  actions: <Widget>[
+                                    FilledButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text("Ok"),
+                                    ),
+                                  ],
+                                  title: const Text(
+                                    "Oh no!",
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  content: Text(error.toString()),
+                                ),
+                          );
+                        }
+                      },
+                      child: const Icon(CommunityMaterialIcons.account_hard_hat),
                     ),
                   ),
                 ],
@@ -212,16 +304,15 @@ class _ContentBodyState extends State<_ContentBody> {
             ),
           ],
         ),
-        const Padding(padding: EdgeInsets.only(bottom: 10), child: Divider()),
+        const Divider(),
         Expanded(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: 8,
             children: <Widget>[
-              const SizedBox(),
               Expanded(
                 child: _PlayerCard(
+                  title: "Player 1",
                   name: "Woods",
                   bgImage: "assets/ingame/woods.png",
                   color: const Color.fromARGB(255, 116, 46, 66),
@@ -230,6 +321,7 @@ class _ContentBodyState extends State<_ContentBody> {
               ),
               Expanded(
                 child: _PlayerCard(
+                  title: "Player 2",
                   name: "Dauda",
                   bgImage: "assets/ingame/dauda.png",
                   color: const Color.fromARGB(255, 32, 92, 48),
@@ -238,6 +330,7 @@ class _ContentBodyState extends State<_ContentBody> {
               ),
               Expanded(
                 child: _PlayerCard(
+                  title: "Player 3",
                   name: "Hackett",
                   bgImage: "assets/ingame/hackett.png",
                   color: const Color.fromARGB(255, 22, 61, 100),
@@ -246,13 +339,13 @@ class _ContentBodyState extends State<_ContentBody> {
               ),
               Expanded(
                 child: _PlayerCard(
+                  title: "Player 4",
                   name: "Bishop",
                   bgImage: "assets/ingame/bishop.png",
                   color: const Color.fromARGB(255, 76, 17, 120),
                   loadout: Provider.of<CurrentRun>(context).run?.players.player4,
                 ),
               ),
-              const SizedBox(),
             ],
           ),
         ),
@@ -262,13 +355,15 @@ class _ContentBodyState extends State<_ContentBody> {
   }
 }
 
-class _PlayerCard extends StatelessWidget {
+class _PlayerCard extends StatefulWidget {
+  final String title;
   final String name;
   final String bgImage;
   final Color color;
   final Loadout? loadout;
 
   const _PlayerCard({
+    required this.title,
     required this.name,
     required this.bgImage,
     required this.color,
@@ -276,101 +371,180 @@ class _PlayerCard extends StatelessWidget {
   });
 
   @override
+  State<_PlayerCard> createState() => _PlayerCardState();
+}
+
+class _PlayerCardState extends State<_PlayerCard> with TickerProviderStateMixin {
+  late AnimationController animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    animationController = AnimationController(
+      vsync: this,
+      animationBehavior: AnimationBehavior.preserve,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DefaultTextStyle(
       style: const TextStyle(fontFamily: "Shared Tech"),
       child: Container(
             decoration: BoxDecoration(
-              color: color,
+              color: widget.color,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Stack(
+              fit: StackFit.loose,
               children: <Widget>[
-                ClipRRect(
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(8),
-                    topLeft: Radius.circular(8),
-                  ),
-                  child: ShaderMask(
-                    shaderCallback: (Rect rect) {
-                      return const LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: <Color>[Color.fromARGB(24, 0, 0, 0), Colors.transparent],
-                      ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
-                    },
-                    blendMode: BlendMode.dstIn,
-                    child: Image.asset(bgImage, filterQuality: FilterQuality.low),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Transform.rotate(
-                    angle: 45,
-                    child: Opacity(
-                      opacity: 0.36,
-                      child: Text(
-                        name,
-                        style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w800),
+                Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: ClipRRect(
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(8),
+                        topLeft: Radius.circular(8),
+                      ),
+                      child: ShaderMask(
+                        shaderCallback: (Rect rect) {
+                          return const LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: <Color>[
+                              Color.fromARGB(24, 0, 0, 0),
+                              Colors.transparent,
+                            ],
+                          ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+                        },
+                        blendMode: BlendMode.dstIn,
+                        child: Image.asset(
+                          widget.bgImage,
+                          filterQuality: FilterQuality.low,
+                        ),
                       ),
                     ),
                   ),
                 ),
-                if (loadout != null)
+                Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Transform.rotate(
+                      angle: 45,
+                      child: Opacity(
+                        opacity: 0.22,
+                        child: Text(
+                          widget.name,
+                          style: const TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                if (widget.loadout != null)
                   Positioned.fill(
                     child: Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Column(
-                        children: <Widget>[
-                          Text.rich(
-                            TextSpan(
-                              children: <InlineSpan>[
-                                const TextSpan(
-                                  text: "Melee: ",
-                                  style: TextStyle(
-                                    fontSize: 20,
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics(),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          spacing: 4,
+                          children: <Widget>[
+                            Row(
+                              spacing: 6,
+                              children: <Widget>[
+                                Text(
+                                  widget.title,
+                                  style: const TextStyle(
+                                    fontSize: 26,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.grey,
                                   ),
                                 ),
-                                TextSpan(
-                                  text: loadout!.melee.canonicalName,
-                                  style: const TextStyle(fontSize: 20),
-                                ),
+                                if (widget.loadout!.boosters.contains(Boosters.MUTED))
+                                  Image.asset("assets/ingame/muted.png", width: 32),
+                                if (widget.loadout!.boosters.contains(Boosters.BOLD))
+                                  Image.asset("assets/ingame/bold.png", width: 32),
+                                if (widget.loadout!.boosters.contains(Boosters.AGGRESIVE))
+                                  Image.asset("assets/ingame/aggressive.png", width: 32),
                               ],
                             ),
-                            textAlign: TextAlign.center,
-                          ),
-                          Image.asset(
-                            height: MediaQuery.sizeOf(context).height * 0.12,
-                            loadout!.melee.assetPath,
-                          ),
-                          const SizedBox(height: 10),
-                          Text.rich(
-                            TextSpan(
-                              children: <InlineSpan>[
-                                const TextSpan(
-                                  text: "Tool: ",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey,
-                                  ),
+                            _PlayerCardItem(<Widget>[
+                              Text(
+                                widget.loadout!.primary.canonicalName,
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                TextSpan(
-                                  text: loadout!.tool.canonicalName,
-                                  style: const TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                widget.loadout!.primary.gameName,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
                                 ),
-                              ],
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          Image.asset(
-                            width: MediaQuery.sizeOf(context).height * 0.18,
-                            loadout!.tool.assetPath,
-                          ),
-                        ],
+                              ),
+                              Image.asset(
+                                height: MediaQuery.sizeOf(context).height * 0.08,
+                                widget.loadout!.primary.assetPath,
+                              ),
+                            ]),
+                            _PlayerCardItem(<Widget>[
+                              Text(
+                                widget.loadout!.special.canonicalName,
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                widget.loadout!.special.gameName,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              Image.asset(
+                                height: MediaQuery.sizeOf(context).height * 0.08,
+                                widget.loadout!.special.assetPath,
+                              ),
+                            ]),
+                            _PlayerCardItem(<Widget>[
+                              Text(
+                                widget.loadout!.tool.canonicalName,
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Image.asset(
+                                height: MediaQuery.sizeOf(context).height * 0.08,
+                                widget.loadout!.tool.assetPath,
+                              ),
+                            ]),
+                            _PlayerCardItem(<Widget>[
+                              Text(
+                                widget.loadout!.melee.canonicalName,
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Image.asset(
+                                height: MediaQuery.sizeOf(context).height * 0.08,
+                                widget.loadout!.melee.assetPath,
+                              ),
+                            ]),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -388,6 +562,24 @@ class _PlayerCard extends StatelessWidget {
             duration: const Duration(milliseconds: 340),
             curve: Curves.easeIn,
           ),
+    );
+  }
+}
+
+class _PlayerCardItem extends StatelessWidget {
+  final List<Widget> children;
+
+  const _PlayerCardItem(this.children);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withAlpha(40),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: const EdgeInsets.only(top: 6, bottom: 2),
+      child: Column(children: children),
     );
   }
 }
