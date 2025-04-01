@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gtfo_rundown_roulette/interface/current_run.dart';
 import 'package:gtfo_rundown_roulette/shared/shared.dart';
+import 'package:gtfo_rundown_roulette/widgets/diagonal_trace.dart';
+import 'package:gtfo_rundown_roulette/widgets/player_card.dart';
 import 'package:provider/provider.dart';
 
 class Variant1RootScaffold extends StatelessWidget {
@@ -25,9 +27,12 @@ class _ContentBody extends StatefulWidget {
   State<_ContentBody> createState() => _ContentBodyState();
 }
 
-class _ContentBodyState extends State<_ContentBody> {
+class _ContentBodyState extends State<_ContentBody> with AutomaticKeepAliveClientMixin {
+  Variant1Filter? filter;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       children: <Widget>[
         Row(
@@ -101,6 +106,7 @@ class _ContentBodyState extends State<_ContentBody> {
                                 false,
                                 true,
                                 Provider.of<CurrentRun>(context, listen: false).run,
+                                filter,
                               );
                             } catch (error) {
                               await showDialog(
@@ -136,51 +142,462 @@ class _ContentBodyState extends State<_ContentBody> {
                                   Provider.of<CurrentRun>(
                                     context,
                                     listen: false,
-                                  ).value = Variant1Generator.produceFrom(Preset.vanilla),
+                                  ).value = Variant1Generator.produceFrom(
+                                    Preset.vanilla,
+                                    true,
+                                    true,
+                                    null,
+                                    filter,
+                                  ),
                           child: const Icon(CommunityMaterialIcons.reload),
                         ),
                       ),
                     ],
                   ),
-                  Tooltip(
-                    message: "Randomize Rundown Only",
-                    child: FloatingActionButton(
-                      onPressed: () async {
-                        try {
-                          Provider.of<CurrentRun>(
-                            context,
-                            listen: false,
-                          ).value = Variant1Generator.produceFrom(
-                            Preset.vanilla,
-                            true,
-                            false,
-                            Provider.of<CurrentRun>(context, listen: false).run,
-                          );
-                        } catch (error) {
-                          await showDialog(
-                            context: context,
-                            builder:
-                                (BuildContext context) => AlertDialog(
-                                  actions: <Widget>[
-                                    FilledButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: const Text("Ok"),
+                  Row(
+                    spacing: 4,
+                    children: <Widget>[
+                      Tooltip(
+                        message: "Filters",
+                        child: FloatingActionButton(
+                          onPressed:
+                              () async => await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  final Variant1Filter currFilter =
+                                      filter ??
+                                      // ignore: prefer_const_constructors
+                                      Variant1Filter(
+                                        blockedMissions: <Mission>{},
+                                        blockedPrimaries: <Gun>{},
+                                        blockedSpecials: <Gun>{},
+                                        blockedTools: <ToolItem>{},
+                                        blockedMelees: <MeleeWeapon>{},
+                                        blockedBoosters: <Boosters>{},
+                                      );
+                                  return AlertDialog(
+                                    title: const Text("Apply Filters"),
+                                    scrollable: true,
+                                    content: IntrinsicWidth(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        spacing: 6,
+                                        children: <Widget>[
+                                          FloatingActionButton(
+                                            onPressed: () {},
+                                            child: const Text("Filter Missions"),
+                                          ),
+                                          FloatingActionButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute<Widget>(
+                                                  builder:
+                                                      (BuildContext context) => Scaffold(
+                                                        appBar: AppBar(
+                                                          title: const Text(
+                                                            "Filter Missions",
+                                                          ),
+                                                        ),
+                                                        body: const SingleChildScrollView(
+                                                          child: Column(
+                                                            children: <Widget>[
+                                                              Text(
+                                                                "Unselect a mission to block the generator from generating it.",
+                                                              ),
+                                                              Text(
+                                                                "This filter pool must contain at least ONE mission in order for the generator to properly work.",
+                                                                style: TextStyle(
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight.bold,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                ),
+                                              );
+                                            },
+                                            child: const Text("Filter Primary Weapons"),
+                                          ),
+                                          FloatingActionButton(
+                                            onPressed: () {},
+                                            child: const Text("Filter Special Weapons"),
+                                          ),
+                                          FloatingActionButton(
+                                            onPressed: () {},
+                                            child: const Text("Filter Tools"),
+                                          ),
+                                          FloatingActionButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute<Widget>(
+                                                  builder:
+                                                      (BuildContext context) => Scaffold(
+                                                        appBar: AppBar(
+                                                          title: const Text(
+                                                            "Filter Melee Weapons",
+                                                          ),
+                                                          actions: <Widget>[
+                                                            FilledButton.icon(
+                                                              onPressed: () {
+                                                                filter = currFilter;
+                                                                Navigator.pop(context);
+                                                              },
+                                                              icon: const Icon(
+                                                                Icons.input_rounded,
+                                                              ),
+                                                              label: const Text("Apply"),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        body: Padding(
+                                                          padding:
+                                                              const EdgeInsets.symmetric(
+                                                                horizontal: 22,
+                                                              ),
+                                                          child: Column(
+                                                            children: <Widget>[
+                                                              const Text(
+                                                                "Block items from being generated by the generator by unselecting them.",
+                                                                style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight.bold,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 10),
+                                                              SingleChildScrollView(
+                                                                child: Wrap(
+                                                                  spacing: 12,
+                                                                  runSpacing: 12,
+                                                                  runAlignment:
+                                                                      WrapAlignment
+                                                                          .spaceEvenly,
+                                                                  children: List<
+                                                                    Widget
+                                                                  >.generate(
+                                                                    Preset
+                                                                        .vanilla
+                                                                        .melees
+                                                                        .length,
+                                                                    (int i) {
+                                                                      final MeleeWeapon
+                                                                      item =
+                                                                          Preset
+                                                                              .vanilla
+                                                                              .melees[i];
+                                                                      return Tooltip(
+                                                                        message:
+                                                                            Preset
+                                                                                .vanilla
+                                                                                .melees[i]
+                                                                                .canonicalName,
+                                                                        child: FilterToggleItemExtended(
+                                                                          toggled: !currFilter
+                                                                              .blockedMelees
+                                                                              .contains(
+                                                                                item,
+                                                                              ),
+                                                                          consumer: (
+                                                                            bool r,
+                                                                          ) {
+                                                                            if (!r &&
+                                                                                currFilter.blockedMelees.length +
+                                                                                        1 ==
+                                                                                    Preset
+                                                                                        .vanilla
+                                                                                        .melees
+                                                                                        .length) {
+                                                                              showDialog(
+                                                                                context:
+                                                                                    context,
+                                                                                builder:
+                                                                                    (
+                                                                                      BuildContext
+                                                                                      context,
+                                                                                    ) => AlertDialog(
+                                                                                      actions: <
+                                                                                        Widget
+                                                                                      >[
+                                                                                        FilledButton(
+                                                                                          onPressed:
+                                                                                              () => Navigator.pop(
+                                                                                                context,
+                                                                                              ),
+                                                                                          child: const Text(
+                                                                                            "Ok",
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                      icon: const Icon(
+                                                                                        Icons.error,
+                                                                                      ),
+                                                                                      title: const Text(
+                                                                                        "At least one item needs to be unblocked!",
+                                                                                      ),
+                                                                                    ),
+                                                                              );
+                                                                              return false;
+                                                                            } else if (!r) {
+                                                                              currFilter
+                                                                                  .blockedMelees
+                                                                                  .add(
+                                                                                    item,
+                                                                                  );
+                                                                            } else {
+                                                                              currFilter
+                                                                                  .blockedMelees
+                                                                                  .remove(
+                                                                                    item,
+                                                                                  );
+                                                                            }
+                                                                            return true;
+                                                                          },
+                                                                          child: Row(
+                                                                            spacing: 4,
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment
+                                                                                    .center,
+                                                                            children: <
+                                                                              Widget
+                                                                            >[
+                                                                              Image.asset(
+                                                                                item.assetPath,
+                                                                                width: 52,
+                                                                              ),
+                                                                              Text(
+                                                                                item.canonicalName,
+                                                                                style: const TextStyle(
+                                                                                  fontSize:
+                                                                                      20,
+                                                                                  fontFamily:
+                                                                                      "Shared Tech",
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                ),
+                                              );
+                                            },
+                                            child: const Text("Filter Melees"),
+                                          ),
+                                          FloatingActionButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute<Widget>(
+                                                  builder:
+                                                      (BuildContext context) => Scaffold(
+                                                        appBar: AppBar(
+                                                          title: const Text(
+                                                            "Filter Boosters",
+                                                          ),
+                                                        ),
+                                                        body: Padding(
+                                                          padding:
+                                                              const EdgeInsets.symmetric(
+                                                                horizontal: 22,
+                                                              ),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment.start,
+                                                            spacing: 8,
+                                                            children: <Widget>[
+                                                              const Text(
+                                                                "Unselect the boosters you want to block from being generated.",
+                                                              ),
+                                                              const SizedBox(height: 8),
+                                                              Row(
+                                                                spacing: 8,
+                                                                children: <Widget>[
+                                                                  Tooltip(
+                                                                    message:
+                                                                        "Muted Boosters",
+                                                                    child: FilterToggleItem(
+                                                                      toggled:
+                                                                          !currFilter
+                                                                              .blockedBoosters
+                                                                              .contains(
+                                                                                Boosters
+                                                                                    .MUTED,
+                                                                              ),
+                                                                      consumer:
+                                                                          (bool r) =>
+                                                                              !r
+                                                                                  ? currFilter
+                                                                                      .blockedBoosters
+                                                                                      .add(
+                                                                                        Boosters.MUTED,
+                                                                                      )
+                                                                                  : currFilter
+                                                                                      .blockedBoosters
+                                                                                      .remove(
+                                                                                        Boosters.MUTED,
+                                                                                      ),
+                                                                      child: Image.asset(
+                                                                        "assets/ingame/muted.png",
+                                                                        width: 48,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Tooltip(
+                                                                    message:
+                                                                        "Bold Boosters",
+                                                                    child: FilterToggleItem(
+                                                                      toggled:
+                                                                          !currFilter
+                                                                              .blockedBoosters
+                                                                              .contains(
+                                                                                Boosters
+                                                                                    .BOLD,
+                                                                              ),
+                                                                      consumer:
+                                                                          (bool r) =>
+                                                                              !r
+                                                                                  ? currFilter
+                                                                                      .blockedBoosters
+                                                                                      .add(
+                                                                                        Boosters.BOLD,
+                                                                                      )
+                                                                                  : currFilter
+                                                                                      .blockedBoosters
+                                                                                      .remove(
+                                                                                        Boosters.BOLD,
+                                                                                      ),
+                                                                      child: Image.asset(
+                                                                        "assets/ingame/bold.png",
+                                                                        width: 48,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Tooltip(
+                                                                    message:
+                                                                        "Aggressive Boosters",
+                                                                    child: FilterToggleItem(
+                                                                      toggled:
+                                                                          !currFilter
+                                                                              .blockedBoosters
+                                                                              .contains(
+                                                                                Boosters
+                                                                                    .AGGRESIVE,
+                                                                              ),
+                                                                      consumer:
+                                                                          (bool r) =>
+                                                                              !r
+                                                                                  ? currFilter
+                                                                                      .blockedBoosters
+                                                                                      .add(
+                                                                                        Boosters.AGGRESIVE,
+                                                                                      )
+                                                                                  : currFilter
+                                                                                      .blockedBoosters
+                                                                                      .remove(
+                                                                                        Boosters.AGGRESIVE,
+                                                                                      ),
+                                                                      child: Image.asset(
+                                                                        "assets/ingame/aggressive.png",
+                                                                        width: 48,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              const SizedBox(height: 14),
+                                                              FilledButton(
+                                                                onPressed: () {
+                                                                  debugPrint(
+                                                                    "BLOCKED_BOOSTERS = ${currFilter.blockedBoosters.toString()}",
+                                                                  );
+                                                                  Navigator.pop(context);
+                                                                },
+                                                                child: const Text("OK"),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                ),
+                                              );
+                                            },
+                                            child: const Text("Filter Boosters"),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ],
-                                  title: const Text(
-                                    "Oh no!",
-                                    style: TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
+                                    actions: <Widget>[
+                                      FilledButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text("Cancel"),
+                                      ),
+                                      FilledButton(
+                                        onPressed: () {
+                                          filter = currFilter;
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("Ok"),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                          child: const Icon(CommunityMaterialIcons.filter),
+                        ),
+                      ),
+                      Tooltip(
+                        message: "Randomize Rundown Only",
+                        child: FloatingActionButton(
+                          onPressed: () async {
+                            try {
+                              Provider.of<CurrentRun>(
+                                context,
+                                listen: false,
+                              ).value = Variant1Generator.produceFrom(
+                                Preset.vanilla,
+                                true,
+                                false,
+                                Provider.of<CurrentRun>(context, listen: false).run,
+                              );
+                            } catch (error) {
+                              await showDialog(
+                                context: context,
+                                builder:
+                                    (BuildContext context) => AlertDialog(
+                                      actions: <Widget>[
+                                        FilledButton(
+                                          onPressed: () => Navigator.pop(context),
+                                          child: const Text("Ok"),
+                                        ),
+                                      ],
+                                      title: const Text(
+                                        "Oh no!",
+                                        style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      content: Text(error.toString()),
                                     ),
-                                  ),
-                                  content: Text(error.toString()),
-                                ),
-                          );
-                        }
-                      },
-                      child: const Icon(CommunityMaterialIcons.account_hard_hat),
-                    ),
+                              );
+                            }
+                          },
+                          child: const Icon(CommunityMaterialIcons.account_hard_hat),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -310,7 +727,7 @@ class _ContentBodyState extends State<_ContentBody> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Expanded(
-                child: _PlayerCard(
+                child: PlayerCard(
                   title: "Player 1",
                   name: "Woods",
                   bgImage: "assets/ingame/woods.png",
@@ -319,7 +736,7 @@ class _ContentBodyState extends State<_ContentBody> {
                 ),
               ),
               Expanded(
-                child: _PlayerCard(
+                child: PlayerCard(
                   title: "Player 2",
                   name: "Dauda",
                   bgImage: "assets/ingame/dauda.png",
@@ -328,7 +745,7 @@ class _ContentBodyState extends State<_ContentBody> {
                 ),
               ),
               Expanded(
-                child: _PlayerCard(
+                child: PlayerCard(
                   title: "Player 3",
                   name: "Hackett",
                   bgImage: "assets/ingame/hackett.png",
@@ -337,7 +754,7 @@ class _ContentBodyState extends State<_ContentBody> {
                 ),
               ),
               Expanded(
-                child: _PlayerCard(
+                child: PlayerCard(
                   title: "Player 4",
                   name: "Bishop",
                   bgImage: "assets/ingame/bishop.png",
@@ -352,233 +769,138 @@ class _ContentBodyState extends State<_ContentBody> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
-class _PlayerCard extends StatefulWidget {
-  final String title;
-  final String name;
-  final String bgImage;
-  final Color color;
-  final Loadout? loadout;
+class FilterToggleItem extends StatefulWidget {
+  final bool toggled;
+  final void Function(bool) consumer;
+  final Widget child;
 
-  const _PlayerCard({
-    required this.title,
-    required this.name,
-    required this.bgImage,
-    required this.color,
-    this.loadout,
+  const FilterToggleItem({
+    super.key,
+    this.toggled = true,
+    required this.consumer,
+    required this.child,
   });
 
   @override
-  State<_PlayerCard> createState() => _PlayerCardState();
+  State<FilterToggleItem> createState() => _FilterToggleItemState();
 }
 
-class _PlayerCardState extends State<_PlayerCard> with TickerProviderStateMixin {
-  late AnimationController animationController;
+class _FilterToggleItemState extends State<FilterToggleItem> {
+  late bool toggled;
 
   @override
   void initState() {
     super.initState();
-    animationController = AnimationController(
-      vsync: this,
-      animationBehavior: AnimationBehavior.preserve,
-    );
+    toggled = widget.toggled;
   }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTextStyle(
-      style: const TextStyle(fontFamily: "Shared Tech"),
-      child: Container(
-            decoration: BoxDecoration(
-              color: widget.color,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Stack(
-              fit: StackFit.loose,
-              children: <Widget>[
-                Positioned.fill(
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: ClipRRect(
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(8),
-                        topLeft: Radius.circular(8),
-                      ),
-                      child: ShaderMask(
-                        shaderCallback: (Rect rect) {
-                          return const LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: <Color>[
-                              Color.fromARGB(24, 0, 0, 0),
-                              Colors.transparent,
-                            ],
-                          ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
-                        },
-                        blendMode: BlendMode.dstIn,
-                        child: Image.asset(
-                          widget.bgImage,
-                          filterQuality: FilterQuality.low,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned.fill(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Transform.rotate(
-                      angle: 45,
-                      child: Opacity(
-                        opacity: 0.22,
-                        child: Text(
-                          widget.name,
-                          style: const TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                if (widget.loadout != null)
-                  Positioned.fill(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(
-                          parent: AlwaysScrollableScrollPhysics(),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          spacing: 4,
-                          children: <Widget>[
-                            Row(
-                              spacing: 6,
-                              children: <Widget>[
-                                Text(
-                                  widget.title,
-                                  style: const TextStyle(
-                                    fontSize: 26,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                if (widget.loadout!.boosters.contains(Boosters.MUTED))
-                                  Image.asset("assets/ingame/muted.png", width: 32),
-                                if (widget.loadout!.boosters.contains(Boosters.BOLD))
-                                  Image.asset("assets/ingame/bold.png", width: 32),
-                                if (widget.loadout!.boosters.contains(Boosters.AGGRESIVE))
-                                  Image.asset("assets/ingame/aggressive.png", width: 32),
-                              ],
-                            ),
-                            _PlayerCardItem(<Widget>[
-                              Text(
-                                widget.loadout!.primary.canonicalName,
-                                style: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                widget.loadout!.primary.gameName,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              Image.asset(
-                                height: MediaQuery.sizeOf(context).height * 0.08,
-                                widget.loadout!.primary.assetPath,
-                              ),
-                            ]),
-                            _PlayerCardItem(<Widget>[
-                              Text(
-                                widget.loadout!.special.canonicalName,
-                                style: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                widget.loadout!.special.gameName,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              Image.asset(
-                                height: MediaQuery.sizeOf(context).height * 0.08,
-                                widget.loadout!.special.assetPath,
-                              ),
-                            ]),
-                            _PlayerCardItem(<Widget>[
-                              Text(
-                                widget.loadout!.tool.canonicalName,
-                                style: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Image.asset(
-                                height: MediaQuery.sizeOf(context).height * 0.08,
-                                widget.loadout!.tool.assetPath,
-                              ),
-                            ]),
-                            _PlayerCardItem(<Widget>[
-                              Text(
-                                widget.loadout!.melee.canonicalName,
-                                style: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Image.asset(
-                                height: MediaQuery.sizeOf(context).height * 0.08,
-                                widget.loadout!.melee.assetPath,
-                              ),
-                            ]),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          )
-          .animate()
-          .fadeIn(
-            delay: const Duration(milliseconds: 80) * (rnd.nextDouble() + 1.56),
-            duration: const Duration(milliseconds: 320),
-            curve: Curves.easeIn,
-          )
-          .slideY(
-            begin: -0.12,
-            duration: const Duration(milliseconds: 340),
-            curve: Curves.easeIn,
-          ),
+    return CustomPaint(
+      foregroundPainter: toggled ? null : const DiagonalTracePainter(),
+      child: FloatingActionButton(
+        isExtended: true,
+        backgroundColor:
+            toggled ? null : AdaptiveTheme.of(context).theme.colorScheme.shadow,
+        onPressed: () {
+          setState(() => toggled = !toggled);
+          widget.consumer(toggled);
+        },
+        child: ColorFiltered(
+          colorFilter:
+              toggled
+                  ? const ColorFilter.matrix(<double>[
+                    1.0, 0.0, 0.0, 0.0, 0.0, //
+                    0.0, 1.0, 0.0, 0.0, 0.0, //
+                    0.0, 0.0, 1.0, 0.0, 0.0, //
+                    0.0, 0.0, 0.0, 1.0, 0.0, //
+                  ])
+                  : const ColorFilter.matrix(<double>[
+                    // values from wikipedia
+                    0.2126, 0.7152, 0.0722, 0, 0, //
+                    0.2126, 0.7152, 0.0722, 0, 0, //
+                    0.2126, 0.7152, 0.0722, 0, 0, //
+                    0, 0, 0, 1, 0, //
+                  ]),
+          child: widget.child,
+        ),
+      ),
     );
   }
 }
 
-class _PlayerCardItem extends StatelessWidget {
-  final List<Widget> children;
+class FilterToggleItemExtended extends StatefulWidget {
+  final bool toggled;
+  final bool Function(bool) consumer;
+  final Widget child;
 
-  const _PlayerCardItem(this.children);
+  const FilterToggleItemExtended({
+    super.key,
+    this.toggled = true,
+    required this.consumer,
+    required this.child,
+  });
+
+  @override
+  State<FilterToggleItemExtended> createState() => _FilterToggleItemStateExtended();
+}
+
+class _FilterToggleItemStateExtended extends State<FilterToggleItemExtended> {
+  late bool toggled;
+
+  @override
+  void initState() {
+    super.initState();
+    toggled = widget.toggled;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white.withAlpha(40),
-        borderRadius: BorderRadius.circular(8),
+    return SizedBox(
+      width: MediaQuery.sizeOf(context).width * 0.24,
+      child: CustomPaint(
+        foregroundPainter: toggled ? null : const DiagonalTracePainter(),
+        child: FilledButton(
+          onPressed: () {
+            setState(() => toggled = widget.consumer(!toggled) ? !toggled : toggled);
+          },
+          style: FilledButton.styleFrom(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            foregroundColor:
+                AdaptiveTheme.of(context).theme.colorScheme.onPrimaryContainer,
+            backgroundColor:
+                toggled
+                    ? AdaptiveTheme.of(context).theme.colorScheme.primaryContainer
+                    : AdaptiveTheme.of(context).theme.colorScheme.surfaceContainerLow,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: ColorFiltered(
+              colorFilter:
+                  toggled
+                      ? const ColorFilter.matrix(<double>[
+                        1.0, 0.0, 0.0, 0.0, 0.0, //
+                        0.0, 1.0, 0.0, 0.0, 0.0, //
+                        0.0, 0.0, 1.0, 0.0, 0.0, //
+                        0.0, 0.0, 0.0, 1.0, 0.0, //
+                      ])
+                      : const ColorFilter.matrix(<double>[
+                        // values from wikipedia
+                        0.2126, 0.7152, 0.0722, 0, 0, //
+                        0.2126, 0.7152, 0.0722, 0, 0, //
+                        0.2126, 0.7152, 0.0722, 0, 0, //
+                        0, 0, 0, 1, 0, //
+                      ]),
+              child: widget.child,
+            ),
+          ),
+        ),
       ),
-      padding: const EdgeInsets.only(top: 6, bottom: 2),
-      child: Column(children: children),
     );
   }
 }

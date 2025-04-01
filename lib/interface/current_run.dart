@@ -13,5 +13,4 @@ class CurrentRun with ChangeNotifier {
   }
 
   GeneratedRun? get run => _value;
-
 }

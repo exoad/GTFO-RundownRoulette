@@ -47,6 +47,13 @@ final class MeleeWeapon extends LoadoutItem {
     _ => const MeleeWeapon.hammer(),
   };
 
+  static const List<MeleeWeapon> weapons = <MeleeWeapon>[
+    MeleeWeapon.spear(),
+    MeleeWeapon.knife(),
+    MeleeWeapon.hammer(),
+    MeleeWeapon.bat(),
+  ];
+
   const MeleeWeapon.knife()
     : this._(assetPath: "assets/ingame/knife.png", canonicalName: "Knife");
 

@@ -460,6 +460,14 @@ final class Preset {
       ),
     ],
   );
+
+  List<Mission> get allMissions {
+    final List<Mission> res = <Mission>[];
+    for (Rundown rundown in rundowns) {
+      res.addAll(rundown.allMissions);
+    }
+    return res;
+  }
 }
 
 class GeneratedRun {
