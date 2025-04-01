@@ -1,3 +1,3 @@
-# gtfo_rundown_roulette
+# Rundown Roulette
 
-A new Flutter project.
+A randomizer to make your vanilla GTFO experience more fun!
