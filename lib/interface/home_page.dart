@@ -49,7 +49,7 @@ class HomePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  "Build ${Public.build}",
+                  "Build ${Public.build} | Signature ${Public.versionSignature}",
                   style: TextStyle(fontStyle: FontStyle.italic),
                 ),
                 const SizedBox(height: 12),

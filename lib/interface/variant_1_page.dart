@@ -185,7 +185,31 @@ class _ContentBodyState extends State<_ContentBody> with AutomaticKeepAliveClien
                                         spacing: 6,
                                         children: <Widget>[
                                           FloatingActionButton(
-                                            onPressed: () {},
+                                            onPressed:
+                                                () async => await showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (
+                                                        BuildContext context,
+                                                      ) => AlertDialog(
+                                                        actions: <Widget>[
+                                                          FilledButton(
+                                                            onPressed:
+                                                                () => Navigator.pop(
+                                                                  context,
+                                                                ),
+                                                            child: const Text("Ok"),
+                                                          ),
+                                                        ],
+                                                        content: const Text(
+                                                          "Still a work in progress! Check back later :)",
+                                                          style: TextStyle(
+                                                            fontSize: 22,
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                ),
                                             child: const Text("Filter Missions"),
                                           ),
                                           FloatingActionButton(
@@ -197,21 +221,147 @@ class _ContentBodyState extends State<_ContentBody> with AutomaticKeepAliveClien
                                                       (BuildContext context) => Scaffold(
                                                         appBar: AppBar(
                                                           title: const Text(
-                                                            "Filter Missions",
+                                                            "Filter Tools",
                                                           ),
+                                                          actions: <Widget>[
+                                                            FilledButton.icon(
+                                                              onPressed: () {
+                                                                filter = currFilter;
+                                                                Navigator.pop(context);
+                                                              },
+                                                              icon: const Icon(
+                                                                Icons.input_rounded,
+                                                              ),
+                                                              label: const Text("Apply"),
+                                                            ),
+                                                          ],
                                                         ),
-                                                        body: const SingleChildScrollView(
+                                                        body: Padding(
+                                                          padding:
+                                                              const EdgeInsets.symmetric(
+                                                                horizontal: 22,
+                                                              ),
                                                           child: Column(
                                                             children: <Widget>[
-                                                              Text(
-                                                                "Unselect a mission to block the generator from generating it.",
-                                                              ),
-                                                              Text(
-                                                                "This filter pool must contain at least ONE mission in order for the generator to properly work.",
+                                                              const Text(
+                                                                "Block items from being generated by the generator by unselecting them.",
                                                                 style: TextStyle(
-                                                                  fontSize: 18,
                                                                   fontWeight:
                                                                       FontWeight.bold,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 10),
+                                                              SingleChildScrollView(
+                                                                child: Wrap(
+                                                                  spacing: 12,
+                                                                  runSpacing: 12,
+                                                                  runAlignment:
+                                                                      WrapAlignment
+                                                                          .spaceEvenly,
+                                                                  children: List<
+                                                                    Widget
+                                                                  >.generate(
+                                                                    Preset
+                                                                        .vanilla
+                                                                        .primaries
+                                                                        .length,
+                                                                    (int i) {
+                                                                      final Gun item =
+                                                                          Preset
+                                                                              .vanilla
+                                                                              .primaries[i];
+                                                                      return Tooltip(
+                                                                        message:
+                                                                            item.canonicalName,
+                                                                        child: FilterToggleItemExtended(
+                                                                          toggled:
+                                                                              !currFilter
+                                                                                  .blockedPrimaries
+                                                                                  .contains(
+                                                                                    item,
+                                                                                  ),
+                                                                          consumer: (
+                                                                            bool r,
+                                                                          ) {
+                                                                            if (!r &&
+                                                                                currFilter.blockedPrimaries.length +
+                                                                                        1 ==
+                                                                                    Preset
+                                                                                        .vanilla
+                                                                                        .primaries
+                                                                                        .length) {
+                                                                              showDialog(
+                                                                                context:
+                                                                                    context,
+                                                                                builder:
+                                                                                    (
+                                                                                      BuildContext
+                                                                                      context,
+                                                                                    ) => AlertDialog(
+                                                                                      actions: <
+                                                                                        Widget
+                                                                                      >[
+                                                                                        FilledButton(
+                                                                                          onPressed:
+                                                                                              () => Navigator.pop(
+                                                                                                context,
+                                                                                              ),
+                                                                                          child: const Text(
+                                                                                            "Ok",
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                      icon: const Icon(
+                                                                                        Icons.error,
+                                                                                      ),
+                                                                                      title: const Text(
+                                                                                        "At least one item needs to be unblocked!",
+                                                                                      ),
+                                                                                    ),
+                                                                              );
+                                                                              return false;
+                                                                            } else if (!r) {
+                                                                              currFilter
+                                                                                  .blockedPrimaries
+                                                                                  .add(
+                                                                                    item,
+                                                                                  );
+                                                                            } else {
+                                                                              currFilter
+                                                                                  .blockedPrimaries
+                                                                                  .remove(
+                                                                                    item,
+                                                                                  );
+                                                                            }
+                                                                            return true;
+                                                                          },
+                                                                          child: Row(
+                                                                            spacing: 8,
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment
+                                                                                    .center,
+                                                                            children: <
+                                                                              Widget
+                                                                            >[
+                                                                              Image.asset(
+                                                                                item.assetPath,
+                                                                                width: 52,
+                                                                              ),
+                                                                              Text(
+                                                                                item.canonicalName,
+                                                                                style: const TextStyle(
+                                                                                  fontSize:
+                                                                                      20,
+                                                                                  fontFamily:
+                                                                                      "Shared Tech",
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  ),
                                                                 ),
                                                               ),
                                                             ],
@@ -224,11 +374,326 @@ class _ContentBodyState extends State<_ContentBody> with AutomaticKeepAliveClien
                                             child: const Text("Filter Primary Weapons"),
                                           ),
                                           FloatingActionButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute<Widget>(
+                                                  builder:
+                                                      (BuildContext context) => Scaffold(
+                                                        appBar: AppBar(
+                                                          title: const Text(
+                                                            "Filter Special Weapons",
+                                                          ),
+                                                          actions: <Widget>[
+                                                            FilledButton.icon(
+                                                              onPressed: () {
+                                                                filter = currFilter;
+                                                                Navigator.pop(context);
+                                                              },
+                                                              icon: const Icon(
+                                                                Icons.input_rounded,
+                                                              ),
+                                                              label: const Text("Apply"),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        body: Padding(
+                                                          padding:
+                                                              const EdgeInsets.symmetric(
+                                                                horizontal: 22,
+                                                              ),
+                                                          child: Column(
+                                                            children: <Widget>[
+                                                              const Text(
+                                                                "Block items from being generated by the generator by unselecting them.",
+                                                                style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight.bold,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 10),
+                                                              SingleChildScrollView(
+                                                                child: Wrap(
+                                                                  spacing: 12,
+                                                                  runSpacing: 12,
+                                                                  runAlignment:
+                                                                      WrapAlignment
+                                                                          .spaceEvenly,
+                                                                  children: List<
+                                                                    Widget
+                                                                  >.generate(
+                                                                    Preset
+                                                                        .vanilla
+                                                                        .specials
+                                                                        .length,
+                                                                    (int i) {
+                                                                      final Gun item =
+                                                                          Preset
+                                                                              .vanilla
+                                                                              .specials[i];
+                                                                      return Tooltip(
+                                                                        message:
+                                                                            item.canonicalName,
+                                                                        child: FilterToggleItemExtended(
+                                                                          toggled:
+                                                                              !currFilter
+                                                                                  .blockedSpecials
+                                                                                  .contains(
+                                                                                    item,
+                                                                                  ),
+                                                                          consumer: (
+                                                                            bool r,
+                                                                          ) {
+                                                                            if (!r &&
+                                                                                currFilter.blockedSpecials.length +
+                                                                                        1 ==
+                                                                                    Preset
+                                                                                        .vanilla
+                                                                                        .specials
+                                                                                        .length) {
+                                                                              showDialog(
+                                                                                context:
+                                                                                    context,
+                                                                                builder:
+                                                                                    (
+                                                                                      BuildContext
+                                                                                      context,
+                                                                                    ) => AlertDialog(
+                                                                                      actions: <
+                                                                                        Widget
+                                                                                      >[
+                                                                                        FilledButton(
+                                                                                          onPressed:
+                                                                                              () => Navigator.pop(
+                                                                                                context,
+                                                                                              ),
+                                                                                          child: const Text(
+                                                                                            "Ok",
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                      icon: const Icon(
+                                                                                        Icons.error,
+                                                                                      ),
+                                                                                      title: const Text(
+                                                                                        "At least one item needs to be unblocked!",
+                                                                                      ),
+                                                                                    ),
+                                                                              );
+                                                                              return false;
+                                                                            } else if (!r) {
+                                                                              currFilter
+                                                                                  .blockedSpecials
+                                                                                  .add(
+                                                                                    item,
+                                                                                  );
+                                                                            } else {
+                                                                              currFilter
+                                                                                  .blockedSpecials
+                                                                                  .remove(
+                                                                                    item,
+                                                                                  );
+                                                                            }
+                                                                            return true;
+                                                                          },
+                                                                          child: Row(
+                                                                            spacing: 8,
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment
+                                                                                    .center,
+                                                                            children: <
+                                                                              Widget
+                                                                            >[
+                                                                              Image.asset(
+                                                                                item.assetPath,
+                                                                                width: 52,
+                                                                              ),
+                                                                              Text(
+                                                                                item.canonicalName,
+                                                                                style: const TextStyle(
+                                                                                  fontSize:
+                                                                                      20,
+                                                                                  fontFamily:
+                                                                                      "Shared Tech",
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                ),
+                                              );
+                                            },
                                             child: const Text("Filter Special Weapons"),
                                           ),
                                           FloatingActionButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute<Widget>(
+                                                  builder:
+                                                      (BuildContext context) => Scaffold(
+                                                        appBar: AppBar(
+                                                          title: const Text(
+                                                            "Filter Tools",
+                                                          ),
+                                                          actions: <Widget>[
+                                                            FilledButton.icon(
+                                                              onPressed: () {
+                                                                filter = currFilter;
+                                                                Navigator.pop(context);
+                                                              },
+                                                              icon: const Icon(
+                                                                Icons.input_rounded,
+                                                              ),
+                                                              label: const Text("Apply"),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        body: Padding(
+                                                          padding:
+                                                              const EdgeInsets.symmetric(
+                                                                horizontal: 22,
+                                                              ),
+                                                          child: Column(
+                                                            children: <Widget>[
+                                                              const Text(
+                                                                "Block items from being generated by the generator by unselecting them.",
+                                                                style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight.bold,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 10),
+                                                              SingleChildScrollView(
+                                                                child: Wrap(
+                                                                  spacing: 12,
+                                                                  runSpacing: 12,
+                                                                  runAlignment:
+                                                                      WrapAlignment
+                                                                          .spaceEvenly,
+                                                                  children: List<
+                                                                    Widget
+                                                                  >.generate(
+                                                                    Preset
+                                                                        .vanilla
+                                                                        .tools
+                                                                        .length,
+                                                                    (int i) {
+                                                                      final ToolItem
+                                                                      item =
+                                                                          Preset
+                                                                              .vanilla
+                                                                              .tools[i];
+                                                                      return Tooltip(
+                                                                        message:
+                                                                            item.canonicalName,
+                                                                        child: FilterToggleItemExtended(
+                                                                          toggled:
+                                                                              !currFilter
+                                                                                  .blockedTools
+                                                                                  .contains(
+                                                                                    item,
+                                                                                  ),
+                                                                          consumer: (
+                                                                            bool r,
+                                                                          ) {
+                                                                            if (!r &&
+                                                                                currFilter.blockedTools.length +
+                                                                                        1 ==
+                                                                                    Preset
+                                                                                        .vanilla
+                                                                                        .tools
+                                                                                        .length) {
+                                                                              showDialog(
+                                                                                context:
+                                                                                    context,
+                                                                                builder:
+                                                                                    (
+                                                                                      BuildContext
+                                                                                      context,
+                                                                                    ) => AlertDialog(
+                                                                                      actions: <
+                                                                                        Widget
+                                                                                      >[
+                                                                                        FilledButton(
+                                                                                          onPressed:
+                                                                                              () => Navigator.pop(
+                                                                                                context,
+                                                                                              ),
+                                                                                          child: const Text(
+                                                                                            "Ok",
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                      icon: const Icon(
+                                                                                        Icons.error,
+                                                                                      ),
+                                                                                      title: const Text(
+                                                                                        "At least one item needs to be unblocked!",
+                                                                                      ),
+                                                                                    ),
+                                                                              );
+                                                                              return false;
+                                                                            } else if (!r) {
+                                                                              currFilter
+                                                                                  .blockedTools
+                                                                                  .add(
+                                                                                    item,
+                                                                                  );
+                                                                            } else {
+                                                                              currFilter
+                                                                                  .blockedTools
+                                                                                  .remove(
+                                                                                    item,
+                                                                                  );
+                                                                            }
+                                                                            return true;
+                                                                          },
+                                                                          child: Row(
+                                                                            spacing: 8,
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment
+                                                                                    .center,
+                                                                            children: <
+                                                                              Widget
+                                                                            >[
+                                                                              Image.asset(
+                                                                                item.assetPath,
+                                                                                width: 52,
+                                                                              ),
+                                                                              Text(
+                                                                                item.canonicalName,
+                                                                                style: const TextStyle(
+                                                                                  fontSize:
+                                                                                      20,
+                                                                                  fontFamily:
+                                                                                      "Shared Tech",
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                ),
+                                              );
+                                            },
                                             child: const Text("Filter Tools"),
                                           ),
                                           FloatingActionButton(
@@ -297,11 +762,12 @@ class _ContentBodyState extends State<_ContentBody> with AutomaticKeepAliveClien
                                                                                 .melees[i]
                                                                                 .canonicalName,
                                                                         child: FilterToggleItemExtended(
-                                                                          toggled: !currFilter
-                                                                              .blockedMelees
-                                                                              .contains(
-                                                                                item,
-                                                                              ),
+                                                                          toggled:
+                                                                              !currFilter
+                                                                                  .blockedMelees
+                                                                                  .contains(
+                                                                                    item,
+                                                                                  ),
                                                                           consumer: (
                                                                             bool r,
                                                                           ) {
@@ -358,7 +824,7 @@ class _ContentBodyState extends State<_ContentBody> with AutomaticKeepAliveClien
                                                                             return true;
                                                                           },
                                                                           child: Row(
-                                                                            spacing: 4,
+                                                                            spacing: 8,
                                                                             mainAxisAlignment:
                                                                                 MainAxisAlignment
                                                                                     .center,
