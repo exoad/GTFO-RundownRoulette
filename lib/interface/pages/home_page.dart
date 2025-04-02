@@ -2,7 +2,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:gtfo_rundown_roulette/interface/laf.dart';
+import 'package:gtfo_rundown_roulette/interface/provider/laf.dart';
 import 'package:gtfo_rundown_roulette/public.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';

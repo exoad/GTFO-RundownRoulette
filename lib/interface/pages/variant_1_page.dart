@@ -2,10 +2,10 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:gtfo_rundown_roulette/interface/current_run.dart';
+import 'package:gtfo_rundown_roulette/interface/provider/current_run.dart';
 import 'package:gtfo_rundown_roulette/shared/shared.dart';
-import 'package:gtfo_rundown_roulette/widgets/diagonal_trace.dart';
-import 'package:gtfo_rundown_roulette/widgets/player_card.dart';
+import 'package:gtfo_rundown_roulette/interface/widgets/diagonal_trace.dart';
+import 'package:gtfo_rundown_roulette/interface/widgets/player_card.dart';
 import 'package:provider/provider.dart';
 
 class Variant1RootScaffold extends StatelessWidget {

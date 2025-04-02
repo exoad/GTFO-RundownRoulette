@@ -2,7 +2,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gtfo_rundown_roulette/shared/shared.dart';
-import 'package:gtfo_rundown_roulette/widgets/clipbox.dart';
+import 'package:gtfo_rundown_roulette/interface/widgets/clipbox.dart';
 
 class NumberGeneratorPage extends StatelessWidget {
   const NumberGeneratorPage({super.key});
