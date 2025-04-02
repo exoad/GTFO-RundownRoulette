@@ -5,6 +5,14 @@ A randomizer to make your vanilla GTFO experience more fun!
 > [!WARNING]
 > A lot of the code here is dreamt up by at like 4-6am so it might not be the best :)
 
+## Usage
+
+You can either use it right in your browser here: https://exoad.github.io/GTFO-RundownRoulette/
+
+Or
+
+Download it as a Windows program here: https://github.com/exoad/GTFO-RundownRoulette/releases
+
 ## Modes
 
 > You can either download it for Windows or use it right in your web browser.
