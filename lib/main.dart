@@ -5,6 +5,7 @@ import 'package:gtfo_rundown_roulette/interface/provider/laf.dart';
 import 'package:gtfo_rundown_roulette/interface/root.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:toastification/toastification.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,11 +36,13 @@ class MainApp extends StatelessWidget {
             ),
             initial: AdaptiveThemeMode.dark,
             builder:
-                (ThemeData data, ThemeData darkTheme) => MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  theme: data,
-                  darkTheme: darkTheme,
-                  home: const Manager(),
+                (ThemeData data, ThemeData darkTheme) => ToastificationWrapper(
+                  child: MaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    theme: data,
+                    darkTheme: darkTheme,
+                    home: const Manager(),
+                  ),
                 ),
           ),
     );

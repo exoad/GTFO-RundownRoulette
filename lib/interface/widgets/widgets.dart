@@ -2,7 +2,35 @@
 
 import 'dart:math' as math;
 
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:gtfo_rundown_roulette/interface/widgets/diagonal_trace.dart';
+
+class DisableableWidget extends StatelessWidget {
+  final bool disabled;
+  final Widget child;
+
+  const DisableableWidget({super.key, required this.disabled, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return disabled
+        ? CustomPaint(
+          foregroundPainter: const DiagonalTracePainter(),
+          child: ColorFiltered(
+            colorFilter: const ColorFilter.matrix(<double>[
+              // values from wikipedia
+              0.2126, 0.7152, 0.0722, 0, 0, //
+              0.2126, 0.7152, 0.0722, 0, 0, //
+              0.2126, 0.7152, 0.0722, 0, 0, //
+              0, 0, 0, 1, 0, //
+            ]),
+            child: AbsorbPointer(child: child),
+          ),
+        )
+        : child;
+  }
+}
 
 class SliverGridDelegateAll extends SliverGridDelegate {
   const SliverGridDelegateAll({
