@@ -50,7 +50,12 @@ class _ManagerState extends State<Manager> {
           ),
           const VerticalDivider(width: 1, thickness: 1),
           Expanded(
-            child: <Widget>[const HomePage(), const Variant1RootScaffold(), const NumberGeneratorPage()][_selected],
+            child:
+                <Widget>[
+                  const HomePage(),
+                  const Variant1RootScaffold(),
+                  const NumberGeneratorPage(),
+                ][_selected],
           ),
         ],
       ),

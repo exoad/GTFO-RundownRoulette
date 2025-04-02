@@ -26,8 +26,7 @@ class _GeneratorWidget extends StatefulWidget {
   State<_GeneratorWidget> createState() => _GeneratorWidgetState();
 }
 
-class _GeneratorWidgetState extends State<_GeneratorWidget>
-    with AutomaticKeepAliveClientMixin {
+class _GeneratorWidgetState extends State<_GeneratorWidget> with AutomaticKeepAliveClientMixin {
   int _selected;
   int _max = 10;
   int _min = 0;
@@ -84,9 +83,7 @@ class _GeneratorWidgetState extends State<_GeneratorWidget>
                   child: TextField(
                     controller: _minController,
                     keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
+                    inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
                     decoration: const InputDecoration(
                       label: Text("Min"),
                       border: OutlineInputBorder(),
@@ -101,9 +98,7 @@ class _GeneratorWidgetState extends State<_GeneratorWidget>
                 Expanded(
                   child: TextField(
                     keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
+                    inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
                     controller: _maxController,
                     onChanged: (String value) {
                       if (value.isNotEmpty) {
@@ -124,9 +119,7 @@ class _GeneratorWidgetState extends State<_GeneratorWidget>
                 const Spacer(),
                 ElevatedButton.icon(
                   onPressed:
-                      () => setState(
-                        () => _selected = rnd.nextInt((_max - _min).abs()) + _min,
-                      ),
+                      () => setState(() => _selected = rnd.nextInt((_max - _min).abs()) + _min),
                   label: const Text("Roll"),
                   icon: const Icon(Icons.refresh),
                 ),

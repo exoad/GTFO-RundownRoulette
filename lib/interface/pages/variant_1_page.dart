@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gtfo_rundown_roulette/interface/provider/current_run.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/core/normal_box.dart';
+import 'package:gtfo_rundown_roulette/interface/widgets/loadout_item_card.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/widgets.dart';
 import 'package:gtfo_rundown_roulette/public.dart';
 import 'package:gtfo_rundown_roulette/shared/shared.dart';
@@ -65,10 +66,7 @@ class _ContentBodyState extends State<_ContentBody>
                 child: ExpansionTile(
                   visualDensity: VisualDensity.comfortable,
                   maintainState: true,
-                  title: Text(
-                    "Rules & Description",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  title: Text("Rules & Description", style: TextStyle(fontWeight: FontWeight.bold)),
                   controlAffinity: ListTileControlAffinity.leading,
                   subtitle: Text("View rules if you want to."),
                   children: <Widget>[
@@ -167,17 +165,12 @@ class _ContentBodyState extends State<_ContentBody>
                               onPressed: () {
                                 setState(() => rerolling = true);
                                 int times =
-                                    rnd.nextBool()
-                                        ? 12 + rnd.nextInt(3) + 1
-                                        : 12 - rnd.nextInt(3);
+                                    rnd.nextBool() ? 12 + rnd.nextInt(3) + 1 : 12 - rnd.nextInt(3);
                                 toastification.showCustom(
                                   autoCloseDuration: const Duration(milliseconds: 2500),
                                   animationDuration: Duration.zero,
                                   alignment: Alignment.bottomRight,
-                                  builder: (
-                                    BuildContext context,
-                                    ToastificationItem holder,
-                                  ) {
+                                  builder: (BuildContext context, ToastificationItem holder) {
                                     return UINormalBox(
                                       foregroundColor: PublicTheme.dangerRed,
                                       child: Row(
@@ -210,23 +203,16 @@ class _ContentBodyState extends State<_ContentBody>
                                 ).then((_) {
                                   if (context.mounted) {
                                     toastification.showCustom(
-                                      autoCloseDuration: const Duration(
-                                        milliseconds: 3500,
-                                      ),
+                                      autoCloseDuration: const Duration(milliseconds: 3500),
                                       animationDuration: Duration.zero,
                                       alignment: Alignment.bottomRight,
-                                      builder: (
-                                        BuildContext context,
-                                        ToastificationItem holder,
-                                      ) {
+                                      builder: (BuildContext context, ToastificationItem holder) {
                                         return const UINormalBox(
                                           foregroundColor: PublicTheme.highlightOrange,
                                           child: Row(
                                             spacing: 6,
                                             children: <Widget>[
-                                              Icon(
-                                                CommunityMaterialIcons.exclamation_thick,
-                                              ),
+                                              Icon(CommunityMaterialIcons.exclamation_thick),
                                               Text("Reroll done."),
                                             ],
                                           ),
@@ -272,8 +258,7 @@ class _ContentBodyState extends State<_ContentBody>
                                         content: IntrinsicWidth(
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.stretch,
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
                                             spacing: 6,
                                             children: <Widget>[
                                               FloatingActionButton(
@@ -281,15 +266,11 @@ class _ContentBodyState extends State<_ContentBody>
                                                     () async => await showDialog(
                                                       context: context,
                                                       builder:
-                                                          (
-                                                            BuildContext context,
-                                                          ) => AlertDialog(
+                                                          (BuildContext context) => AlertDialog(
                                                             actions: <Widget>[
                                                               FilledButton(
                                                                 onPressed:
-                                                                    () => Navigator.pop(
-                                                                      context,
-                                                                    ),
+                                                                    () => Navigator.pop(context),
                                                                 child: const Text("Ok"),
                                                               ),
                                                             ],
@@ -297,8 +278,7 @@ class _ContentBodyState extends State<_ContentBody>
                                                               "Still a work in progress! Check back later :)",
                                                               style: TextStyle(
                                                                 fontSize: 22,
-                                                                fontWeight:
-                                                                    FontWeight.bold,
+                                                                fontWeight: FontWeight.bold,
                                                               ),
                                                             ),
                                                           ),
@@ -311,54 +291,41 @@ class _ContentBodyState extends State<_ContentBody>
                                                     context,
                                                     MaterialPageRoute<Widget>(
                                                       builder:
-                                                          (
-                                                            BuildContext context,
-                                                          ) => Scaffold(
+                                                          (BuildContext context) => Scaffold(
                                                             appBar: AppBar(
-                                                              title: const Text(
-                                                                "Filter Tools",
-                                                              ),
+                                                              title: const Text("Filter Tools"),
                                                               actions: <Widget>[
                                                                 FilledButton.icon(
                                                                   onPressed: () {
                                                                     filter = currFilter;
-                                                                    Navigator.pop(
-                                                                      context,
-                                                                    );
+                                                                    Navigator.pop(context);
                                                                   },
                                                                   icon: const Icon(
                                                                     Icons.input_rounded,
                                                                   ),
-                                                                  label: const Text(
-                                                                    "Apply",
-                                                                  ),
+                                                                  label: const Text("Apply"),
                                                                 ),
                                                               ],
                                                             ),
                                                             body: Padding(
-                                                              padding:
-                                                                  const EdgeInsets.symmetric(
-                                                                    horizontal: 22,
-                                                                  ),
+                                                              padding: const EdgeInsets.symmetric(
+                                                                horizontal: 22,
+                                                              ),
                                                               child: Column(
                                                                 children: <Widget>[
                                                                   const Text(
                                                                     "Block items from being generated by the generator by unselecting them.",
                                                                     style: TextStyle(
-                                                                      fontWeight:
-                                                                          FontWeight.bold,
+                                                                      fontWeight: FontWeight.bold,
                                                                     ),
                                                                   ),
-                                                                  const SizedBox(
-                                                                    height: 10,
-                                                                  ),
+                                                                  const SizedBox(height: 10),
                                                                   SingleChildScrollView(
                                                                     child: Wrap(
                                                                       spacing: 12,
                                                                       runSpacing: 12,
                                                                       runAlignment:
-                                                                          WrapAlignment
-                                                                              .spaceEvenly,
+                                                                          WrapAlignment.spaceEvenly,
                                                                       children: List<
                                                                         Widget
                                                                       >.generate(
@@ -381,13 +348,16 @@ class _ContentBodyState extends State<_ContentBody>
                                                                                       .contains(
                                                                                         item,
                                                                                       ),
-                                                                              consumer: (
-                                                                                bool r,
-                                                                              ) {
+                                                                              consumer: (bool r) {
                                                                                 if (!r &&
-                                                                                    currFilter.blockedPrimaries.length +
+                                                                                    currFilter
+                                                                                                .blockedPrimaries
+                                                                                                .length +
                                                                                             1 ==
-                                                                                        Preset.vanilla.primaries.length) {
+                                                                                        Preset
+                                                                                            .vanilla
+                                                                                            .primaries
+                                                                                            .length) {
                                                                                   showDialog(
                                                                                     context:
                                                                                         context,
@@ -410,7 +380,8 @@ class _ContentBodyState extends State<_ContentBody>
                                                                                             ),
                                                                                           ],
                                                                                           icon: const Icon(
-                                                                                            Icons.error,
+                                                                                            Icons
+                                                                                                .error,
                                                                                           ),
                                                                                           title: const Text(
                                                                                             "At least one item needs to be unblocked!",
@@ -421,43 +392,15 @@ class _ContentBodyState extends State<_ContentBody>
                                                                                 } else if (!r) {
                                                                                   currFilter
                                                                                       .blockedPrimaries
-                                                                                      .add(
-                                                                                        item,
-                                                                                      );
+                                                                                      .add(item);
                                                                                 } else {
                                                                                   currFilter
                                                                                       .blockedPrimaries
-                                                                                      .remove(
-                                                                                        item,
-                                                                                      );
+                                                                                      .remove(item);
                                                                                 }
                                                                                 return true;
                                                                               },
-                                                                              child: Row(
-                                                                                spacing:
-                                                                                    8,
-                                                                                mainAxisAlignment:
-                                                                                    MainAxisAlignment
-                                                                                        .center,
-                                                                                children: <
-                                                                                  Widget
-                                                                                >[
-                                                                                  Image.asset(
-                                                                                    item.assetPath,
-                                                                                    width:
-                                                                                        52,
-                                                                                  ),
-                                                                                  Text(
-                                                                                    item.canonicalName,
-                                                                                    style: const TextStyle(
-                                                                                      fontSize:
-                                                                                          20,
-                                                                                      fontFamily:
-                                                                                          "Shared Tech",
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
+                                                                              item: item,
                                                                             ),
                                                                           );
                                                                         },
@@ -471,9 +414,7 @@ class _ContentBodyState extends State<_ContentBody>
                                                     ),
                                                   );
                                                 },
-                                                child: const Text(
-                                                  "Filter Primary Weapons",
-                                                ),
+                                                child: const Text("Filter Primary Weapons"),
                                               ),
                                               FloatingActionButton(
                                                 onPressed: () {
@@ -481,9 +422,7 @@ class _ContentBodyState extends State<_ContentBody>
                                                     context,
                                                     MaterialPageRoute<Widget>(
                                                       builder:
-                                                          (
-                                                            BuildContext context,
-                                                          ) => Scaffold(
+                                                          (BuildContext context) => Scaffold(
                                                             appBar: AppBar(
                                                               title: const Text(
                                                                 "Filter Special Weapons",
@@ -492,43 +431,34 @@ class _ContentBodyState extends State<_ContentBody>
                                                                 FilledButton.icon(
                                                                   onPressed: () {
                                                                     filter = currFilter;
-                                                                    Navigator.pop(
-                                                                      context,
-                                                                    );
+                                                                    Navigator.pop(context);
                                                                   },
                                                                   icon: const Icon(
                                                                     Icons.input_rounded,
                                                                   ),
-                                                                  label: const Text(
-                                                                    "Apply",
-                                                                  ),
+                                                                  label: const Text("Apply"),
                                                                 ),
                                                               ],
                                                             ),
                                                             body: Padding(
-                                                              padding:
-                                                                  const EdgeInsets.symmetric(
-                                                                    horizontal: 22,
-                                                                  ),
+                                                              padding: const EdgeInsets.symmetric(
+                                                                horizontal: 22,
+                                                              ),
                                                               child: Column(
                                                                 children: <Widget>[
                                                                   const Text(
                                                                     "Block items from being generated by the generator by unselecting them.",
                                                                     style: TextStyle(
-                                                                      fontWeight:
-                                                                          FontWeight.bold,
+                                                                      fontWeight: FontWeight.bold,
                                                                     ),
                                                                   ),
-                                                                  const SizedBox(
-                                                                    height: 10,
-                                                                  ),
+                                                                  const SizedBox(height: 10),
                                                                   SingleChildScrollView(
                                                                     child: Wrap(
                                                                       spacing: 12,
                                                                       runSpacing: 12,
                                                                       runAlignment:
-                                                                          WrapAlignment
-                                                                              .spaceEvenly,
+                                                                          WrapAlignment.spaceEvenly,
                                                                       children: List<
                                                                         Widget
                                                                       >.generate(
@@ -551,13 +481,16 @@ class _ContentBodyState extends State<_ContentBody>
                                                                                       .contains(
                                                                                         item,
                                                                                       ),
-                                                                              consumer: (
-                                                                                bool r,
-                                                                              ) {
+                                                                              consumer: (bool r) {
                                                                                 if (!r &&
-                                                                                    currFilter.blockedSpecials.length +
+                                                                                    currFilter
+                                                                                                .blockedSpecials
+                                                                                                .length +
                                                                                             1 ==
-                                                                                        Preset.vanilla.specials.length) {
+                                                                                        Preset
+                                                                                            .vanilla
+                                                                                            .specials
+                                                                                            .length) {
                                                                                   showDialog(
                                                                                     context:
                                                                                         context,
@@ -580,7 +513,8 @@ class _ContentBodyState extends State<_ContentBody>
                                                                                             ),
                                                                                           ],
                                                                                           icon: const Icon(
-                                                                                            Icons.error,
+                                                                                            Icons
+                                                                                                .error,
                                                                                           ),
                                                                                           title: const Text(
                                                                                             "At least one item needs to be unblocked!",
@@ -591,43 +525,15 @@ class _ContentBodyState extends State<_ContentBody>
                                                                                 } else if (!r) {
                                                                                   currFilter
                                                                                       .blockedSpecials
-                                                                                      .add(
-                                                                                        item,
-                                                                                      );
+                                                                                      .add(item);
                                                                                 } else {
                                                                                   currFilter
                                                                                       .blockedSpecials
-                                                                                      .remove(
-                                                                                        item,
-                                                                                      );
+                                                                                      .remove(item);
                                                                                 }
                                                                                 return true;
                                                                               },
-                                                                              child: Row(
-                                                                                spacing:
-                                                                                    8,
-                                                                                mainAxisAlignment:
-                                                                                    MainAxisAlignment
-                                                                                        .center,
-                                                                                children: <
-                                                                                  Widget
-                                                                                >[
-                                                                                  Image.asset(
-                                                                                    item.assetPath,
-                                                                                    width:
-                                                                                        52,
-                                                                                  ),
-                                                                                  Text(
-                                                                                    item.canonicalName,
-                                                                                    style: const TextStyle(
-                                                                                      fontSize:
-                                                                                          20,
-                                                                                      fontFamily:
-                                                                                          "Shared Tech",
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
+                                                                              item: item,
                                                                             ),
                                                                           );
                                                                         },
@@ -641,9 +547,7 @@ class _ContentBodyState extends State<_ContentBody>
                                                     ),
                                                   );
                                                 },
-                                                child: const Text(
-                                                  "Filter Special Weapons",
-                                                ),
+                                                child: const Text("Filter Special Weapons"),
                                               ),
                                               FloatingActionButton(
                                                 onPressed: () {
@@ -651,158 +555,111 @@ class _ContentBodyState extends State<_ContentBody>
                                                     context,
                                                     MaterialPageRoute<Widget>(
                                                       builder:
-                                                          (
-                                                            BuildContext context,
-                                                          ) => Scaffold(
+                                                          (BuildContext context) => Scaffold(
                                                             appBar: AppBar(
-                                                              title: const Text(
-                                                                "Filter Tools",
-                                                              ),
+                                                              title: const Text("Filter Tools"),
                                                               actions: <Widget>[
                                                                 FilledButton.icon(
                                                                   onPressed: () {
                                                                     filter = currFilter;
-                                                                    Navigator.pop(
-                                                                      context,
-                                                                    );
+                                                                    Navigator.pop(context);
                                                                   },
                                                                   icon: const Icon(
                                                                     Icons.input_rounded,
                                                                   ),
-                                                                  label: const Text(
-                                                                    "Apply",
-                                                                  ),
+                                                                  label: const Text("Apply"),
                                                                 ),
                                                               ],
                                                             ),
                                                             body: Padding(
-                                                              padding:
-                                                                  const EdgeInsets.symmetric(
-                                                                    horizontal: 22,
-                                                                  ),
+                                                              padding: const EdgeInsets.symmetric(
+                                                                horizontal: 22,
+                                                              ),
                                                               child: Column(
                                                                 children: <Widget>[
                                                                   const Text(
                                                                     "Block items from being generated by the generator by unselecting them.",
                                                                     style: TextStyle(
-                                                                      fontWeight:
-                                                                          FontWeight.bold,
+                                                                      fontWeight: FontWeight.bold,
                                                                     ),
                                                                   ),
-                                                                  const SizedBox(
-                                                                    height: 10,
-                                                                  ),
+                                                                  const SizedBox(height: 10),
                                                                   SingleChildScrollView(
                                                                     child: Wrap(
                                                                       spacing: 12,
                                                                       runSpacing: 12,
                                                                       runAlignment:
-                                                                          WrapAlignment
-                                                                              .spaceEvenly,
+                                                                          WrapAlignment.spaceEvenly,
                                                                       children: List<
                                                                         Widget
-                                                                      >.generate(
-                                                                        Preset
-                                                                            .vanilla
-                                                                            .tools
-                                                                            .length,
-                                                                        (int i) {
-                                                                          final ToolItem
-                                                                          item =
-                                                                              Preset
-                                                                                  .vanilla
-                                                                                  .tools[i];
-                                                                          return Tooltip(
-                                                                            message:
-                                                                                item.canonicalName,
-                                                                            child: FilterToggleItemExtended(
-                                                                              toggled:
-                                                                                  !currFilter
-                                                                                      .blockedTools
-                                                                                      .contains(
-                                                                                        item,
-                                                                                      ),
-                                                                              consumer: (
-                                                                                bool r,
-                                                                              ) {
-                                                                                if (!r &&
-                                                                                    currFilter.blockedTools.length +
-                                                                                            1 ==
-                                                                                        Preset.vanilla.tools.length) {
-                                                                                  showDialog(
-                                                                                    context:
+                                                                      >.generate(Preset.vanilla.tools.length, (
+                                                                        int i,
+                                                                      ) {
+                                                                        final ToolItem item =
+                                                                            Preset.vanilla.tools[i];
+                                                                        return Tooltip(
+                                                                          message:
+                                                                              item.canonicalName,
+                                                                          child: FilterToggleItemExtended(
+                                                                            toggled:
+                                                                                !currFilter
+                                                                                    .blockedTools
+                                                                                    .contains(item),
+                                                                            consumer: (bool r) {
+                                                                              if (!r &&
+                                                                                  currFilter
+                                                                                              .blockedTools
+                                                                                              .length +
+                                                                                          1 ==
+                                                                                      Preset
+                                                                                          .vanilla
+                                                                                          .tools
+                                                                                          .length) {
+                                                                                showDialog(
+                                                                                  context: context,
+                                                                                  builder:
+                                                                                      (
+                                                                                        BuildContext
                                                                                         context,
-                                                                                    builder:
-                                                                                        (
-                                                                                          BuildContext
-                                                                                          context,
-                                                                                        ) => AlertDialog(
-                                                                                          actions: <
-                                                                                            Widget
-                                                                                          >[
-                                                                                            FilledButton(
-                                                                                              onPressed:
-                                                                                                  () => Navigator.pop(
-                                                                                                    context,
-                                                                                                  ),
-                                                                                              child: const Text(
-                                                                                                "Ok",
-                                                                                              ),
+                                                                                      ) => AlertDialog(
+                                                                                        actions: <
+                                                                                          Widget
+                                                                                        >[
+                                                                                          FilledButton(
+                                                                                            onPressed:
+                                                                                                () => Navigator.pop(
+                                                                                                  context,
+                                                                                                ),
+                                                                                            child: const Text(
+                                                                                              "Ok",
                                                                                             ),
-                                                                                          ],
-                                                                                          icon: const Icon(
-                                                                                            Icons.error,
                                                                                           ),
-                                                                                          title: const Text(
-                                                                                            "At least one item needs to be unblocked!",
-                                                                                          ),
+                                                                                        ],
+                                                                                        icon: const Icon(
+                                                                                          Icons
+                                                                                              .error,
                                                                                         ),
-                                                                                  );
-                                                                                  return false;
-                                                                                } else if (!r) {
-                                                                                  currFilter
-                                                                                      .blockedTools
-                                                                                      .add(
-                                                                                        item,
-                                                                                      );
-                                                                                } else {
-                                                                                  currFilter
-                                                                                      .blockedTools
-                                                                                      .remove(
-                                                                                        item,
-                                                                                      );
-                                                                                }
-                                                                                return true;
-                                                                              },
-                                                                              child: Row(
-                                                                                spacing:
-                                                                                    8,
-                                                                                mainAxisAlignment:
-                                                                                    MainAxisAlignment
-                                                                                        .center,
-                                                                                children: <
-                                                                                  Widget
-                                                                                >[
-                                                                                  Image.asset(
-                                                                                    item.assetPath,
-                                                                                    width:
-                                                                                        52,
-                                                                                  ),
-                                                                                  Text(
-                                                                                    item.canonicalName,
-                                                                                    style: const TextStyle(
-                                                                                      fontSize:
-                                                                                          20,
-                                                                                      fontFamily:
-                                                                                          "Shared Tech",
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          );
-                                                                        },
-                                                                      ),
+                                                                                        title: const Text(
+                                                                                          "At least one item needs to be unblocked!",
+                                                                                        ),
+                                                                                      ),
+                                                                                );
+                                                                                return false;
+                                                                              } else if (!r) {
+                                                                                currFilter
+                                                                                    .blockedTools
+                                                                                    .add(item);
+                                                                              } else {
+                                                                                currFilter
+                                                                                    .blockedTools
+                                                                                    .remove(item);
+                                                                              }
+                                                                              return true;
+                                                                            },
+                                                                            item: item,
+                                                                          ),
+                                                                        );
+                                                                      }),
                                                                     ),
                                                                   ),
                                                                 ],
@@ -820,9 +677,7 @@ class _ContentBodyState extends State<_ContentBody>
                                                     context,
                                                     MaterialPageRoute<Widget>(
                                                       builder:
-                                                          (
-                                                            BuildContext context,
-                                                          ) => Scaffold(
+                                                          (BuildContext context) => Scaffold(
                                                             appBar: AppBar(
                                                               title: const Text(
                                                                 "Filter Melee Weapons",
@@ -831,43 +686,34 @@ class _ContentBodyState extends State<_ContentBody>
                                                                 FilledButton.icon(
                                                                   onPressed: () {
                                                                     filter = currFilter;
-                                                                    Navigator.pop(
-                                                                      context,
-                                                                    );
+                                                                    Navigator.pop(context);
                                                                   },
                                                                   icon: const Icon(
                                                                     Icons.input_rounded,
                                                                   ),
-                                                                  label: const Text(
-                                                                    "Apply",
-                                                                  ),
+                                                                  label: const Text("Apply"),
                                                                 ),
                                                               ],
                                                             ),
                                                             body: Padding(
-                                                              padding:
-                                                                  const EdgeInsets.symmetric(
-                                                                    horizontal: 22,
-                                                                  ),
+                                                              padding: const EdgeInsets.symmetric(
+                                                                horizontal: 22,
+                                                              ),
                                                               child: Column(
                                                                 children: <Widget>[
                                                                   const Text(
                                                                     "Block items from being generated by the generator by unselecting them.",
                                                                     style: TextStyle(
-                                                                      fontWeight:
-                                                                          FontWeight.bold,
+                                                                      fontWeight: FontWeight.bold,
                                                                     ),
                                                                   ),
-                                                                  const SizedBox(
-                                                                    height: 10,
-                                                                  ),
+                                                                  const SizedBox(height: 10),
                                                                   SingleChildScrollView(
                                                                     child: Wrap(
                                                                       spacing: 12,
                                                                       runSpacing: 12,
                                                                       runAlignment:
-                                                                          WrapAlignment
-                                                                              .spaceEvenly,
+                                                                          WrapAlignment.spaceEvenly,
                                                                       children: List<
                                                                         Widget
                                                                       >.generate(
@@ -876,8 +722,7 @@ class _ContentBodyState extends State<_ContentBody>
                                                                             .melees
                                                                             .length,
                                                                         (int i) {
-                                                                          final MeleeWeapon
-                                                                          item =
+                                                                          final MeleeWeapon item =
                                                                               Preset
                                                                                   .vanilla
                                                                                   .melees[i];
@@ -894,13 +739,16 @@ class _ContentBodyState extends State<_ContentBody>
                                                                                       .contains(
                                                                                         item,
                                                                                       ),
-                                                                              consumer: (
-                                                                                bool r,
-                                                                              ) {
+                                                                              consumer: (bool r) {
                                                                                 if (!r &&
-                                                                                    currFilter.blockedMelees.length +
+                                                                                    currFilter
+                                                                                                .blockedMelees
+                                                                                                .length +
                                                                                             1 ==
-                                                                                        Preset.vanilla.melees.length) {
+                                                                                        Preset
+                                                                                            .vanilla
+                                                                                            .melees
+                                                                                            .length) {
                                                                                   showDialog(
                                                                                     context:
                                                                                         context,
@@ -923,7 +771,8 @@ class _ContentBodyState extends State<_ContentBody>
                                                                                             ),
                                                                                           ],
                                                                                           icon: const Icon(
-                                                                                            Icons.error,
+                                                                                            Icons
+                                                                                                .error,
                                                                                           ),
                                                                                           title: const Text(
                                                                                             "At least one item needs to be unblocked!",
@@ -934,43 +783,15 @@ class _ContentBodyState extends State<_ContentBody>
                                                                                 } else if (!r) {
                                                                                   currFilter
                                                                                       .blockedMelees
-                                                                                      .add(
-                                                                                        item,
-                                                                                      );
+                                                                                      .add(item);
                                                                                 } else {
                                                                                   currFilter
                                                                                       .blockedMelees
-                                                                                      .remove(
-                                                                                        item,
-                                                                                      );
+                                                                                      .remove(item);
                                                                                 }
                                                                                 return true;
                                                                               },
-                                                                              child: Row(
-                                                                                spacing:
-                                                                                    8,
-                                                                                mainAxisAlignment:
-                                                                                    MainAxisAlignment
-                                                                                        .center,
-                                                                                children: <
-                                                                                  Widget
-                                                                                >[
-                                                                                  Image.asset(
-                                                                                    item.assetPath,
-                                                                                    width:
-                                                                                        52,
-                                                                                  ),
-                                                                                  Text(
-                                                                                    item.canonicalName,
-                                                                                    style: const TextStyle(
-                                                                                      fontSize:
-                                                                                          20,
-                                                                                      fontFamily:
-                                                                                          "Shared Tech",
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
+                                                                              item: item,
                                                                             ),
                                                                           );
                                                                         },
@@ -992,54 +813,50 @@ class _ContentBodyState extends State<_ContentBody>
                                                     context,
                                                     MaterialPageRoute<Widget>(
                                                       builder:
-                                                          (
-                                                            BuildContext context,
-                                                          ) => Scaffold(
+                                                          (BuildContext context) => Scaffold(
                                                             appBar: AppBar(
-                                                              title: const Text(
-                                                                "Filter Boosters",
-                                                              ),
+                                                              title: const Text("Filter Boosters"),
                                                             ),
                                                             body: Padding(
-                                                              padding:
-                                                                  const EdgeInsets.symmetric(
-                                                                    horizontal: 22,
-                                                                  ),
+                                                              padding: const EdgeInsets.symmetric(
+                                                                horizontal: 22,
+                                                              ),
                                                               child: Column(
                                                                 crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
+                                                                    CrossAxisAlignment.start,
                                                                 spacing: 8,
                                                                 children: <Widget>[
                                                                   const Text(
                                                                     "Unselect the boosters you want to block from being generated.",
                                                                   ),
-                                                                  const SizedBox(
-                                                                    height: 8,
-                                                                  ),
+                                                                  const SizedBox(height: 8),
                                                                   Row(
                                                                     spacing: 8,
                                                                     children: <Widget>[
                                                                       Tooltip(
-                                                                        message:
-                                                                            "Muted Boosters",
+                                                                        message: "Muted Boosters",
                                                                         child: FilterToggleItem(
                                                                           toggled:
                                                                               !currFilter
                                                                                   .blockedBoosters
                                                                                   .contains(
-                                                                                    Boosters
-                                                                                        .MUTED,
+                                                                                    Boosters.MUTED,
                                                                                   ),
                                                                           consumer:
                                                                               (bool r) =>
                                                                                   !r
-                                                                                      ? currFilter.blockedBoosters.add(
-                                                                                        Boosters.MUTED,
-                                                                                      )
-                                                                                      : currFilter.blockedBoosters.remove(
-                                                                                        Boosters.MUTED,
-                                                                                      ),
+                                                                                      ? currFilter
+                                                                                          .blockedBoosters
+                                                                                          .add(
+                                                                                            Boosters
+                                                                                                .MUTED,
+                                                                                          )
+                                                                                      : currFilter
+                                                                                          .blockedBoosters
+                                                                                          .remove(
+                                                                                            Boosters
+                                                                                                .MUTED,
+                                                                                          ),
                                                                           child: Image.asset(
                                                                             "assets/ingame/muted.png",
                                                                             width: 48,
@@ -1047,25 +864,29 @@ class _ContentBodyState extends State<_ContentBody>
                                                                         ),
                                                                       ),
                                                                       Tooltip(
-                                                                        message:
-                                                                            "Bold Boosters",
+                                                                        message: "Bold Boosters",
                                                                         child: FilterToggleItem(
                                                                           toggled:
                                                                               !currFilter
                                                                                   .blockedBoosters
                                                                                   .contains(
-                                                                                    Boosters
-                                                                                        .BOLD,
+                                                                                    Boosters.BOLD,
                                                                                   ),
                                                                           consumer:
                                                                               (bool r) =>
                                                                                   !r
-                                                                                      ? currFilter.blockedBoosters.add(
-                                                                                        Boosters.BOLD,
-                                                                                      )
-                                                                                      : currFilter.blockedBoosters.remove(
-                                                                                        Boosters.BOLD,
-                                                                                      ),
+                                                                                      ? currFilter
+                                                                                          .blockedBoosters
+                                                                                          .add(
+                                                                                            Boosters
+                                                                                                .BOLD,
+                                                                                          )
+                                                                                      : currFilter
+                                                                                          .blockedBoosters
+                                                                                          .remove(
+                                                                                            Boosters
+                                                                                                .BOLD,
+                                                                                          ),
                                                                           child: Image.asset(
                                                                             "assets/ingame/bold.png",
                                                                             width: 48,
@@ -1086,12 +907,18 @@ class _ContentBodyState extends State<_ContentBody>
                                                                           consumer:
                                                                               (bool r) =>
                                                                                   !r
-                                                                                      ? currFilter.blockedBoosters.add(
-                                                                                        Boosters.AGGRESIVE,
-                                                                                      )
-                                                                                      : currFilter.blockedBoosters.remove(
-                                                                                        Boosters.AGGRESIVE,
-                                                                                      ),
+                                                                                      ? currFilter
+                                                                                          .blockedBoosters
+                                                                                          .add(
+                                                                                            Boosters
+                                                                                                .AGGRESIVE,
+                                                                                          )
+                                                                                      : currFilter
+                                                                                          .blockedBoosters
+                                                                                          .remove(
+                                                                                            Boosters
+                                                                                                .AGGRESIVE,
+                                                                                          ),
                                                                           child: Image.asset(
                                                                             "assets/ingame/aggressive.png",
                                                                             width: 48,
@@ -1100,21 +927,15 @@ class _ContentBodyState extends State<_ContentBody>
                                                                       ),
                                                                     ],
                                                                   ),
-                                                                  const SizedBox(
-                                                                    height: 14,
-                                                                  ),
+                                                                  const SizedBox(height: 14),
                                                                   FilledButton(
                                                                     onPressed: () {
                                                                       debugPrint(
                                                                         "BLOCKED_BOOSTERS = ${currFilter.blockedBoosters.toString()}",
                                                                       );
-                                                                      Navigator.pop(
-                                                                        context,
-                                                                      );
+                                                                      Navigator.pop(context);
                                                                     },
-                                                                    child: const Text(
-                                                                      "OK",
-                                                                    ),
+                                                                    child: const Text("OK"),
                                                                   ),
                                                                 ],
                                                               ),
@@ -1156,17 +977,12 @@ class _ContentBodyState extends State<_ContentBody>
                               onPressed: () {
                                 setState(() => rerolling = true);
                                 int times =
-                                    rnd.nextBool()
-                                        ? 12 + rnd.nextInt(3) + 1
-                                        : 12 - rnd.nextInt(3);
+                                    rnd.nextBool() ? 12 + rnd.nextInt(3) + 1 : 12 - rnd.nextInt(3);
                                 toastification.showCustom(
                                   autoCloseDuration: const Duration(milliseconds: 2500),
                                   animationDuration: Duration.zero,
                                   alignment: Alignment.bottomRight,
-                                  builder: (
-                                    BuildContext context,
-                                    ToastificationItem holder,
-                                  ) {
+                                  builder: (BuildContext context, ToastificationItem holder) {
                                     return UINormalBox(
                                       foregroundColor: PublicTheme.dangerRed,
                                       child: Row(
@@ -1189,10 +1005,7 @@ class _ContentBodyState extends State<_ContentBody>
                                         Preset.vanilla,
                                         true,
                                         false,
-                                        Provider.of<CurrentRun>(
-                                          context,
-                                          listen: false,
-                                        ).run,
+                                        Provider.of<CurrentRun>(context, listen: false).run,
                                       );
                                     } catch (error) {
                                       await showDialog(
@@ -1225,23 +1038,16 @@ class _ContentBodyState extends State<_ContentBody>
                                 ).then((_) {
                                   if (context.mounted) {
                                     toastification.showCustom(
-                                      autoCloseDuration: const Duration(
-                                        milliseconds: 3500,
-                                      ),
+                                      autoCloseDuration: const Duration(milliseconds: 3500),
                                       animationDuration: Duration.zero,
                                       alignment: Alignment.bottomRight,
-                                      builder: (
-                                        BuildContext context,
-                                        ToastificationItem holder,
-                                      ) {
+                                      builder: (BuildContext context, ToastificationItem holder) {
                                         return const UINormalBox(
                                           foregroundColor: PublicTheme.highlightOrange,
                                           child: Row(
                                             spacing: 6,
                                             children: <Widget>[
-                                              Icon(
-                                                CommunityMaterialIcons.exclamation_thick,
-                                              ),
+                                              Icon(CommunityMaterialIcons.exclamation_thick),
                                               Text("Reroll done."),
                                             ],
                                           ),
@@ -1270,10 +1076,7 @@ class _ContentBodyState extends State<_ContentBody>
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      color:
-                          AdaptiveTheme.of(
-                            context,
-                          ).theme.buttonTheme.colorScheme?.onPrimary,
+                      color: AdaptiveTheme.of(context).theme.buttonTheme.colorScheme?.onPrimary,
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                     child:
@@ -1284,19 +1087,12 @@ class _ContentBodyState extends State<_ContentBody>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  Provider.of<CurrentRun>(
-                                    context,
-                                  ).run!.mission.canonicalName,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 22,
-                                  ),
+                                  Provider.of<CurrentRun>(context).run!.mission.canonicalName,
+                                  style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  Provider.of<CurrentRun>(
-                                    context,
-                                  ).run!.rundown.canonicalName,
+                                  Provider.of<CurrentRun>(context).run!.rundown.canonicalName,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16,
@@ -1459,8 +1255,7 @@ class _FilterToggleItemState extends State<FilterToggleItem> {
       foregroundPainter: toggled ? null : const DiagonalTracePainter(),
       child: FloatingActionButton(
         isExtended: true,
-        backgroundColor:
-            toggled ? null : AdaptiveTheme.of(context).theme.colorScheme.shadow,
+        backgroundColor: toggled ? null : AdaptiveTheme.of(context).theme.colorScheme.shadow,
         onPressed: () {
           setState(() => toggled = !toggled);
           widget.consumer(toggled);
@@ -1491,13 +1286,13 @@ class _FilterToggleItemState extends State<FilterToggleItem> {
 class FilterToggleItemExtended extends StatefulWidget {
   final bool toggled;
   final bool Function(bool) consumer;
-  final Widget child;
+  final LoadoutItem item;
 
   const FilterToggleItemExtended({
     super.key,
     this.toggled = true,
     required this.consumer,
-    required this.child,
+    required this.item,
   });
 
   @override
@@ -1515,44 +1310,29 @@ class _FilterToggleItemStateExtended extends State<FilterToggleItemExtended> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.sizeOf(context).width * 0.24,
-      child: CustomPaint(
-        foregroundPainter: toggled ? null : const DiagonalTracePainter(),
-        child: FilledButton(
-          onPressed: () {
-            setState(() => toggled = widget.consumer(!toggled) ? !toggled : toggled);
-          },
-          style: FilledButton.styleFrom(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            foregroundColor:
-                AdaptiveTheme.of(context).theme.colorScheme.onPrimaryContainer,
-            backgroundColor:
-                toggled
-                    ? AdaptiveTheme.of(context).theme.colorScheme.primaryContainer
-                    : AdaptiveTheme.of(context).theme.colorScheme.surfaceContainerLow,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: ColorFiltered(
-              colorFilter:
-                  toggled
-                      ? const ColorFilter.matrix(<double>[
-                        1.0, 0.0, 0.0, 0.0, 0.0, //
-                        0.0, 1.0, 0.0, 0.0, 0.0, //
-                        0.0, 0.0, 1.0, 0.0, 0.0, //
-                        0.0, 0.0, 0.0, 1.0, 0.0, //
-                      ])
-                      : const ColorFilter.matrix(<double>[
-                        // values from wikipedia
-                        0.2126, 0.7152, 0.0722, 0, 0, //
-                        0.2126, 0.7152, 0.0722, 0, 0, //
-                        0.2126, 0.7152, 0.0722, 0, 0, //
-                        0, 0, 0, 1, 0, //
-                      ]),
-              child: widget.child,
-            ),
-          ),
+    return CustomPaint(
+      foregroundPainter: toggled ? null : const DiagonalTracePainter(),
+      child: GestureDetector(
+        onTap: () {
+          setState(() => toggled = widget.consumer(!toggled) ? !toggled : toggled);
+        },
+        child: ColorFiltered(
+          colorFilter:
+              toggled
+                  ? const ColorFilter.matrix(<double>[
+                    1.0, 0.0, 0.0, 0.0, 0.0, //
+                    0.0, 1.0, 0.0, 0.0, 0.0, //
+                    0.0, 0.0, 1.0, 0.0, 0.0, //
+                    0.0, 0.0, 0.0, 1.0, 0.0, //
+                  ])
+                  : const ColorFilter.matrix(<double>[
+                    // values from wikipedia
+                    0.2126 * 0.8, 0.7152 * 0.8, 0.0722 * 0.8, 0, 0, //
+                    0.2126 * 0.8, 0.7152 * 0.8, 0.0722 * 0.8, 0, 0, //
+                    0.2126 * 0.8, 0.7152 * 0.8, 0.0722 * 0.8, 0, 0, //
+                    0, 0, 0, 1, 0, //
+                  ]),
+          child: LoadoutItemCard(item: widget.item),
         ),
       ),
     );

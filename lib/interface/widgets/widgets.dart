@@ -73,10 +73,8 @@ class SliverGridDelegateAll extends SliverGridDelegate {
       0.0,
       constraints.crossAxisExtent - crossAxisSpacing * (crossAxisCount - 1),
     );
-    final double childCrossAxisExtent =
-        crossAxisExtent ?? usableCrossAxisExtent / crossAxisCount;
-    final double childMainAxisExtent =
-        mainAxisExtent ?? childCrossAxisExtent / childAspectRatio;
+    final double childCrossAxisExtent = crossAxisExtent ?? usableCrossAxisExtent / crossAxisCount;
+    final double childMainAxisExtent = mainAxisExtent ?? childCrossAxisExtent / childAspectRatio;
     return SliverGridRegularTileLayout(
       crossAxisCount: crossAxisCount,
       mainAxisStride: childMainAxisExtent + mainAxisSpacing,

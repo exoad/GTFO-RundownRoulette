@@ -16,9 +16,7 @@ class HomePage extends StatelessWidget {
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         child: Padding(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 20) +
-              const EdgeInsets.only(bottom: 80),
+          padding: const EdgeInsets.symmetric(horizontal: 20) + const EdgeInsets.only(bottom: 80),
           child: SizedBox(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -112,8 +110,7 @@ class HomePage extends StatelessWidget {
                         label: const Text("GTFO Discord"),
                         icon: const Icon(Icons.discord),
                         onPressed:
-                            () async =>
-                                await launchUrlString("https://discord.com/invite/gtfo"),
+                            () async => await launchUrlString("https://discord.com/invite/gtfo"),
                       ),
                     ),
                   ],
@@ -123,8 +120,7 @@ class HomePage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: Container(
                     decoration: BoxDecoration(
-                      color:
-                          AdaptiveTheme.of(context).theme.colorScheme.secondaryContainer,
+                      color: AdaptiveTheme.of(context).theme.colorScheme.secondaryContainer,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -160,10 +156,7 @@ class HomePage extends StatelessWidget {
                   child: Divider(),
                 ),
                 const Icon(Icons.settings, size: 32),
-                const Text(
-                  "Settings",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-                ),
+                const Text("Settings", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
                 const SizedBox(height: 16),
                 _SettingsWidget(
                   leading: "Theme Mode",
@@ -191,8 +184,7 @@ class HomePage extends StatelessWidget {
                                 child: BlockPicker(
                                   pickerColor: Provider.of<Laf>(context).seedColor,
                                   onColorChanged: (Color color) {
-                                    Provider.of<Laf>(context, listen: false).seedColor =
-                                        color;
+                                    Provider.of<Laf>(context, listen: false).seedColor = color;
                                     AdaptiveTheme.of(context).setTheme(
                                       light: ThemeData(
                                         useMaterial3: true,

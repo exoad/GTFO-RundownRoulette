@@ -38,24 +38,23 @@ final class Scheduler {
       return;
     }
     int currentDelay = baseDelay;
-    while (times-- > 0) {
+    for (int i = 1; i <= times; i++) {
       await Future<void>.delayed(Duration(milliseconds: currentDelay));
       try {
         function();
       } catch (e) {
         rethrow;
       }
-      currentDelay = currentDelay + delayStep;
+      currentDelay =
+          currentDelay +
+          (delayStep * (1 / (0.2 + exp(1 / (75.0 * (i + 1) * (i + 1))))))
+              .toInt(); // homemade crude smoothing function
     }
   }
 
   /// Runs [function], [times] amount of times with a constant delay specified by
   /// [baseDelay].
-  static Future<void> constantRelay(
-    void Function() function,
-    int times,
-    int baseDelay,
-  ) async {
+  static Future<void> constantRelay(void Function() function, int times, int baseDelay) async {
     if (times <= 0) {
       return;
     }

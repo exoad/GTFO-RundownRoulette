@@ -49,11 +49,8 @@ class Mission with EquatableMixin {
     required this.number,
   }) : sectors = const <Sector>[Sector.main, Sector.secondary, Sector.overload];
 
-  const Mission.secondary({
-    required this.canonicalName,
-    required this.tier,
-    required this.number,
-  }) : sectors = const <Sector>[Sector.main, Sector.secondary];
+  const Mission.secondary({required this.canonicalName, required this.tier, required this.number})
+    : sectors = const <Sector>[Sector.main, Sector.secondary];
 
   bool get hasPrisonerEfficiency => sectors.length == 3;
 
@@ -76,8 +73,7 @@ class Rundown with EquatableMixin {
   final String canonicalName;
   final Map<String, List<Mission>> _missions;
 
-  Rundown(this.canonicalName, Iterable<Mission> missions)
-    : _missions = <String, List<Mission>>{} {
+  Rundown(this.canonicalName, Iterable<Mission> missions) : _missions = <String, List<Mission>>{} {
     for (Mission mission in missions) {
       String tier = mission.tier.toUpperCase();
       if (!_missions.containsKey(tier)) {

@@ -6,12 +6,7 @@ class UINormalBox extends StatelessWidget {
   final Color? foregroundColor;
   final bool thick;
 
-  const UINormalBox({
-    super.key,
-    required this.child,
-    this.foregroundColor,
-    this.thick = false,
-  });
+  const UINormalBox({super.key, required this.child, this.foregroundColor, this.thick = false});
 
   @override
   Widget build(BuildContext context) {
@@ -30,18 +25,9 @@ class UINormalBox extends StatelessWidget {
                 color: foregroundColor ?? PublicTheme.normalWhite,
                 width: thick ? 7 : 5,
               ),
-              bottom: BorderSide(
-                color: foregroundColor ?? PublicTheme.normalWhite,
-                width: 2,
-              ),
-              top: BorderSide(
-                color: foregroundColor ?? PublicTheme.normalWhite,
-                width: 2,
-              ),
-              right: BorderSide(
-                color: foregroundColor ?? PublicTheme.normalWhite,
-                width: 2,
-              ),
+              bottom: BorderSide(color: foregroundColor ?? PublicTheme.normalWhite, width: 2),
+              top: BorderSide(color: foregroundColor ?? PublicTheme.normalWhite, width: 2),
+              right: BorderSide(color: foregroundColor ?? PublicTheme.normalWhite, width: 2),
             ),
             color: PublicTheme.abyssBlack,
           ),

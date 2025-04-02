@@ -27,11 +27,8 @@ sealed class LoadoutItem with EquatableMixin {
   final String canonicalName;
   final String gameName;
 
-  const LoadoutItem({
-    required this.assetPath,
-    required this.canonicalName,
-    String? gameName,
-  }) : gameName = gameName ?? canonicalName;
+  const LoadoutItem({required this.assetPath, required this.canonicalName, String? gameName})
+    : gameName = gameName ?? canonicalName;
 
   @override
   List<Object?> get props => <Object?>[assetPath, canonicalName];
@@ -54,16 +51,13 @@ final class MeleeWeapon extends LoadoutItem {
     MeleeWeapon.bat(),
   ];
 
-  const MeleeWeapon.knife()
-    : this._(assetPath: "assets/ingame/knife.png", canonicalName: "Knife");
+  const MeleeWeapon.knife() : this._(assetPath: "assets/ingame/knife.png", canonicalName: "Knife");
 
   const MeleeWeapon.hammer()
     : this._(assetPath: "assets/ingame/hammer.png", canonicalName: "Sledgehammer");
 
-  const MeleeWeapon.bat()
-    : this._(assetPath: "assets/ingame/bat.png", canonicalName: "Bat");
-  const MeleeWeapon.spear()
-    : this._(assetPath: "assets/ingame/spear.png", canonicalName: "Spear");
+  const MeleeWeapon.bat() : this._(assetPath: "assets/ingame/bat.png", canonicalName: "Bat");
+  const MeleeWeapon.spear() : this._(assetPath: "assets/ingame/spear.png", canonicalName: "Spear");
 }
 
 enum GunFiremode { semi_auto, burst, auto }
@@ -89,11 +83,7 @@ final class Gun extends LoadoutItem with EquatableMixin {
 }
 
 final class ToolItem extends LoadoutItem {
-  const ToolItem({
-    required super.assetPath,
-    required super.canonicalName,
-    super.gameName,
-  });
+  const ToolItem({required super.assetPath, required super.canonicalName, super.gameName});
 }
 
 enum Boosters { MUTED, AGGRESIVE, BOLD }

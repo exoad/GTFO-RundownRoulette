@@ -170,21 +170,14 @@ class Variant1Generator {
               ? PlayerPool(
                 player1: Loadout(
                   melee:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applyMelee(MeleeWeapon.weapons)
-                          .pick(),
-                  tool:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applyTools(preset.tools)
-                          .pick(),
+                      (filter ?? Variant1Filter.unblocked).applyMelee(MeleeWeapon.weapons).pick(),
+                  tool: (filter ?? Variant1Filter.unblocked).applyTools(preset.tools).pick(),
                   primary:
                       (filter ?? Variant1Filter.unblocked)
                           .applyPrimaryGuns(preset.primaries)
                           .pick(),
                   special:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applySpecialGuns(preset.specials)
-                          .pick(),
+                      (filter ?? Variant1Filter.unblocked).applySpecialGuns(preset.specials).pick(),
                   boosters:
                       (filter ?? Variant1Filter.unblocked)
                           .applyBoosters(Boosters.values)
@@ -192,21 +185,14 @@ class Variant1Generator {
                 ),
                 player2: Loadout(
                   melee:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applyMelee(MeleeWeapon.weapons)
-                          .pick(),
-                  tool:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applyTools(preset.tools)
-                          .pick(),
+                      (filter ?? Variant1Filter.unblocked).applyMelee(MeleeWeapon.weapons).pick(),
+                  tool: (filter ?? Variant1Filter.unblocked).applyTools(preset.tools).pick(),
                   primary:
                       (filter ?? Variant1Filter.unblocked)
                           .applyPrimaryGuns(preset.primaries)
                           .pick(),
                   special:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applySpecialGuns(preset.specials)
-                          .pick(),
+                      (filter ?? Variant1Filter.unblocked).applySpecialGuns(preset.specials).pick(),
                   boosters:
                       (filter ?? Variant1Filter.unblocked)
                           .applyBoosters(Boosters.values)
@@ -214,21 +200,14 @@ class Variant1Generator {
                 ),
                 player3: Loadout(
                   melee:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applyMelee(MeleeWeapon.weapons)
-                          .pick(),
-                  tool:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applyTools(preset.tools)
-                          .pick(),
+                      (filter ?? Variant1Filter.unblocked).applyMelee(MeleeWeapon.weapons).pick(),
+                  tool: (filter ?? Variant1Filter.unblocked).applyTools(preset.tools).pick(),
                   primary:
                       (filter ?? Variant1Filter.unblocked)
                           .applyPrimaryGuns(preset.primaries)
                           .pick(),
                   special:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applySpecialGuns(preset.specials)
-                          .pick(),
+                      (filter ?? Variant1Filter.unblocked).applySpecialGuns(preset.specials).pick(),
                   boosters:
                       (filter ?? Variant1Filter.unblocked)
                           .applyBoosters(Boosters.values)
@@ -236,21 +215,14 @@ class Variant1Generator {
                 ),
                 player4: Loadout(
                   melee:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applyMelee(MeleeWeapon.weapons)
-                          .pick(),
-                  tool:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applyTools(preset.tools)
-                          .pick(),
+                      (filter ?? Variant1Filter.unblocked).applyMelee(MeleeWeapon.weapons).pick(),
+                  tool: (filter ?? Variant1Filter.unblocked).applyTools(preset.tools).pick(),
                   primary:
                       (filter ?? Variant1Filter.unblocked)
                           .applyPrimaryGuns(preset.primaries)
                           .pick(),
                   special:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applySpecialGuns(preset.specials)
-                          .pick(),
+                      (filter ?? Variant1Filter.unblocked).applySpecialGuns(preset.specials).pick(),
                   boosters:
                       (filter ?? Variant1Filter.unblocked)
                           .applyBoosters(Boosters.values)
