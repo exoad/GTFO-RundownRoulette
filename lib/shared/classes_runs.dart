@@ -38,19 +38,29 @@ class Mission with EquatableMixin {
   final String canonicalName;
   final String tier;
   final int number;
+  final bool isLore;
   final List<Sector> sectors;
 
-  const Mission({required this.canonicalName, required this.tier, required this.number})
-    : sectors = const <Sector>[Sector.main];
+  const Mission({
+    required this.canonicalName,
+    required this.tier,
+    required this.number,
+    this.isLore = false,
+  }) : sectors = const <Sector>[Sector.main];
 
   const Mission.prisonerEfficiency({
     required this.canonicalName,
     required this.tier,
+    this.isLore = false,
     required this.number,
   }) : sectors = const <Sector>[Sector.main, Sector.secondary, Sector.overload];
 
-  const Mission.secondary({required this.canonicalName, required this.tier, required this.number})
-    : sectors = const <Sector>[Sector.main, Sector.secondary];
+  const Mission.secondary({
+    required this.canonicalName,
+    required this.tier,
+    required this.number,
+    this.isLore = false,
+  }) : sectors = const <Sector>[Sector.main, Sector.secondary];
 
   bool get hasPrisonerEfficiency => sectors.length == 3;
 

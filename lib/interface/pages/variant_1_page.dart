@@ -1,4 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -263,25 +262,205 @@ class _ContentBodyState extends State<_ContentBody>
                                             children: <Widget>[
                                               FloatingActionButton(
                                                 onPressed:
-                                                    () async => await showDialog(
-                                                      context: context,
-                                                      builder:
-                                                          (BuildContext context) => AlertDialog(
-                                                            actions: <Widget>[
-                                                              FilledButton(
-                                                                onPressed:
-                                                                    () => Navigator.pop(context),
-                                                                child: const Text("Ok"),
+                                                    () => Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute<Widget>(
+                                                        builder:
+                                                            (BuildContext context) => Scaffold(
+                                                              appBar: AppBar(
+                                                                actionsPadding:
+                                                                    const EdgeInsets.symmetric(
+                                                                      horizontal: 8,
+                                                                    ),
+                                                                title: const Text(
+                                                                  "Filter Rundowns",
+                                                                ),
+                                                                actions: <Widget>[
+                                                                  GestureDetector(
+                                                                    onTap: () {
+                                                                      filter = currFilter;
+                                                                      Navigator.pop(context);
+                                                                    },
+                                                                    child: const UINormalBox(
+                                                                      child: Text("Apply"),
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
-                                                            ],
-                                                            content: const Text(
-                                                              "Still a work in progress! Check back later :)",
-                                                              style: TextStyle(
-                                                                fontSize: 22,
-                                                                fontWeight: FontWeight.bold,
+                                                              body: ListView.builder(
+                                                                scrollDirection: Axis.horizontal,
+                                                                itemCount:
+                                                                    Preset.vanilla.rundowns.length,
+                                                                itemBuilder: (
+                                                                  BuildContext context,
+                                                                  int i,
+                                                                ) {
+                                                                  return Padding(
+                                                                    padding:
+                                                                        const EdgeInsets.symmetric(
+                                                                          horizontal: 18,
+                                                                        ),
+                                                                    child: IntrinsicWidth(
+                                                                      child: Column(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment
+                                                                                .start,
+                                                                        children: <Widget>[
+                                                                          Builder(
+                                                                            builder: (
+                                                                              BuildContext context,
+                                                                            ) {
+                                                                              final String name =
+                                                                                  Preset
+                                                                                      .vanilla
+                                                                                      .rundowns[i]
+                                                                                      .canonicalName;
+
+                                                                              if (!name.startsWith(
+                                                                                "ALT://",
+                                                                              )) {
+                                                                                final List<String>
+                                                                                parts = name.split(
+                                                                                  "\"",
+                                                                                );
+                                                                                return Text(
+                                                                                  "${parts[0]}\n\"${parts.sublist(1).join()}\"",
+                                                                                  style: const TextStyle(
+                                                                                    color:
+                                                                                        PublicTheme
+                                                                                            .normalWhite,
+                                                                                    fontSize: 24,
+                                                                                    fontFamily:
+                                                                                        "Shared Tech",
+                                                                                  ),
+                                                                                );
+                                                                              }
+                                                                              final List<String>
+                                                                              parts = name
+                                                                                  .split("ALT://")
+                                                                                  .last
+                                                                                  .split("\"");
+                                                                              return Text.rich(
+                                                                                TextSpan(
+                                                                                  children: <
+                                                                                    InlineSpan
+                                                                                  >[
+                                                                                    const TextSpan(
+                                                                                      text:
+                                                                                          "ALT://",
+                                                                                      style: TextStyle(
+                                                                                        color:
+                                                                                            PublicTheme
+                                                                                                .loreYellow,
+                                                                                      ),
+                                                                                    ),
+                                                                                    TextSpan(
+                                                                                      text:
+                                                                                          "${parts[0]}\n\"${parts.sublist(1).join()}\"",
+                                                                                      style: const TextStyle(
+                                                                                        color:
+                                                                                            PublicTheme
+                                                                                                .normalWhite,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                  style: const TextStyle(
+                                                                                    fontSize: 24,
+                                                                                    fontFamily:
+                                                                                        "Shared Tech",
+                                                                                  ),
+                                                                                ),
+                                                                              );
+                                                                            },
+                                                                          ),
+                                                                          Expanded(
+                                                                            child: SingleChildScrollView(
+                                                                              child: IntrinsicWidth(
+                                                                                child: Padding(
+                                                                                  padding:
+                                                                                      const EdgeInsets.only(
+                                                                                        bottom: 30,
+                                                                                        right: 30,
+                                                                                      ),
+                                                                                  child: Column(
+                                                                                    crossAxisAlignment:
+                                                                                        CrossAxisAlignment
+                                                                                            .stretch,
+                                                                                    children: List<
+                                                                                      Widget
+                                                                                    >.generate(
+                                                                                      Preset
+                                                                                          .vanilla
+                                                                                          .rundowns[i]
+                                                                                          .allMissions
+                                                                                          .length,
+                                                                                      (int j) {
+                                                                                        final List<
+                                                                                          String
+                                                                                        >
+                                                                                        parts = Preset
+                                                                                            .vanilla
+                                                                                            .rundowns[i]
+                                                                                            .allMissions[j]
+                                                                                            .canonicalName
+                                                                                            .split(
+                                                                                              "\"",
+                                                                                            );
+                                                                                        return Padding(
+                                                                                          padding: const EdgeInsets.only(
+                                                                                            bottom:
+                                                                                                8,
+                                                                                          ),
+                                                                                          child: Row(
+                                                                                            spacing:
+                                                                                                6,
+                                                                                            children: <
+                                                                                              Widget
+                                                                                            >[
+                                                                                              UINormalBox(
+                                                                                                foregroundColor:
+                                                                                                    Preset.vanilla.rundowns[i].allMissions[j].isLore
+                                                                                                        ? PublicTheme.loreYellow
+                                                                                                        : null,
+                                                                                                thick:
+                                                                                                    true,
+                                                                                                child: Text(
+                                                                                                  parts.first,
+                                                                                                  style: const TextStyle(
+                                                                                                    fontSize:
+                                                                                                        18,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                              Text(
+                                                                                                "\"${parts.sublist(1).join()}\"",
+                                                                                                style: const TextStyle(
+                                                                                                  fontSize:
+                                                                                                      18,
+                                                                                                  color:
+                                                                                                      PublicTheme.hiddenGray,
+                                                                                                  fontFamily:
+                                                                                                      "Shared Tech",
+                                                                                                ),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                        );
+                                                                                      },
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                },
                                                               ),
                                                             ),
-                                                          ),
+                                                      ),
                                                     ),
                                                 child: const Text("Filter Missions"),
                                               ),
@@ -321,6 +500,11 @@ class _ContentBodyState extends State<_ContentBody>
                                                                   ),
                                                                   const SizedBox(height: 10),
                                                                   SingleChildScrollView(
+                                                                    physics:
+                                                                        const AlwaysScrollableScrollPhysics(
+                                                                          parent:
+                                                                              BouncingScrollPhysics(),
+                                                                        ),
                                                                     child: Wrap(
                                                                       spacing: 12,
                                                                       runSpacing: 12,
@@ -1073,97 +1257,95 @@ class _ContentBodyState extends State<_ContentBody>
                       Provider.of<CurrentRun>(context).run == null
                           ? const EdgeInsets.symmetric(horizontal: 8)
                           : EdgeInsets.zero,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: AdaptiveTheme.of(context).theme.buttonTheme.colorScheme?.onPrimary,
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                  child: UINormalBox(
                     child:
-                        Provider.of<CurrentRun>(context).run == null
-                            ? const SizedBox()
-                            : Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  Provider.of<CurrentRun>(context).run!.mission.canonicalName,
-                                  style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  Provider.of<CurrentRun>(context).run!.rundown.canonicalName,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16,
-                                    fontStyle: FontStyle.italic,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                          child: Provider.of<CurrentRun>(context).run == null
+                              ? const SizedBox()
+                              : Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    Provider.of<CurrentRun>(context).run!.mission.canonicalName,
+                                    style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22),
                                   ),
-                                ),
-                                const SizedBox(height: 6),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  spacing: 6,
-                                  children: <Widget>[
-                                    Tooltip(
-                                      message: "MAIN",
-                                      child: Image.asset(
-                                        "assets/ingame/sector_main.png",
-                                        width: 48,
-                                      ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    Provider.of<CurrentRun>(context).run!.rundown.canonicalName,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      fontStyle: FontStyle.italic,
                                     ),
-                                    if (Provider.of<CurrentRun>(
-                                      context,
-                                    ).run!.sectors.contains(Sector.secondary))
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    spacing: 6,
+                                    children: <Widget>[
                                       Tooltip(
-                                            message: "SECONDARY",
-                                            child: Image.asset(
-                                              "assets/ingame/sector_secondary.png",
-                                              width: 48,
+                                        message: "MAIN",
+                                        child: Image.asset(
+                                          "assets/ingame/sector_main.png",
+                                          width: 48,
+                                        ),
+                                      ),
+                                      if (Provider.of<CurrentRun>(
+                                        context,
+                                      ).run!.sectors.contains(Sector.secondary))
+                                        Tooltip(
+                                              message: "SECONDARY",
+                                              child: Image.asset(
+                                                "assets/ingame/sector_secondary.png",
+                                                width: 48,
+                                              ),
+                                            )
+                                            .animate(autoPlay: true)
+                                            .fade(
+                                              duration: const Duration(milliseconds: 400),
+                                              delay: const Duration(milliseconds: 300),
                                             ),
-                                          )
-                                          .animate(autoPlay: true)
-                                          .fade(
-                                            duration: const Duration(milliseconds: 400),
-                                            delay: const Duration(milliseconds: 300),
-                                          ),
-                                    if (Provider.of<CurrentRun>(
-                                      context,
-                                    ).run!.sectors.contains(Sector.overload))
-                                      Tooltip(
-                                            message: "OVERLOAD",
-                                            child: Image.asset(
-                                              "assets/ingame/sector_overload.png",
-                                              width: 48,
+                                      if (Provider.of<CurrentRun>(
+                                        context,
+                                      ).run!.sectors.contains(Sector.overload))
+                                        Tooltip(
+                                              message: "OVERLOAD",
+                                              child: Image.asset(
+                                                "assets/ingame/sector_overload.png",
+                                                width: 48,
+                                              ),
+                                            )
+                                            .animate(autoPlay: true)
+                                            .fade(
+                                              duration: const Duration(milliseconds: 400),
+                                              delay: const Duration(milliseconds: 480),
                                             ),
-                                          )
-                                          .animate(autoPlay: true)
-                                          .fade(
-                                            duration: const Duration(milliseconds: 400),
-                                            delay: const Duration(milliseconds: 480),
-                                          ),
-                                    if (Provider.of<CurrentRun>(
-                                          context,
-                                        ).run!.sectors.contains(Sector.secondary) &&
-                                        Provider.of<CurrentRun>(
-                                          context,
-                                        ).run!.sectors.contains(Sector.overload))
-                                      Tooltip(
-                                            message: "PRISONER EFFICIENCY",
-                                            child: Image.asset(
-                                              "assets/ingame/prisoner_efficiency.png",
-                                              width: 48,
+                                      if (Provider.of<CurrentRun>(
+                                            context,
+                                          ).run!.sectors.contains(Sector.secondary) &&
+                                          Provider.of<CurrentRun>(
+                                            context,
+                                          ).run!.sectors.contains(Sector.overload))
+                                        Tooltip(
+                                              message: "PRISONER EFFICIENCY",
+                                              child: Image.asset(
+                                                "assets/ingame/prisoner_efficiency.png",
+                                                width: 48,
+                                              ),
+                                            )
+                                            .animate(autoPlay: true)
+                                            .fade(
+                                              duration: const Duration(milliseconds: 400),
+                                              delay: const Duration(milliseconds: 500),
                                             ),
-                                          )
-                                          .animate(autoPlay: true)
-                                          .fade(
-                                            duration: const Duration(milliseconds: 400),
-                                            delay: const Duration(milliseconds: 500),
-                                          ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                        ),
                   ),
                 ),
               ),
@@ -1255,7 +1437,7 @@ class _FilterToggleItemState extends State<FilterToggleItem> {
       foregroundPainter: toggled ? null : const DiagonalTracePainter(),
       child: FloatingActionButton(
         isExtended: true,
-        backgroundColor: toggled ? null : AdaptiveTheme.of(context).theme.colorScheme.shadow,
+        backgroundColor: PublicTheme.dangerRed,
         onPressed: () {
           setState(() => toggled = !toggled);
           widget.consumer(toggled);

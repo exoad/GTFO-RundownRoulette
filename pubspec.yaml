@@ -12,11 +12,11 @@ dependencies:
   equatable: ^2.0.7
   provider: ^6.1.4
   community_material_icon: ^5.9.55
-  adaptive_theme: ^3.7.0
   flutter_colorpicker: ^1.1.0
   flutter_animate: ^4.5.2
   url_launcher: ^6.3.1
   toastification: ^3.0.2
+  animated_glitch: ^2.0.0+2
 
 dev_dependencies:
   flutter_test:
