@@ -17,6 +17,7 @@ dependencies:
   url_launcher: ^6.3.1
   toastification: ^3.0.2
   animated_glitch: ^2.0.0+2
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

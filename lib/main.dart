@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:gtfo_rundown_roulette/interface/provider/current_run.dart';
 import 'package:gtfo_rundown_roulette/interface/root.dart';
 import 'package:gtfo_rundown_roulette/public.dart';
+import 'package:gtfo_rundown_roulette/utils/configurator.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toastification/toastification.dart';
 
-void main() {
+late final SharedPreferences kPrefs;
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  kPrefs = await SharedPreferences.getInstance();
+  await Configurator.initialize();
+  debugPrint("Loaded Preferences Values:\n${kPrefs.getKeys()}");
   runApp(const MainApp());
 }
 

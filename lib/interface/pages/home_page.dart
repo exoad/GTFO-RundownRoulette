@@ -3,7 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/core/normal_box.dart';
+import 'package:gtfo_rundown_roulette/interface/widgets/split_tile.dart';
+import 'package:gtfo_rundown_roulette/main.dart';
 import 'package:gtfo_rundown_roulette/public.dart';
+import 'package:gtfo_rundown_roulette/utils/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class HomePage extends StatelessWidget {
@@ -29,7 +32,7 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 48, child: _Title()),
                   const SizedBox(height: 8),
                   const Text(
-                    "Build ${Public.build} | Signature ${Public.versionSignature}",
+                    "BUILD ${Public.build} | SIG ${Public.versionSignature} | ${Public.isRelease ? 'PUB' : 'DEV'}",
                     textAlign: TextAlign.center,
 
                     style: TextStyle(fontStyle: FontStyle.italic, color: PublicTheme.loreYellow),
@@ -88,27 +91,41 @@ class HomePage extends StatelessWidget {
                     runSpacing: 10,
                     children: <Widget>[
                       Tooltip(
+                        message: "Configure the application",
+                        child: UINormalBoxButton(
+                          foregroundColor: PublicTheme.dangerRed,
+                          child: const Text(
+                            "SETTINGS",
+                            style: TextStyle(
+                              fontFamily: "Shared Tech",
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          onTap:
+                              () async => await showDialog(
+                                context: context,
+                                builder: (BuildContext context) => const _SettingsMenu(),
+                              ),
+                        ),
+                      ),
+                      Tooltip(
                         message: "https://github.com/exoad/GTFO-RundownRoulette",
-                        child: GestureDetector(
+                        child: UINormalBoxButton(
                           onTap:
                               () async => await launchUrlString(
                                 "https://github.com/exoad/GTFO-RundownRoulette",
                               ),
-                          child: const UINormalBox(
-                            foregroundColor: PublicTheme.loreYellow,
-                            child: Text("Source Repository"),
-                          ),
+                          foregroundColor: PublicTheme.loreYellow,
+                          child: const Text("SOURCE CODE"),
                         ),
                       ),
                       Tooltip(
                         message: "https://discord.com/invite/gtfo",
-                        child: GestureDetector(
+                        child: UINormalBoxButton(
                           onTap:
                               () async => await launchUrlString("https://discord.com/invite/gtfo"),
-                          child: const UINormalBox(
-                            foregroundColor: PublicTheme.loreYellow,
-                            child: Text("GTFO Discord"),
-                          ),
+                          foregroundColor: PublicTheme.loreYellow,
+                          child: const Text("GTFO DISCORD"),
                         ),
                       ),
                     ],
@@ -127,7 +144,7 @@ class HomePage extends StatelessWidget {
                                 Icon(Icons.warning_amber_rounded),
                                 SizedBox(width: 6),
                                 Text(
-                                  "Disclaimer",
+                                  "DISCLAIMER",
                                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                 ),
                                 SizedBox(height: 4),
@@ -143,12 +160,59 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 8),
                 ],
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SettingsMenu extends StatefulWidget {
+  const _SettingsMenu();
+
+  @override
+  State<_SettingsMenu> createState() => _SettingsMenuState();
+}
+
+class _SettingsMenuState extends State<_SettingsMenu> {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text(
+        "Settings",
+        style: TextStyle(fontSize: 20, fontFamily: "Shared Tech", fontWeight: FontWeight.bold),
+      ),
+      content: SplitTile(<Widget, Widget>{
+        const SplitTileSingulateLabel(
+          "Color Lobby",
+          description: "Use colors, let players decide based on their position in the lobby.",
+        ): UINormalBoxButton(
+          foregroundColor:
+              kPrefs.getSafeBool("color_lobby") ? PublicTheme.loreYellow : PublicTheme.hiddenGray,
+          onTap: () {
+            kPrefs.setBool(
+              "color_lobby",
+              kPrefs.getBool("color_lobby") == null ? true : !kPrefs.getBool("color_lobby")!,
+            );
+            setState(() {});
+          },
+          child:
+              kPrefs.getSafeBool("color_lobby")
+                  ? const Icon(Icons.circle)
+                  : const Icon(Icons.circle_outlined),
+        ),
+      }),
+      actions: <Widget>[
+        UINormalBoxButton(
+          foregroundColor: PublicTheme.dangerRed,
+          child: const Text("Ok"),
+          onTap: () => Navigator.pop(context),
+        ),
+      ],
     );
   }
 }

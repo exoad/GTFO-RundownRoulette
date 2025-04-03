@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/core/normal_box.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/loadout_item_card.dart';
+import 'package:gtfo_rundown_roulette/main.dart';
 import 'package:gtfo_rundown_roulette/public.dart';
 import 'package:gtfo_rundown_roulette/shared/shared.dart';
+import 'package:gtfo_rundown_roulette/utils/shared_preferences.dart';
 
 class PlayerCard extends StatefulWidget {
   final String title;
@@ -74,7 +76,10 @@ class PlayerCardState extends State<PlayerCard> with TickerProviderStateMixin {
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.w800,
-                      color: widget.color,
+                      color:
+                          kPrefs.getSafeBool("color_lobby")
+                              ? widget.color
+                              : PublicTheme.normalWhite,
                     ),
                   ),
                 ),
@@ -102,7 +107,10 @@ class PlayerCardState extends State<PlayerCard> with TickerProviderStateMixin {
                               style: TextStyle(
                                 fontSize: 26,
                                 fontWeight: FontWeight.bold,
-                                color: widget.color,
+                                color:
+                                    kPrefs.getSafeBool("color_lobby")
+                                        ? widget.color
+                                        : PublicTheme.normalWhite,
                               ),
                             ),
                             if (widget.loadout!.boosters.contains(Boosters.MUTED))

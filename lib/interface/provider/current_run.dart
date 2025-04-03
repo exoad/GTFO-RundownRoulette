@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gtfo_rundown_roulette/shared/generated.dart';
 
-class CurrentRun with ChangeNotifier {
+class CurrentRun extends ChangeNotifier {
   static final CurrentRun instance = CurrentRun._();
 
   GeneratedRun? _value;

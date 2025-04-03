@@ -3,8 +3,9 @@ import 'dart:ui';
 final class Public {
   Public._();
 
-  static const int build = 3;
-  static const String versionSignature = "4_2_2025";
+  static const int build = 4;
+  static const String versionSignature = "4_3_2025";
+  static const bool isRelease = false;
 }
 
 final class PublicTheme {
