@@ -2,6 +2,8 @@
 
 A randomizer to make your vanilla GTFO experience more fun!
 
+**Join the [Official GTFO Discord](https://www.discord.com/invite/gtfo)! I host games there often**
+
 > [!WARNING]
 > A lot of the code here is dreamt up by at like 4-6am so it might not be the best :)
 
