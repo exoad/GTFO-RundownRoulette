@@ -86,10 +86,10 @@ const RESOURCES = {"android-chrome-192x192.png": "13308dac3f832a30a364ed6a1a819e
 "canvaskit/skwasm_st.wasm": "56c3973560dfcbf28ce47cebe40f3206",
 "favicon.png": "fe4e6158e0621262a33d1f224cb56fe0",
 "flutter.js": "76f08d47ff9f5715220992f993002504",
-"flutter_bootstrap.js": "eefd1e82d89cf179b081886b36a18fbf",
+"flutter_bootstrap.js": "e9f327a5720e0dd4e40dc4f87aa24780",
 "index.html": "476019cdbbeabb507d96edebfe96988a",
 "/": "476019cdbbeabb507d96edebfe96988a",
-"main.dart.js": "f22fd9e162f479618b5b5dea429a9668",
+"main.dart.js": "84ef1f9756c619e8a58c0238ba80a6ca",
 "manifest.json": "bfc6c8397b5e62254c068f062af1140c",
 "site.webmanifest": "68808504d1d22a55416c0e3c8e59ac98",
 "version.json": "b800482854414f1cbe4c8599b07c8aa3"};

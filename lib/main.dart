@@ -10,12 +10,14 @@ import 'package:toastification/toastification.dart';
 
 late final SharedPreferences kPrefs;
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  kPrefs = await SharedPreferences.getInstance();
-  await Configurator.initialize();
-  debugPrint("Loaded Preferences Values:\n${kPrefs.getKeys()}");
-  runApp(const MainApp());
+  SharedPreferences.getInstance().then((SharedPreferences preferences) {
+    kPrefs = preferences;
+    Configurator.initialize();
+    debugPrint("Loaded Preferences Values:\n${kPrefs.getKeys()}");
+    runApp(const MainApp());
+  });
 }
 
 class MainApp extends StatelessWidget {
