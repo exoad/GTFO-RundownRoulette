@@ -25,10 +25,13 @@ class HomePage extends StatelessWidget {
                 children: <Widget>[
                   const SizedBox(height: 48),
                   Image.asset("assets/icon.png"),
+                  const SizedBox(height: 20),
                   const SizedBox(height: 48, child: _Title()),
                   const SizedBox(height: 8),
                   const Text(
                     "Build ${Public.build} | Signature ${Public.versionSignature}",
+                    textAlign: TextAlign.center,
+
                     style: TextStyle(fontStyle: FontStyle.italic, color: PublicTheme.loreYellow),
                   ),
                   const SizedBox(height: 12),
@@ -47,25 +50,32 @@ class HomePage extends StatelessWidget {
                         kIsWeb
                             ? const Text(
                               "This app is also available for Windows desktop so you can use it offline! Visit the Source Repository to download it.",
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: PublicTheme.hiddenGray,
                               ),
                             )
-                            : Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                            : Wrap(
+                              alignment: WrapAlignment.center,
+                              runAlignment: WrapAlignment.center,
+                              crossAxisAlignment: WrapCrossAlignment.center,
                               children: <Widget>[
                                 const Text(
                                   "This app is also available in your browser! Visit it at exoad.github.io/GTFO-RundownRoulette/",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: PublicTheme.hiddenGray,
+                                  ),
                                 ),
                                 const SizedBox(width: 4),
-                                GestureDetector(
+                                UINormalBoxButton(
                                   onTap:
                                       () async => await launchUrlString(
                                         "https://exoad.github.io/GTFO-RundownRoulette/",
                                       ),
-                                  child: const UINormalBox(child: Icon(Icons.open_in_browser)),
+                                  child: const Icon(Icons.open_in_browser),
                                 ),
                               ],
                             ),
@@ -118,11 +128,7 @@ class HomePage extends StatelessWidget {
                                 SizedBox(width: 6),
                                 Text(
                                   "Disclaimer",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic,
-                                    fontSize: 12,
-                                  ),
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                 ),
                                 SizedBox(height: 4),
                               ],
@@ -130,18 +136,13 @@ class HomePage extends StatelessWidget {
                             Text(
                               "This application is an independent creation and is not affiliated with, endorsed, or sponsored by 10 Chambers or the creators of GTFO. All game assets, including but not limited to images, sounds, character names, and logos, are the property of 10 Chambers.",
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontStyle: FontStyle.italic, fontSize: 12),
+                              style: TextStyle(fontSize: 12),
                             ),
                           ],
                         ),
                       ),
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 40),
-                    child: Divider(),
-                  ),
-                  const Icon(Icons.settings, size: 32),
                 ],
               ),
             ),
@@ -166,13 +167,9 @@ class _TitleState extends State<_Title> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _controller = AnimatedGlitchController(
-      frequency: const Duration(milliseconds: 700),
-      chance: 80,
+      frequency: const Duration(milliseconds: 600),
+      chance: 60,
       level: 2,
-      distortionShift: const DistortionShift(count: 4, delay: Duration(milliseconds: 100)),
-      colorChannelShift: const ColorChannelShift(
-        colors: <Color>[Colors.red, Colors.blue, Colors.white],
-      ),
     );
   }
 
@@ -190,7 +187,7 @@ class _TitleState extends State<_Title> with SingleTickerProviderStateMixin {
           const Text(
             "GTFO Rundown Roulette",
             style: TextStyle(
-              fontSize: 32,
+              fontSize: 38,
               fontWeight: FontWeight.bold,
               color: PublicTheme.loreYellow,
             ),

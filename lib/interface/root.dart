@@ -34,8 +34,8 @@ class _ManagerState extends State<Manager> {
                 ),
                 const NavigationRailDestination(
                   label: Text("Generic"),
-                  icon: Icon(Icons.star_outline_rounded),
-                  selectedIcon: Icon(Icons.star_rounded),
+                  icon: Icon(Icons.star_border),
+                  selectedIcon: Icon(Icons.star),
                 ),
               ],
               useIndicator: true,

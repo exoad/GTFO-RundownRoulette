@@ -5,8 +5,15 @@ class UINormalBox extends StatelessWidget {
   final Widget child;
   final Color? foregroundColor;
   final bool thick;
+  final Color? backgroundColor;
 
-  const UINormalBox({super.key, required this.child, this.foregroundColor, this.thick = false});
+  const UINormalBox({
+    super.key,
+    required this.child,
+    this.foregroundColor,
+    this.thick = false,
+    this.backgroundColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,12 +36,35 @@ class UINormalBox extends StatelessWidget {
               top: BorderSide(color: foregroundColor ?? PublicTheme.normalWhite, width: 2),
               right: BorderSide(color: foregroundColor ?? PublicTheme.normalWhite, width: 2),
             ),
-            color: PublicTheme.abyssBlack,
+            color: backgroundColor ?? PublicTheme.abyssBlack,
           ),
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           child: child,
         ),
       ),
+    );
+  }
+}
+
+class UINormalBoxButton extends StatelessWidget {
+  final Widget child;
+  final Color? foregroundColor;
+  final bool thick;
+  final void Function() onTap;
+
+  const UINormalBoxButton({
+    super.key,
+    required this.child,
+    this.foregroundColor,
+    required this.onTap,
+    this.thick = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: UINormalBox(foregroundColor: foregroundColor, thick: thick, child: child),
     );
   }
 }

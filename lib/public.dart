@@ -3,8 +3,8 @@ import 'dart:ui';
 final class Public {
   Public._();
 
-  static const int build = 2;
-  static const String versionSignature = "4_1_2025";
+  static const int build = 3;
+  static const String versionSignature = "4_2_2025";
 }
 
 final class PublicTheme {
@@ -20,4 +20,6 @@ final class PublicTheme {
   static const Color loreYellow = Color(0xFFFFBB02);
   // #637c89
   static const Color hiddenGray = Color(0xFF637C89);
+  // #0b0f12
+  static const Color murkyDarkGrey = Color(0xFF0B0F12);
 }
