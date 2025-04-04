@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:gtfo_rundown_roulette/utils/aggregator_functions.dart';
+
 final class Scheduler {
   Scheduler._();
 
@@ -32,8 +34,10 @@ final class Scheduler {
     void Function() function,
     int times,
     int baseDelay,
-    int delayStep,
-  ) async {
+    int delayStep, [
+    NumericalAggregator? aggregator,
+  ]) async {
+    aggregator ??= slowOutAggregatorFunction;
     if (times <= 0) {
       return;
     }
@@ -45,10 +49,7 @@ final class Scheduler {
       } catch (e) {
         rethrow;
       }
-      currentDelay =
-          currentDelay +
-          (delayStep * (1 / (0.2 + exp(1 / (75.0 * (i + 1) * (i + 1))))))
-              .toInt(); // homemade crude smoothing function
+      currentDelay = currentDelay + (delayStep * aggregator(i.toDouble())).toInt();
     }
   }
 
