@@ -69,6 +69,7 @@ class _ContentBodyState extends State<_ContentBody>
                               ? const EdgeInsets.symmetric(horizontal: 4)
                               : EdgeInsets.zero,
                       child: UINormalBox(
+                        thick: true,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                           child: Row(
@@ -193,39 +194,87 @@ class _ContentBodyState extends State<_ContentBody>
                 children: <Widget>[
                   Expanded(
                     child: PlayerCard(
-                      title: "Player 1",
-                      name: "Woods",
-                      bgImage: "assets/ingame/woods.png",
-                      color: const Color.fromARGB(255, 208, 79, 116),
-                      loadout: Provider.of<CurrentRun>(context).run?.players.player1,
-                    ),
+                          title: "Player 1",
+                          name: "Woods",
+                          bgImage: "assets/ingame/woods.png",
+                          color: const Color.fromARGB(255, 208, 79, 116),
+                          loadout: Provider.of<CurrentRun>(context).run?.players.player1,
+                        )
+                        .animate()
+                        .then(delay: const Duration(milliseconds: 140))
+                        .fadeIn(duration: const Duration(milliseconds: 240), curve: Curves.easeIn)
+                        .slideY(
+                          begin: -0.04,
+                          end: 0,
+                          duration: const Duration(milliseconds: 360),
+                          curve: Curves.easeIn,
+                        ),
                   ),
                   Expanded(
                     child: PlayerCard(
-                      title: "Player 2",
-                      name: "Dauda",
-                      bgImage: "assets/ingame/dauda.png",
-                      color: const Color.fromARGB(255, 88, 224, 124),
-                      loadout: Provider.of<CurrentRun>(context).run?.players.player2,
-                    ),
+                          title: "Player 2",
+                          name: "Dauda",
+                          bgImage: "assets/ingame/dauda.png",
+                          color: const Color.fromARGB(255, 88, 224, 124),
+                          loadout: Provider.of<CurrentRun>(context).run?.players.player2,
+                        )
+                        .animate()
+                        .then(delay: const Duration(milliseconds: 220))
+                        .fadeIn(
+                          duration: const Duration(milliseconds: 240),
+                          curve: Curves.easeIn,
+                          begin: 0.6,
+                        )
+                        .slideY(
+                          begin: -0.06,
+                          end: 0,
+                          duration: const Duration(milliseconds: 360),
+                          curve: Curves.easeIn,
+                        ),
                   ),
                   Expanded(
                     child: PlayerCard(
-                      title: "Player 3",
-                      name: "Hackett",
-                      bgImage: "assets/ingame/hackett.png",
-                      color: const Color.fromARGB(255, 77, 133, 189),
-                      loadout: Provider.of<CurrentRun>(context).run?.players.player3,
-                    ),
+                          title: "Player 3",
+                          name: "Hackett",
+                          bgImage: "assets/ingame/hackett.png",
+                          color: const Color.fromARGB(255, 77, 133, 189),
+                          loadout: Provider.of<CurrentRun>(context).run?.players.player3,
+                        )
+                        .animate()
+                        .then(delay: const Duration(milliseconds: 300))
+                        .fadeIn(
+                          duration: const Duration(milliseconds: 240),
+                          curve: Curves.easeIn,
+                          begin: 0.6,
+                        )
+                        .slideY(
+                          begin: -0.06,
+                          end: 0,
+                          duration: const Duration(milliseconds: 360),
+                          curve: Curves.easeIn,
+                        ),
                   ),
                   Expanded(
                     child: PlayerCard(
-                      title: "Player 4",
-                      name: "Bishop",
-                      bgImage: "assets/ingame/bishop.png",
-                      color: const Color.fromARGB(255, 135, 53, 197),
-                      loadout: Provider.of<CurrentRun>(context).run?.players.player4,
-                    ),
+                          title: "Player 4",
+                          name: "Bishop",
+                          bgImage: "assets/ingame/bishop.png",
+                          color: const Color.fromARGB(255, 135, 53, 197),
+                          loadout: Provider.of<CurrentRun>(context).run?.players.player4,
+                        )
+                        .animate()
+                        .then(delay: const Duration(milliseconds: 380))
+                        .fadeIn(
+                          duration: const Duration(milliseconds: 240),
+                          curve: Curves.easeIn,
+                          begin: 0.6,
+                        )
+                        .slideY(
+                          begin: -0.06,
+                          end: 0,
+                          duration: const Duration(milliseconds: 360),
+                          curve: Curves.easeIn,
+                        ),
                   ),
                 ],
               ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/core/normal_box.dart';
 import 'package:gtfo_rundown_roulette/public.dart';
 import 'package:gtfo_rundown_roulette/shared/shared.dart';
@@ -51,8 +50,6 @@ class LoadoutItemCard extends StatelessWidget {
         ),
       ],
     );
-    return (intrinsic ? IntrinsicWidth(child: child) : child)
-        .animate(autoPlay: true)
-        .slideY(duration: const Duration(milliseconds: 300), begin: 0, end: -1);
+    return intrinsic ? IntrinsicWidth(child: child) : child;
   }
 }
