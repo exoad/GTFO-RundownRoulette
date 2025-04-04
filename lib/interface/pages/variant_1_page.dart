@@ -5,11 +5,13 @@ import 'package:gtfo_rundown_roulette/interface/provider/current_run.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/core/normal_box.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/loadout_item_card.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/widgets.dart';
+import 'package:gtfo_rundown_roulette/main.dart';
 import 'package:gtfo_rundown_roulette/public.dart';
 import 'package:gtfo_rundown_roulette/shared/shared.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/diagonal_trace.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/player_card.dart';
 import 'package:gtfo_rundown_roulette/utils/scheduler.dart';
+import 'package:gtfo_rundown_roulette/utils/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 
@@ -33,6 +35,7 @@ class _ContentBodyState extends State<_ContentBody>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   Variant1Filter? filter;
   bool rerolling = false;
+  bool rollingAnimation = false;
   late AnimationController animationController;
 
   @override
@@ -101,7 +104,6 @@ class _ContentBodyState extends State<_ContentBody>
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 16,
-                                        fontStyle: FontStyle.italic,
                                       ),
                                     ),
                                   ],
@@ -352,67 +354,82 @@ class _ContentBodyState extends State<_ContentBody>
                   ),
                 ),
                 Tooltip(
-                  message: "Randomize Everything",
+                  message:
+                      "Randomize Everything ${kPrefs.getSafeBool("randomization_animation") ? 'Once' : ''}",
                   child: DisableableWidget(
                     disabled: rerolling,
                     child: UINormalBoxButton(
                       onTap: () {
-                        setState(() => rerolling = true);
-                        int times = rnd.nextBool() ? 12 + rnd.nextInt(3) + 1 : 12 - rnd.nextInt(3);
-                        toastification.showCustom(
-                          autoCloseDuration: const Duration(milliseconds: 2500),
-                          animationDuration: Duration.zero,
-                          alignment: Alignment.bottomRight,
-                          builder: (BuildContext context, ToastificationItem holder) {
-                            return UINormalBox(
-                              foregroundColor: PublicTheme.dangerRed,
-                              child: Row(
-                                spacing: 6,
-                                children: <Widget>[
-                                  const Icon(CommunityMaterialIcons.pirate),
-                                  Text("Rerolling for $times times"),
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                        Scheduler.reductiveRelay(
-                          () =>
-                              Provider.of<CurrentRun>(
-                                context,
-                                listen: false,
-                              ).value = Variant1Generator.produceFrom(
-                                Preset.vanilla,
-                                true,
-                                true,
-                                null,
-                                filter,
-                              ),
-                          times,
-                          rnd.nextBool() ? 120 + rnd.nextInt(100) + 40 : 120 - (rnd.nextInt(60)),
-                          120,
-                        ).then((_) {
-                          if (context.mounted) {
-                            toastification.showCustom(
-                              autoCloseDuration: const Duration(milliseconds: 3500),
-                              animationDuration: Duration.zero,
-                              alignment: Alignment.bottomRight,
-                              builder: (BuildContext context, ToastificationItem holder) {
-                                return const UINormalBox(
-                                  foregroundColor: PublicTheme.highlightOrange,
-                                  child: Row(
-                                    spacing: 6,
-                                    children: <Widget>[
-                                      Icon(CommunityMaterialIcons.exclamation_thick),
-                                      Text("Reroll done."),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                            setState(() => rerolling = false);
-                          }
-                        });
+                        if (kPrefs.getSafeBool("randomization_animation")) {
+                          setState(() => rerolling = true);
+                          int times =
+                              rnd.nextBool() ? 12 + rnd.nextInt(3) + 1 : 12 - rnd.nextInt(3);
+                          toastification.showCustom(
+                            autoCloseDuration: const Duration(milliseconds: 2500),
+                            animationDuration: Duration.zero,
+                            alignment: Alignment.bottomRight,
+                            builder: (BuildContext context, ToastificationItem holder) {
+                              return UINormalBox(
+                                foregroundColor: PublicTheme.dangerRed,
+                                child: Row(
+                                  spacing: 6,
+                                  children: <Widget>[
+                                    const Icon(CommunityMaterialIcons.skull_scan),
+                                    Text("Rerolling for $times times"),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                          Scheduler.reductiveRelay(
+                            () =>
+                                Provider.of<CurrentRun>(
+                                  context,
+                                  listen: false,
+                                ).value = Variant1Generator.produceFrom(
+                                  Preset.vanilla,
+                                  true,
+                                  true,
+                                  null,
+                                  filter,
+                                ),
+                            times,
+                            rnd.nextBool() ? 120 + rnd.nextInt(100) + 40 : 120 - (rnd.nextInt(60)),
+                            120,
+                          ).then((_) {
+                            if (context.mounted) {
+                              toastification.showCustom(
+                                autoCloseDuration: const Duration(milliseconds: 3500),
+                                animationDuration: Duration.zero,
+                                alignment: Alignment.bottomRight,
+                                builder: (BuildContext context, ToastificationItem holder) {
+                                  return const UINormalBox(
+                                    foregroundColor: PublicTheme.highlightOrange,
+                                    child: Row(
+                                      spacing: 6,
+                                      children: <Widget>[
+                                        Icon(CommunityMaterialIcons.exclamation_thick),
+                                        Text("Reroll done."),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                              setState(() => rerolling = false);
+                            }
+                          });
+                        } else {
+                          Provider.of<CurrentRun>(
+                            context,
+                            listen: false,
+                          ).value = Variant1Generator.produceFrom(
+                            Preset.vanilla,
+                            true,
+                            true,
+                            null,
+                            filter,
+                          );
+                        }
                       },
                       child: const Icon(CommunityMaterialIcons.reload),
                     ),

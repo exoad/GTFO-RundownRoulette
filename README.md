@@ -81,3 +81,7 @@ of rundown(s).
 
 This mode falls victim to the fact that players can discuss and make the run a lot easier by handing better weapons
 to more skilled players and selecting easier rundowns for less penalties.
+
+## Building
+
+There are two modes you can build for, `pub` (stands for public, not to be confused with pub.dev) and `dev` mode. You can pass in `--dart-define=RELEASE=[true/false]` to define this. By default it is false and will build a `dev` application.

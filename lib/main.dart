@@ -15,6 +15,7 @@ void main() {
   SharedPreferences.getInstance().then((SharedPreferences preferences) {
     kPrefs = preferences;
     Configurator.initialize();
+    debugPrint("IS_RELEASE_MODE=${Public.isRelease}");
     debugPrint("Loaded Preferences Values:\n${kPrefs.getKeys()}");
     runApp(const MainApp());
   });

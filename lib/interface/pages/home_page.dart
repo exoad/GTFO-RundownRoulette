@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/core/normal_box.dart';
+import 'package:gtfo_rundown_roulette/interface/widgets/random_text.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/split_tile.dart';
 import 'package:gtfo_rundown_roulette/main.dart';
 import 'package:gtfo_rundown_roulette/public.dart';
@@ -18,7 +19,7 @@ class HomePage extends StatelessWidget {
       body: DefaultTextStyle(
         style: const TextStyle(fontFamily: "Shared Tech"),
         child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          physics: const BouncingScrollPhysics(),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20) + const EdgeInsets.only(bottom: 80),
             child: SizedBox(
@@ -52,16 +53,130 @@ class HomePage extends StatelessWidget {
                     "BUILD ${Public.build} | SIG ${Public.versionSignature} | ${Public.isRelease ? 'PUB' : 'DEV'}",
                     textAlign: TextAlign.center,
 
-                    style: TextStyle(fontStyle: FontStyle.italic, color: PublicTheme.loreYellow),
+                    style: TextStyle(color: PublicTheme.loreYellow),
                   ),
                   const SizedBox(height: 12),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 40),
-                    child: Text(
-                      "A randomizer focused around making playing GTFO much more enjoyable without involving the usage of that many mods if at all.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: PublicTheme.normalWhite),
+                  SizedBox(
+                    width: MediaQuery.sizeOf(context).width * 0.36,
+                    child: const Column(
+                      children: <Widget>[
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "://Intel_",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: PublicTheme.loreYellow,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8),
+                              child: Text(
+                                "Critical Pr0C3S# OffLIn&3. Prisoner disP4TcH3d t0 ?!...",
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Divider(color: PublicTheme.normalWhite, thickness: 2),
+                            Text(
+                              ":://Interrupted_Communications_",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: PublicTheme.loreYellow,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8),
+                              child: Text.rich(
+                                TextSpan(
+                                  children: <InlineSpan>[
+                                    TextSpan(text: ">...Wh.. I fucking got "),
+                                    TextSpan(
+                                      text: "NOTHING",
+                                      style: TextStyle(fontSize: 24, color: PublicTheme.dangerRed),
+                                    ),
+                                    TextSpan(text: "...\n>...Let's just"),
+                                    TextSpan(
+                                      text: " get through ",
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        color: PublicTheme.dangerRed,
+                                        wordSpacing: -1,
+                                      ),
+                                    ),
+                                    TextSpan(text: " it.\n>[primal roar]"),
+                                  ],
+                                ),
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Divider(color: PublicTheme.normalWhite, thickness: 2),
+                            Text(
+                              ":://Expedition_metrics_",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: PublicTheme.loreYellow,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Text(
+                                  "Drop cage target depth: ",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: PublicTheme.normalWhite,
+                                    fontFamily: "Shared Tech",
+                                  ),
+                                ),
+                                SizedBox(width: 6),
+                                FlashingRandomTextWidget(
+                                  length: 4,
+                                  period: Duration(milliseconds: 150),
+                                  style: TextStyle(color: PublicTheme.metricsYellow, fontSize: 20),
+                                ),
+                                SizedBox(width: 6),
+                                Text(
+                                  "m",
+                                  style: TextStyle(color: PublicTheme.metricsYellow, fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          SizedBox(height: 4),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Text(
+                                  "Artifact Heat: ",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: PublicTheme.normalWhite,
+                                    fontFamily: "Shared Tech",
+                                  ),
+                                ),
+                                SizedBox(width: 6),
+                                Text(
+                                  "69%",
+                                  style: TextStyle(color: PublicTheme.metricsYellow, fontSize: 20),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
+                  ),
+                  const SizedBox(height: 26),
+                  const Text(
+                    "A randomizer focused around making playing GTFO much more enjoyable without involving the usage of that many mods if at all.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: PublicTheme.normalWhite),
                   ),
                   const SizedBox(height: 4),
                   Padding(
@@ -222,6 +337,29 @@ class _SettingsMenuState extends State<_SettingsMenu> {
           },
           child:
               kPrefs.getSafeBool("color_lobby")
+                  ? const Icon(Icons.circle)
+                  : const Icon(Icons.circle_outlined),
+        ),
+        const SplitTileSingulateLabel(
+          "Animated Randomizer",
+          description:
+              "An animation will be used for randomization.\nTurning off will make randomization instant.",
+        ): UINormalBoxButton(
+          foregroundColor:
+              kPrefs.getSafeBool("randomization_animation")
+                  ? PublicTheme.loreYellow
+                  : PublicTheme.hiddenGray,
+          onTap: () {
+            kPrefs.setBool(
+              "randomization_animation",
+              kPrefs.getBool("randomization_animation") == null
+                  ? true
+                  : !kPrefs.getBool("randomization_animation")!,
+            );
+            setState(() {});
+          },
+          child:
+              kPrefs.getSafeBool("randomization_animation")
                   ? const Icon(Icons.circle)
                   : const Icon(Icons.circle_outlined),
         ),

@@ -5,7 +5,7 @@ final class Public {
 
   static const int build = 4;
   static const String versionSignature = "4_3_2025";
-  static const bool isRelease = false;
+  static const bool isRelease = bool.fromEnvironment("RELEASE", defaultValue: false);
 }
 
 final class PublicTheme {
@@ -25,4 +25,6 @@ final class PublicTheme {
   static const Color murkyDarkGrey = Color(0xFF0B0F12);
   // #21cc62
   static const Color fumingGreen = Color(0xFF21CC62);
+  // #f2e53b
+  static const Color metricsYellow = Color(0xFFF2E53B);
 }
