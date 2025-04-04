@@ -51,6 +51,7 @@ class MainApp extends StatelessWidget {
                   appBarTheme: const AppBarTheme(
                     backgroundColor: PublicTheme.abyssBlack,
                     titleTextStyle: TextStyle(
+                      color: PublicTheme.normalWhite,
                       fontFamily: "Shared Tech",
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -80,7 +81,10 @@ class MainApp extends StatelessWidget {
                       right: BorderSide(color: PublicTheme.normalWhite, width: 2),
                     ),
                   ),
-                  dividerTheme: const DividerThemeData(color: PublicTheme.normalWhite),
+                  splashFactory: NoSplash.splashFactory,
+                  dividerTheme: const DividerThemeData(color: Colors.transparent),
+                  listTileTheme: const ListTileThemeData(dense: true),
+                  dividerColor: Colors.transparent,
                   scaffoldBackgroundColor: PublicTheme.abyssBlack,
                   navigationRailTheme: const NavigationRailThemeData(
                     backgroundColor: PublicTheme.abyssBlack,

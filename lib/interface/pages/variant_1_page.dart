@@ -249,7 +249,8 @@ class _ContentBodyState extends State<_ContentBody>
               spacing: 4,
               children: <Widget>[
                 Tooltip(
-                  message: "Randomize Loadout Only",
+                  // dont add reductive relay to this, it is a bitch
+                  message: "Randomize Loadout Once",
                   child: DisableableWidget(
                     disabled: rerolling,
                     child: UINormalBoxButton(
@@ -285,7 +286,14 @@ class _ContentBodyState extends State<_ContentBody>
                                       color: PublicTheme.normalWhite,
                                     ),
                                   ),
-                                  content: Text(error.toString()),
+                                  content: Text(
+                                    error.toString(),
+                                    style: const TextStyle(
+                                      color: PublicTheme.dangerRed,
+                                      fontFamily: "Shared Tech",
+                                      fontSize: 18,
+                                    ),
+                                  ),
                                 ),
                           );
                         }
@@ -605,43 +613,42 @@ class _ContentBodyState extends State<_ContentBody>
                                                                                     const EdgeInsets.only(
                                                                                       bottom: 8,
                                                                                     ),
-                                                                                child: Row(
-                                                                                  spacing: 6,
-                                                                                  children: <
-                                                                                    Widget
-                                                                                  >[
-                                                                                    UINormalBox(
-                                                                                      foregroundColor:
-                                                                                          Preset
-                                                                                                  .vanilla
-                                                                                                  .rundowns[i]
-                                                                                                  .allMissions[j]
-                                                                                                  .isLore
-                                                                                              ? PublicTheme
-                                                                                                  .loreYellow
-                                                                                              : null,
-                                                                                      thick: true,
-                                                                                      child: Text(
-                                                                                        parts.first,
+                                                                                child: DisableableWidget(
+                                                                                  disabled: false,
+                                                                                  child: Row(
+                                                                                    spacing: 6,
+                                                                                    children: <
+                                                                                      Widget
+                                                                                    >[
+                                                                                      UINormalBox(
+                                                                                        foregroundColor:
+                                                                                            Preset.vanilla.rundowns[i].allMissions[j].isLore
+                                                                                                ? PublicTheme.loreYellow
+                                                                                                : null,
+                                                                                        thick: true,
+                                                                                        child: Text(
+                                                                                          parts
+                                                                                              .first,
+                                                                                          style: const TextStyle(
+                                                                                            fontSize:
+                                                                                                18,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                      Text(
+                                                                                        "\"${parts.sublist(1).join()}\"",
                                                                                         style: const TextStyle(
                                                                                           fontSize:
                                                                                               18,
+                                                                                          color:
+                                                                                              PublicTheme
+                                                                                                  .hiddenGray,
+                                                                                          fontFamily:
+                                                                                              "Shared Tech",
                                                                                         ),
                                                                                       ),
-                                                                                    ),
-                                                                                    Text(
-                                                                                      "\"${parts.sublist(1).join()}\"",
-                                                                                      style: const TextStyle(
-                                                                                        fontSize:
-                                                                                            18,
-                                                                                        color:
-                                                                                            PublicTheme
-                                                                                                .hiddenGray,
-                                                                                        fontFamily:
-                                                                                            "Shared Tech",
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
+                                                                                    ],
+                                                                                  ),
                                                                                 ),
                                                                               );
                                                                             },
@@ -1297,92 +1304,52 @@ class _ContentBodyState extends State<_ContentBody>
                 ),
               ),
               Tooltip(
-                message: "Randomize Rundown Only",
+                message: "Randomize Rundown Once",
                 child: DisableableWidget(
                   disabled: rerolling,
                   child: UINormalBoxButton(
-                    onTap: () {
-                      setState(() => rerolling = true);
-                      int times = rnd.nextBool() ? 12 + rnd.nextInt(3) + 1 : 12 - rnd.nextInt(3);
-                      toastification.showCustom(
-                        autoCloseDuration: const Duration(milliseconds: 2500),
-                        animationDuration: Duration.zero,
-                        alignment: Alignment.bottomRight,
-                        builder: (BuildContext context, ToastificationItem holder) {
-                          return UINormalBox(
-                            foregroundColor: PublicTheme.dangerRed,
-                            child: Row(
-                              spacing: 6,
-                              children: <Widget>[
-                                const Icon(CommunityMaterialIcons.pirate),
-                                Text("Rerolling for $times times"),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                      Scheduler.reductiveRelay(
-                        () async {
-                          try {
-                            Provider.of<CurrentRun>(
-                              context,
-                              listen: false,
-                            ).value = Variant1Generator.produceFrom(
-                              Preset.vanilla,
-                              true,
-                              false,
-                              Provider.of<CurrentRun>(context, listen: false).run,
-                            );
-                          } catch (error) {
-                            await showDialog(
-                              context: context,
-                              builder:
-                                  (BuildContext context) => AlertDialog(
-                                    actions: <Widget>[
-                                      UINormalBoxButton(
-                                        onTap: () => Navigator.pop(context),
-                                        child: const Text("Ok"),
-                                      ),
-                                    ],
-                                    title: const Text(
-                                      "Oh no!",
-                                      style: TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: "Shared Tech",
-                                        color: PublicTheme.normalWhite,
-                                      ),
-                                    ),
-                                    content: Text(error.toString()),
+                    onTap: () async {
+                      try {
+                        Provider.of<CurrentRun>(
+                          context,
+                          listen: false,
+                        ).value = Variant1Generator.produceFrom(
+                          Preset.vanilla,
+                          true,
+                          false,
+                          Provider.of<CurrentRun>(context, listen: false).run,
+                        );
+                      } catch (error) {
+                        await showDialog(
+                          context: context,
+                          builder:
+                              (BuildContext context) => AlertDialog(
+                                actions: <Widget>[
+                                  UINormalBoxButton(
+                                    onTap: () => Navigator.pop(context),
+                                    child: const Text("Ok"),
                                   ),
-                            );
-                          }
-                        },
-                        times,
-                        rnd.nextBool() ? 120 + rnd.nextInt(100) + 40 : 120 - (rnd.nextInt(60)),
-                        120,
-                      ).then((_) {
-                        if (context.mounted) {
-                          toastification.showCustom(
-                            autoCloseDuration: const Duration(milliseconds: 3500),
-                            animationDuration: Duration.zero,
-                            alignment: Alignment.bottomRight,
-                            builder: (BuildContext context, ToastificationItem holder) {
-                              return const UINormalBox(
-                                foregroundColor: PublicTheme.highlightOrange,
-                                child: Row(
-                                  spacing: 6,
-                                  children: <Widget>[
-                                    Icon(CommunityMaterialIcons.exclamation_thick),
-                                    Text("Reroll done."),
-                                  ],
+                                ],
+                                title: const Text(
+                                  "Oh no!",
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Shared Tech",
+                                    color: PublicTheme.normalWhite,
+                                  ),
                                 ),
-                              );
-                            },
-                          );
-                          setState(() => rerolling = false);
-                        }
-                      });
+                                content: Text(
+                                  error.toString(),
+                                  style: const TextStyle(
+                                    color: PublicTheme.dangerRed,
+                                    fontFamily: "Shared Tech",
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ),
+                        );
+                      }
                     },
                     child: const Icon(CommunityMaterialIcons.account_hard_hat),
                   ),

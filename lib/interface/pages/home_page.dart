@@ -27,9 +27,26 @@ class HomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   const SizedBox(height: 48),
-                  Image.asset("assets/icon.png"),
+                  if (context.mounted)
+                    SizedBox.square(
+                      dimension: 148,
+                      child: AnimatedGlitch(
+                        controller: AnimatedGlitchController(
+                          frequency: const Duration(milliseconds: 600),
+                          chance: 60,
+                          level: 2,
+                        ),
+                        child: Image.asset(
+                          "assets/icon.png",
+                          width: 128,
+                          height: 128,
+                          cacheHeight: 128,
+                          cacheWidth: 128,
+                        ),
+                      ),
+                    ),
                   const SizedBox(height: 20),
-                  const SizedBox(height: 48, child: _Title()),
+                  if (context.mounted) const SizedBox(height: 52, child: _Title()),
                   const SizedBox(height: 8),
                   const Text(
                     "BUILD ${Public.build} | SIG ${Public.versionSignature} | ${Public.isRelease ? 'PUB' : 'DEV'}",
@@ -131,12 +148,16 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 18),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 40),
-                    child: UINormalBox(
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.sizeOf(context).width * 0.14,
+                    ),
+                    child: const UINormalBox(
+                      thick: true,
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         child: Column(
+                          spacing: 6,
                           children: <Widget>[
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -144,14 +165,13 @@ class HomePage extends StatelessWidget {
                                 Icon(Icons.warning_amber_rounded),
                                 SizedBox(width: 6),
                                 Text(
-                                  "DISCLAIMER",
+                                  "DISCLAIMER & INFORMATION",
                                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                 ),
-                                SizedBox(height: 4),
                               ],
                             ),
                             Text(
-                              "This application is an independent creation and is not affiliated with, endorsed, or sponsored by 10 Chambers or the creators of GTFO. All game assets, including but not limited to images, sounds, character names, and logos, are the property of 10 Chambers.",
+                              "This application is an independent creation and is not affiliated with, endorsed, or sponsored by 10 Chambers or the creators of GTFO. All game assets, including but not limited to images, sounds, character names, and logos, are the property of 10 Chambers. \n\nAdditionally, this application does not collect telemetry of any kind (even analytics and crash reports!). However the web version is hosted on GitHub which may collect your internet footprints. If you do not like Microsoft, you can download the desktop build above.",
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 12),
                             ),
@@ -189,7 +209,7 @@ class _SettingsMenuState extends State<_SettingsMenu> {
       content: SplitTile(<Widget, Widget>{
         const SplitTileSingulateLabel(
           "Color Lobby",
-          description: "Use colors, let players decide based on their position in the lobby.",
+          description: "Use colors, let players decide based on their color in the lobby.",
         ): UINormalBoxButton(
           foregroundColor:
               kPrefs.getSafeBool("color_lobby") ? PublicTheme.loreYellow : PublicTheme.hiddenGray,
@@ -249,12 +269,15 @@ class _TitleState extends State<_Title> with SingleTickerProviderStateMixin {
       controller: _controller,
       child:
           const Text(
-            "GTFO Rundown Roulette",
+            "RUNDOWN ROULETTE",
             style: TextStyle(
-              fontSize: 38,
+              fontSize: 40,
+              fontFamily: "Shared Tech",
               fontWeight: FontWeight.bold,
               color: PublicTheme.loreYellow,
+              overflow: TextOverflow.visible,
             ),
+            softWrap: true,
             textAlign: TextAlign.center,
           ).animate(),
     );

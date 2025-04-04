@@ -23,4 +23,6 @@ final class PublicTheme {
   static const Color hiddenGray = Color(0xFF637C89);
   // #0b0f12
   static const Color murkyDarkGrey = Color(0xFF0B0F12);
+  // #21cc62
+  static const Color fumingGreen = Color(0xFF21CC62);
 }
