@@ -52,7 +52,6 @@ class HomePage extends StatelessWidget {
                   const Text(
                     "BUILD ${Public.build} | SIG ${Public.versionSignature} | ${Public.isRelease ? 'PUB' : 'DEV'}",
                     textAlign: TextAlign.center,
-
                     style: TextStyle(color: PublicTheme.loreYellow),
                   ),
                   const SizedBox(height: 12),
@@ -76,7 +75,11 @@ class HomePage extends StatelessWidget {
                               padding: EdgeInsets.only(left: 8),
                               child: Text(
                                 "Critical Pr0C3S# OffLIn&3. Prisoner disP4TcH3d t0 ?!...",
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: PublicTheme.normalWhite,
+                                ),
                               ),
                             ),
                             Divider(color: PublicTheme.normalWhite, thickness: 2),
@@ -111,7 +114,8 @@ class HomePage extends StatelessWidget {
                                     TextSpan(text: " it.\n>[primal roar]"),
                                   ],
                                 ),
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, 
+                                  color: PublicTheme.normalWhite,),
                               ),
                             ),
                             Divider(color: PublicTheme.normalWhite, thickness: 2),
@@ -148,7 +152,7 @@ class HomePage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          SizedBox(height: 4),
+                            SizedBox(height: 4),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: <Widget>[
