@@ -3,8 +3,8 @@ import 'dart:ui';
 final class Public {
   Public._();
 
-  static const int build = 4;
-  static const String versionSignature = "4_3_2025";
+  static const int build = 5;
+  static const String versionSignature = "4_4_2025";
   static const bool isRelease = bool.fromEnvironment("RELEASE", defaultValue: false);
 }
 
