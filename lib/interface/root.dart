@@ -35,7 +35,7 @@ class _ManagerState extends State<Manager> {
                   label: Text("HOME"),
                 ),
                 const NavigationRailDestination(
-                  label: Text("GENERIC"),
+                  label: Text("NORMAL"),
                   icon: Icon(Icons.star_border),
                   selectedIcon: Icon(Icons.star),
                 ),

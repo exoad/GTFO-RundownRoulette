@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class ClipBox extends StatelessWidget {
-  final Color background;
+  final Color? background;
   final EdgeInsetsGeometry childPadding;
   final BorderRadiusGeometry borderRadius;
   final Widget child;
 
   const ClipBox({
     super.key,
-    required this.background,
+    this.background,
     this.borderRadius = BorderRadius.zero,
     this.childPadding = EdgeInsets.zero,
     required this.child,

@@ -594,7 +594,8 @@ class _ContentBodyState extends State<_ContentBody>
                                                                         Preset
                                                                             .vanilla
                                                                             .rundowns[i]
-                                                                            .canonicalName;
+                                                                            .canonicalName
+                                                                            .toUpperCase();
 
                                                                     if (!name.startsWith(
                                                                       "ALT://",
@@ -607,7 +608,7 @@ class _ContentBodyState extends State<_ContentBody>
                                                                           color:
                                                                               PublicTheme
                                                                                   .normalWhite,
-                                                                          fontSize: 24,
+                                                                          fontSize: 20,
                                                                           fontFamily: "Shared Tech",
                                                                         ),
                                                                       );
@@ -629,7 +630,7 @@ class _ContentBodyState extends State<_ContentBody>
                                                                           ),
                                                                           TextSpan(
                                                                             text:
-                                                                                "${parts[0]}\n\"${parts.sublist(1).join()}\"",
+                                                                                "${parts[0]}\nTITLE: \"${parts.sublist(1).join()}\"",
                                                                             style: const TextStyle(
                                                                               color:
                                                                                   PublicTheme
@@ -638,7 +639,7 @@ class _ContentBodyState extends State<_ContentBody>
                                                                           ),
                                                                         ],
                                                                         style: const TextStyle(
-                                                                          fontSize: 24,
+                                                                          fontSize: 20,
                                                                           fontFamily: "Shared Tech",
                                                                         ),
                                                                       ),
@@ -687,6 +688,11 @@ class _ContentBodyState extends State<_ContentBody>
                                                                                       Widget
                                                                                     >[
                                                                                       UINormalBox(
+                                                                                        padding:
+                                                                                            const EdgeInsets.only(
+                                                                                              left:
+                                                                                                  2,
+                                                                                            ),
                                                                                         foregroundColor:
                                                                                             Preset.vanilla.rundowns[i].allMissions[j].isLore
                                                                                                 ? PublicTheme.loreYellow
@@ -697,15 +703,16 @@ class _ContentBodyState extends State<_ContentBody>
                                                                                               .first,
                                                                                           style: const TextStyle(
                                                                                             fontSize:
-                                                                                                18,
+                                                                                                26,
                                                                                           ),
                                                                                         ),
                                                                                       ),
                                                                                       Text(
-                                                                                        "\"${parts.sublist(1).join()}\"",
+                                                                                        "\"${parts.sublist(1).join()}\""
+                                                                                            .toUpperCase(),
                                                                                         style: const TextStyle(
                                                                                           fontSize:
-                                                                                              18,
+                                                                                              20,
                                                                                           color:
                                                                                               PublicTheme
                                                                                                   .hiddenGray,

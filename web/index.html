@@ -1,56 +1,87 @@
 <!DOCTYPE html>
 
 <html lang="en-US">
-  <head>
-    <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
+<head>
+  <base href="." />
 
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+  <meta charset="UTF-8" />
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+  <meta name="description"
+    content="A randomizer made and designed specifically for making GTFO more fun without having to add mods!" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="Rundown Roulette" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <title>Rundown Roulette</title>
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    :root {
+      --fg1: rgb(234, 168, 45);
+      --fg2: white;
+      --fg3: rgb(52, 207, 122);
+      --fg4: rgb(220, 110, 66);
+      --bg: black;
+    }
 
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-    <base href="." />
+    body {
+      background-color: black;
+      padding-top: 3.2em;
+      padding-left: 4.2em;
+      padding-right: 4.2em;
+    }
 
-    <meta charset="UTF-8" />
-    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
-    <meta
-      name="description"
-      content="A randomizer made and designed specifically for making GTFO more fun without having to add mods!"
-    />
+    .normal-block {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
 
-    <!-- iOS meta tags & icons -->
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <meta name="apple-mobile-web-app-title" content="Rundown Roulette" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    h1 {
+      color: rgb(234, 168, 45);
+      font-size: 6.8rem;
+      font-weight: 900;
+    }
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="favicon.png" />
+    p {
+      color: white;
+      font-size: 1.8rem;
 
-    <title>Rundown Roulette</title>
-    <link rel="manifest" href="manifest.json" />
-  </head>
-  <body
-    style="background-color: black; color: rgb(255, 187, 0); padding: 1.2em"
-  >
-    <script src="flutter_bootstrap.js" async></script>
-    <span>
-      <div style="font-weight: 700; font-size: 2.4rem">Loading...</div>
-      <hr />
-      <div style="color: palevioletred; font-size: 1.1rem">
-        Stuck on this screen? You may have turned off JavaScript and/or WebGL
-        which are required to run this app! If that is not the case, you can
-        file an issue here:
-        <a href="https://github.com/exoad/GTFO-RundownRoulette/issues"
-          >GitHub Issue Tracker</a
-        >
-      </div>
-    </span>
-  </body>
+    }
+
+    a a:visited a:link a:active a:hover {
+      color: aqua;
+      font-weight: bold;
+      font-family: sans-serif;
+      font-style: normal;
+      text-decoration: none;
+    }
+
+    noscript {
+      color: rgb(235, 105, 58);
+      font-size: 4.2rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <script src="flutter_bootstrap.js" async></script>
+  <div class="normal-block">
+    <h1>Loading...</h1>
+    <p>
+      Stuck on this screen or if the next screen is black? You may have turned off JavaScript or disabled WebAssembly.
+      Please turn them on else you can file an issue here:
+      <a href="https://github.com/exoad/GTFO-RundownRoulette/issues">GitHub Issue Tracker</a>
+    </p>
+    <br />
+    <br />
+    <noscript>
+      Looks like you have JavaScript disabled :(. Please turn it on for this application to work!
+    </noscript>
+  </div>
+</body>
+
 </html>

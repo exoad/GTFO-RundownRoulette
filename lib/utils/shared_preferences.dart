@@ -25,6 +25,8 @@ extension SharedPreferencesExtension on SharedPreferences {
     }
   }
 
+  /// Since `bool?` is not a valid bool type with 3 possible values, this method tries to collapse that into
+  /// 2 values by resolving the `null` value as [inverse]
   bool getSafeBool(String key, [bool inverse = false]) {
     final bool? k = getBool(key);
     return k == null || !k ? inverse : true;

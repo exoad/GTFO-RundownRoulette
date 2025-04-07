@@ -6,11 +6,13 @@ class UINormalBox extends StatelessWidget {
   final Color? foregroundColor;
   final bool thick;
   final Color? backgroundColor;
+  final EdgeInsetsGeometry padding;
 
   const UINormalBox({
     super.key,
     required this.child,
     this.foregroundColor,
+    this.padding = const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
     this.thick = false,
     this.backgroundColor,
   });
@@ -38,7 +40,7 @@ class UINormalBox extends StatelessWidget {
             ),
             color: backgroundColor ?? PublicTheme.abyssBlack,
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          padding: padding,
           child: child,
         ),
       ),

@@ -6,11 +6,20 @@ import 'package:gtfo_rundown_roulette/public.dart';
 import 'package:gtfo_rundown_roulette/shared/shared.dart';
 import 'package:gtfo_rundown_roulette/utils/shared_preferences.dart';
 
+/// The actual player display. It is not anything special and just displays the backdrop and the loadout
+/// using [LoadoutItemCard]s.
 class PlayerCard extends StatefulWidget {
+  /// Is the actual player name, but since there is nothing to connect the game with this app, it is left as placeholders like "Player 1" or "Player 2".
   final String title;
+
+  /// This usually refers to the canonical name of the player position in relation to the actual in game characters like Dauda.
   final String name;
+
+  /// The background image to use. Usually a prefab of the character's default loadout like Hackett, Bishop, Dauda, and Woods.
   final String bgImage;
   final Color color;
+
+  /// Not required by default if no rolls has been called. If this is `null`, then no [LoadoutItemCard]s are appended.
   final Loadout? loadout;
 
   const PlayerCard({
@@ -34,6 +43,7 @@ class PlayerCardState extends State<PlayerCard> with TickerProviderStateMixin {
     super.initState();
     animationController = AnimationController(
       vsync: this,
+      // i dont really know why i have this here or why this is even necessary ??
       animationBehavior: AnimationBehavior.preserve,
     );
   }
@@ -43,6 +53,11 @@ class PlayerCardState extends State<PlayerCard> with TickerProviderStateMixin {
     return DefaultTextStyle(
       style: const TextStyle(fontFamily: "Shared Tech"),
       child: Stack(
+        // here the backdrop of the bgImage is on the backside
+        // the name of the player is laid out in between the back and front sides.
+        // the actual information like loadout cards are on the frontside
+        //
+        // [background image] -> [canonical player name] -> [loadout information]
         fit: StackFit.loose,
         children: <Widget>[
           Positioned.fill(
@@ -52,14 +67,22 @@ class PlayerCardState extends State<PlayerCard> with TickerProviderStateMixin {
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: ShaderMask(
                   shaderCallback: (Rect rect) {
+                    // we use a gradient here to try and hide the abrupt ending of the images in order to give it a more natural look.
+                    // the gradient is sharpest (but there are still some darkening) at the top and fades out to black/full-transparent at the bottom or near the width of the image
                     return const LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: <Color>[Color.fromARGB(118, 0, 0, 0), Colors.transparent],
-                    ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+                    ).createShader(
+                      Rect.fromLTRB(0, 0, rect.width, rect.height),
+                    ); // this linear gradient does cause troubles with web rendering though, thats one thing to note. very harsh edges where the filter is misaligned on web. flutter and skia issue
                   },
                   blendMode: BlendMode.dstIn,
-                  child: Image.asset(widget.bgImage, filterQuality: FilterQuality.low),
+                  child: Image.asset(
+                    widget.bgImage,
+                    // we dont need that much quality, so we save on performance by using low filterquality which means when scaling up, there are no anti-aliasing to be done to smooth out the pixels.
+                    filterQuality: FilterQuality.low,
+                  ),
                 ),
               ),
             ),
