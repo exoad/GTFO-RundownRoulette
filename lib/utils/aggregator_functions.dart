@@ -1,5 +1,8 @@
 import 'dart:math';
 
+import 'package:gtfo_rundown_roulette/utils/computed_consts.dart';
+
+/// represents a mathematical function that applies a transformation to [x]
 typedef NumericalAggregator = num Function(num x);
 
 /// Overall the best for speed and porportionality
@@ -12,8 +15,6 @@ num slowOutAggregatorFunction(num i) {
 num slowOutAggregatorFunction2(num i) {
   return 1 - exp(-i); // 1 - (e^-i)
 }
-
-const double SIN_E = 0.4107812905;
 
 /// Very good for the ending part which has a very very long end.
 num slowOutAggregatorFunction3(num i) {

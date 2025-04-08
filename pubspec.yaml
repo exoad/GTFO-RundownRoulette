@@ -18,6 +18,8 @@ dependencies:
     toastification: ^3.0.2
     animated_glitch: ^2.0.0+2
     shared_preferences: ^2.5.3
+    xrandom: ^0.7.2
+    crypto: ^3.0.6
 
 dev_dependencies:
     flutter_test:

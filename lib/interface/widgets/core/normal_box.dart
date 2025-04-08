@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gtfo_rundown_roulette/public.dart';
 
 class UINormalBox extends StatelessWidget {
@@ -67,6 +68,51 @@ class UINormalBoxButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: UINormalBox(foregroundColor: foregroundColor, thick: thick, child: child),
+    );
+  }
+}
+
+class UINormalBoxInput extends StatefulWidget {
+  final Color? foregroundColor;
+  final void Function(String) onChanged;
+  final String title;
+  const UINormalBoxInput({
+    super.key,
+    this.foregroundColor,
+    required this.onChanged,
+    required this.title,
+  });
+
+  @override
+  State<UINormalBoxInput> createState() => _UINormalBoxInputState();
+}
+
+class _UINormalBoxInputState extends State<UINormalBoxInput> {
+  late final TextEditingController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = TextEditingController();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      style: const TextStyle(color: PublicTheme.normalWhite, fontFamily: "Fira Code"),
+      cursorRadius: Radius.zero,
+      cursorColor: PublicTheme.normalWhite,
+      cursorWidth: 10,
+      cursorOpacityAnimates: false,
+      controller: controller,
+      onChanged: widget.onChanged,
+      autocorrect: false,
+      enableSuggestions: false,
+      maxLength: 9,
+      enableInteractiveSelection: true,
+      enableIMEPersonalizedLearning: false,
+      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+      decoration: InputDecoration(hintText: widget.title),
     );
   }
 }

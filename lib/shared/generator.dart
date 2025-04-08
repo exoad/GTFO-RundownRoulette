@@ -1,15 +1,18 @@
 import 'package:gtfo_rundown_roulette/shared/shared.dart';
+import 'package:gtfo_rundown_roulette/utils/seeded_generator.dart';
+import 'package:xrandom/xrandom.dart';
 
-extension IterableRandomExtension<T> on Iterable<T> {
-  T pick() {
-    return elementAt(rnd.nextInt(length));
+extension IterableRandomExtension<T> on List<T> {
+  T pick([int? seed]) {
+    return SeededGenerator.pickFrom(this, 1, seed).picked.first;
   }
 
-  List<T> pickMultiple() {
+  List<T> pickMultiple([int? seed]) {
     final List<T> res = <T>[];
-    for (T item in this) {
-      if (rnd.nextBool()) {
-        res.add(item);
+    final Xrandom rng = Xrandom(seed);
+    for (int i = 0; i < length; i++) {
+      if (rng.nextBool()) {
+        res.add(this[i]);
       }
     }
     return res;
@@ -19,15 +22,12 @@ extension IterableRandomExtension<T> on Iterable<T> {
 @pragma("vm:entry-point")
 class Variant1FilterInvarianceError extends Error {
   final String message;
-
   @pragma("vm:entry-point")
   Variant1FilterInvarianceError(this.message);
-
   @override
   String toString() => message;
 }
 
-/// An exclusive filter for operating the [Variant1Generator]
 class Variant1Filter {
   final Set<Mission> blockedMissions;
   final Set<Gun> blockedPrimaries;
@@ -55,179 +55,151 @@ class Variant1Filter {
   );
 
   bool isValidMission(Mission mission) => !blockedMissions.contains(mission);
-
   bool isValidBooster(Boosters booster) => !blockedBoosters.contains(booster);
-
   bool isValidPrimary(Gun gun) => !blockedPrimaries.contains(gun);
-
   bool isValidSpecial(Gun gun) => !blockedSpecials.contains(gun);
-
   bool isValidTool(ToolItem tool) => !blockedTools.contains(tool);
-
   bool isValidMelee(MeleeWeapon melee) => !blockedMelees.contains(melee);
 
   List<Boosters> applyBoosters(List<Boosters> value) {
     return blockedBoosters.isEmpty
         ? value
-        : value.where((Boosters gun) => !blockedBoosters.contains(gun)).toList();
+        : value.where((Boosters booster) => !blockedBoosters.contains(booster)).toList();
   }
 
   List<Gun> applyPrimaryGuns(List<Gun> value) {
     if (blockedPrimaries.isEmpty) {
       return value;
     }
-    if (blockedPrimaries.length == value.length) {
+    final List<Gun> filtered = value.where((Gun gun) => !blockedPrimaries.contains(gun)).toList();
+    if (filtered.isEmpty && value.isNotEmpty) {
       throw Variant1FilterInvarianceError(
-        "Filtering primaries cannot be empty! Unblock at least one weapon to continue.",
+        "Filtering primaries cannot result in an empty list! Unblock at least one weapon to continue.",
       );
     }
-    return value.where((Gun gun) => !blockedPrimaries.contains(gun)).toList();
+    return filtered;
   }
 
   List<Gun> applySpecialGuns(List<Gun> value) {
     if (blockedSpecials.isEmpty) {
       return value;
     }
-    if (blockedSpecials.length == value.length) {
+    final List<Gun> filtered = value.where((Gun gun) => !blockedSpecials.contains(gun)).toList();
+    if (filtered.isEmpty && value.isNotEmpty) {
       throw Variant1FilterInvarianceError(
-        "Filtering specials cannot be empty! Unblock at least one weapon to continue.",
+        "Filtering specials cannot result in an empty list! Unblock at least one weapon to continue.",
       );
     }
-    return value.where((Gun gun) => !blockedSpecials.contains(gun)).toList();
+    return filtered;
   }
 
   List<ToolItem> applyTools(List<ToolItem> value) {
     if (blockedTools.isEmpty) {
       return value;
     }
-    if (blockedTools.length == value.length) {
+    final List<ToolItem> filtered =
+        value.where((ToolItem tool) => !blockedTools.contains(tool)).toList();
+    if (filtered.isEmpty && value.isNotEmpty) {
       throw Variant1FilterInvarianceError(
-        "Filtering tools cannot be empty! Unblock at least one tool to continue.",
+        "Filtering tools cannot result in an empty list! Unblock at least one tool to continue.",
       );
     }
-    return value.where((ToolItem tool) => !blockedTools.contains(tool)).toList();
+    return filtered;
   }
 
   List<MeleeWeapon> applyMelee(List<MeleeWeapon> value) {
     if (blockedMelees.isEmpty) {
       return value;
     }
-    if (blockedMelees.length == value.length) {
+    final List<MeleeWeapon> filtered =
+        value.where((MeleeWeapon melee) => !blockedMelees.contains(melee)).toList();
+    if (filtered.isEmpty && value.isNotEmpty) {
       throw Variant1FilterInvarianceError(
-        "Filtering melees cannot be empty! Unblock at least one tool to continue.",
+        "Filtering melees cannot result in an empty list! Unblock at least one melee weapon to continue.",
       );
     }
-    return value.where((MeleeWeapon melee) => !blockedMelees.contains(melee)).toList();
+    return filtered;
   }
 
   List<Mission> applyMissions(List<Mission> value) {
     if (blockedMissions.isEmpty) {
       return value;
     }
-    if (blockedMissions.length == value.length) {
+    final List<Mission> filtered =
+        value.where((Mission mission) => !blockedMissions.contains(mission)).toList();
+    if (filtered.isEmpty && value.isNotEmpty) {
       throw Variant1FilterInvarianceError(
-        "Filtering missions cannot be empty! Unblock at least one tool to continue.",
+        "Filtering missions cannot result in an empty list! Unblock at least one mission to continue.",
       );
     }
-    return value.where((Mission mission) => !blockedMissions.contains(mission)).toList();
+    return filtered;
   }
 }
 
 class Variant1Generator {
   static GeneratedRun produceFrom(
-    // used positional arguments here, so uhhh kinda hard to migrate to named ! wellllll, just gonna keep adding on it :) sucks to suck eh ?
     Preset preset, [
     bool rollRundown = true,
     bool rollWeapons = true,
     GeneratedRun? previous,
     Variant1Filter? filter,
+    int? seed,
   ]) {
     if ((!rollRundown || !rollWeapons) && previous == null) {
       throw ArgumentError(
         "Cannot not roll without providing a basis of the previous generated run!",
       );
     }
+    final int effectiveSeed = (seed ?? SeededGenerator.seedFromTimeMS) & 0xFFFFFFFF;
+    final Xrandom runRandom = Xrandom(effectiveSeed);
     Rundown? rundown;
     Mission? mission;
+    List<Sector>? sectors;
+    final Variant1Filter effectiveFilter = filter ?? Variant1Filter.unblocked;
     if (rollRundown) {
-      rundown = preset.rundowns.pick();
-      mission = rundown.allMissions.pick();
-      if (filter != null) {
-        while (!filter.isValidMission(mission!)) {
-          // a very very very very very insanely small chance this could run for some time :)
-          // im too lazy to make this better if it works...
-          rundown = preset.rundowns.pick();
-          mission = rundown.allMissions.pick();
-        }
+      List<Rundown> availableRundowns = preset.rundowns;
+      rundown = availableRundowns.pick(runRandom.nextInt(0xFFFFFFFF));
+      List<Mission> availableMissions = effectiveFilter.applyMissions(rundown.allMissions);
+      if (availableMissions.isEmpty) {
+        throw Variant1FilterInvarianceError(
+          "Filtering missions for rundown ${rundown.canonicalName} resulted in an empty list! Unblock at least one mission for this rundown.",
+        );
       }
+      mission = availableMissions.pick(runRandom.nextInt(0xFFFFFFFF));
+      sectors = mission.generate();
+    } else {
+      rundown = previous!.rundown;
+      mission = previous.mission;
+      sectors = previous.sectors;
     }
+    final List<MeleeWeapon> availableMelees = effectiveFilter.applyMelee(MeleeWeapon.weapons);
+    final List<ToolItem> availableTools = effectiveFilter.applyTools(preset.tools);
+    final List<Gun> availablePrimaries = effectiveFilter.applyPrimaryGuns(preset.primaries);
+    final List<Gun> availableSpecials = effectiveFilter.applySpecialGuns(preset.specials);
+    final List<Boosters> availableBoosters = effectiveFilter.applyBoosters(Boosters.values);
+    Loadout createLoadout(int loadoutSeed) {
+      final int loadoutEffectiveSeed = loadoutSeed & 0xFFFFFFFF;
+      return Loadout(
+        melee: availableMelees.pick(loadoutEffectiveSeed),
+        tool: availableTools.pick(loadoutEffectiveSeed),
+        primary: availablePrimaries.pick(loadoutEffectiveSeed),
+        special: availableSpecials.pick(loadoutEffectiveSeed),
+        boosters: availableBoosters.pickMultiple(loadoutEffectiveSeed),
+      );
+    }
+
     return GeneratedRun(
-      rundown: rollRundown ? rundown! : previous!.rundown,
-      mission: rollRundown ? mission! : previous!.mission,
-      sectors: rollRundown ? mission!.generate() : previous!.sectors,
+      effectiveSeed,
+      rundown: rundown,
+      mission: mission,
+      sectors: sectors,
       players:
           rollWeapons
               ? PlayerPool(
-                player1: Loadout(
-                  melee:
-                      (filter ?? Variant1Filter.unblocked).applyMelee(MeleeWeapon.weapons).pick(),
-                  tool: (filter ?? Variant1Filter.unblocked).applyTools(preset.tools).pick(),
-                  primary:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applyPrimaryGuns(preset.primaries)
-                          .pick(),
-                  special:
-                      (filter ?? Variant1Filter.unblocked).applySpecialGuns(preset.specials).pick(),
-                  boosters:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applyBoosters(Boosters.values)
-                          .pickMultiple(),
-                ),
-                player2: Loadout(
-                  melee:
-                      (filter ?? Variant1Filter.unblocked).applyMelee(MeleeWeapon.weapons).pick(),
-                  tool: (filter ?? Variant1Filter.unblocked).applyTools(preset.tools).pick(),
-                  primary:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applyPrimaryGuns(preset.primaries)
-                          .pick(),
-                  special:
-                      (filter ?? Variant1Filter.unblocked).applySpecialGuns(preset.specials).pick(),
-                  boosters:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applyBoosters(Boosters.values)
-                          .pickMultiple(),
-                ),
-                player3: Loadout(
-                  melee:
-                      (filter ?? Variant1Filter.unblocked).applyMelee(MeleeWeapon.weapons).pick(),
-                  tool: (filter ?? Variant1Filter.unblocked).applyTools(preset.tools).pick(),
-                  primary:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applyPrimaryGuns(preset.primaries)
-                          .pick(),
-                  special:
-                      (filter ?? Variant1Filter.unblocked).applySpecialGuns(preset.specials).pick(),
-                  boosters:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applyBoosters(Boosters.values)
-                          .pickMultiple(),
-                ),
-                player4: Loadout(
-                  melee:
-                      (filter ?? Variant1Filter.unblocked).applyMelee(MeleeWeapon.weapons).pick(),
-                  tool: (filter ?? Variant1Filter.unblocked).applyTools(preset.tools).pick(),
-                  primary:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applyPrimaryGuns(preset.primaries)
-                          .pick(),
-                  special:
-                      (filter ?? Variant1Filter.unblocked).applySpecialGuns(preset.specials).pick(),
-                  boosters:
-                      (filter ?? Variant1Filter.unblocked)
-                          .applyBoosters(Boosters.values)
-                          .pickMultiple(),
-                ),
+                player1: createLoadout(runRandom.nextInt(0xFFFFFFFF)),
+                player2: createLoadout(runRandom.nextInt(0xFFFFFFFF)),
+                player3: createLoadout(runRandom.nextInt(0xFFFFFFFF)),
+                player4: createLoadout(runRandom.nextInt(0xFFFFFFFF)),
               )
               : previous!.players,
     );

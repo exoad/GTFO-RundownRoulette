@@ -21,6 +21,43 @@ class MainApp extends StatelessWidget {
               style: const TextStyle(fontFamily: "Shared Tech", color: PublicTheme.normalWhite),
               child: MaterialApp(
                 theme: ThemeData(
+                  textSelectionTheme: TextSelectionThemeData(
+                    cursorColor: PublicTheme.normalWhite,
+                    selectionColor: PublicTheme.loreYellow.withAlpha(140),
+                  ),
+                  inputDecorationTheme: const InputDecorationTheme(
+                    alignLabelWithHint: true,
+                    focusColor: PublicTheme.normalWhite,
+                    filled: true,
+                    fillColor: PublicTheme.abyssBlack,
+                    counterStyle: TextStyle(
+                      fontFamily: "Fira Code",
+                      color: PublicTheme.normalWhite,
+                    ),
+                    errorStyle: TextStyle(color: PublicTheme.dangerRed),
+                    contentPadding: EdgeInsets.only(left: 6, top: 0, bottom: 0),
+                    border: OutlineInputBorder(
+                      gapPadding: 0,
+                      borderSide: BorderSide(color: PublicTheme.normalWhite, width: 2),
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      gapPadding: 0,
+                      borderSide: BorderSide(color: PublicTheme.normalWhite, width: 2),
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      gapPadding: 0,
+                      borderSide: BorderSide(color: PublicTheme.loreYellow, width: 2),
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    disabledBorder: OutlineInputBorder(
+                      gapPadding: 0,
+                      borderSide: BorderSide(color: PublicTheme.hiddenGray, width: 2),
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    hintStyle: TextStyle(fontFamily: "Fira Code", color: PublicTheme.hiddenGray),
+                  ),
                   dialogTheme: const DialogTheme(
                     titleTextStyle: TextStyle(
                       color: PublicTheme.normalWhite,

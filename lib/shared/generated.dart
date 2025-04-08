@@ -414,8 +414,9 @@ class GeneratedRun {
   final Rundown rundown;
   final PlayerPool players;
   final List<Sector> sectors;
+  final int seed;
 
-  GeneratedRun({
+  GeneratedRun(this.seed, {
     required this.mission,
     required this.players,
     required this.sectors,

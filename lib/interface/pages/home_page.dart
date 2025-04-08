@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/core/normal_box.dart';
-import 'package:gtfo_rundown_roulette/interface/widgets/drooped_divider.dart';
+import 'package:gtfo_rundown_roulette/interface/widgets/core/drooped_divider.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/random_text.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/split_tile.dart';
 import 'package:gtfo_rundown_roulette/main.dart';
@@ -11,6 +11,7 @@ import 'package:gtfo_rundown_roulette/public.dart';
 import 'package:gtfo_rundown_roulette/utils/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+/// Home page, the thing that is shown on the front page.
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -21,37 +22,47 @@ class HomePage extends StatelessWidget {
         style: const TextStyle(fontFamily: "Shared Tech"),
         child: Center(
           child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 20) + const EdgeInsets.only(bottom: 80),
               child: SizedBox(
+                // we confine everything to be of the same width.
+                // this is so that the mission mock box is the same size as the other elements
+                //
+                // tldr: looks good
                 width: MediaQuery.sizeOf(context).width * 0.4,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
+                    // a lot of the custom spacing is done through sized boxes since the flex widget's spacing cant be dynamically changed, so this is a generous solution
                     const SizedBox(height: 48),
-                    if (context.mounted)
-                      SizedBox.square(
-                        dimension: 148,
-                        child: AnimatedGlitch(
-                          controller: AnimatedGlitchController(
-                            frequency: const Duration(milliseconds: 600),
-                            chance: 60,
-                            level: 2,
-                          ),
-                          child: Image.asset(
-                            "assets/icon.png",
-                            width: 128,
-                            height: 128,
-                            cacheHeight: 128,
-                            cacheWidth: 128,
+                    if (context
+                        .mounted) // we need this so we make sure we only render this "costly" effect when this element is mounted in the widget tree.
+                      RepaintBoundary(
+                        child: SizedBox.square(
+                          dimension: 148,
+                          child: AnimatedGlitch(
+                            controller: AnimatedGlitchController(
+                              // frequencies have similar parameters to Title widget, but they are varied so they arent trying to refresh as similarly as possible
+                              frequency: const Duration(milliseconds: 600),
+                              chance: 60,
+                              level: 2,
+                            ),
+                            child: Image.asset(
+                              "assets/icon.png",
+                              width: 128,
+                              height: 128,
+                              cacheHeight: 128,
+                              cacheWidth: 128,
+                            ),
                           ),
                         ),
                       ),
                     const SizedBox(height: 20),
-                    if (context.mounted) const SizedBox(height: 52, child: _Title()),
+                    // once again, we need to check if this current element is mounted in the widget tree to determine if we should render this costly effect or not
+                    if (context.mounted)
+                      const RepaintBoundary(child: SizedBox(height: 52, child: _Title())),
                     const SizedBox(height: 8),
                     const Text(
                       "BUILD ${Public.build} | SIG ${Public.versionSignature} | ${Public.isRelease ? 'PUB' : 'DEV'}",
@@ -59,6 +70,12 @@ class HomePage extends StatelessWidget {
                       style: TextStyle(color: PublicTheme.loreYellow),
                     ),
                     const SizedBox(height: 12),
+                    // this is the mission mock box where we try to mock the look and feel of the mission box of the GTFO game
+                    // each rundown in GTFO when you click it shows a popup of some of the information for that particular mission
+                    // this here tries to replicate that look with some minor cuts.
+                    //
+                    // additionally there is a custom widget used for the divider known as the DroopedDivider which
+                    // you can view under the 'widgets' dir. it is used to mimic the look and feel further instead of using a normal divider widget
                     Container(
                       decoration: BoxDecoration(
                         border: Border.all(color: PublicTheme.normalWhite, width: 2),
@@ -93,10 +110,13 @@ class HomePage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              DroopedDivider(
-                                color: PublicTheme.normalWhite,
-                                thickness: 2,
-                                amount: 2,
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 12),
+                                child: DroopedDivider(
+                                  color: PublicTheme.normalWhite,
+                                  thickness: 2,
+                                  amount: 8,
+                                ),
                               ),
                               Padding(
                                 padding: EdgeInsets.only(left: 4),
@@ -116,7 +136,7 @@ class HomePage extends StatelessWidget {
                                 child: Text.rich(
                                   TextSpan(
                                     children: <InlineSpan>[
-                                      TextSpan(text: ">...Wh.. I fucking got "),
+                                      TextSpan(text: ">...Wh..What!? I fucking got "),
                                       TextSpan(
                                         text: "NOTHING",
                                         style: TextStyle(
@@ -143,10 +163,15 @@ class HomePage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              DroopedDivider(
-                                color: PublicTheme.normalWhite,
-                                thickness: 2,
-                                amount: 2,
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 12),
+                                child: SizedBox(
+                                  child: DroopedDivider(
+                                    color: PublicTheme.normalWhite,
+                                    thickness: 2,
+                                    amount: 8,
+                                  ),
+                                ),
                               ),
                               Padding(
                                 padding: EdgeInsets.only(left: 4),

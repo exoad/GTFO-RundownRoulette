@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:community_material_icon/community_material_icon.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gtfo_rundown_roulette/interface/provider/current_run.dart';
+import 'package:gtfo_rundown_roulette/interface/widgets/core/drooped_divider.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/core/normal_box.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/loadout_item_card.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/widgets.dart';
@@ -177,6 +182,65 @@ class _ContentBodyState extends State<_ContentBody>
                                           ],
                                         ),
                               ),
+                              Expanded(
+                                child: Builder(
+                                  builder: (BuildContext context) {
+                                    final String? seedString =
+                                        Provider.of<CurrentRun>(context).run?.seed.toString();
+                                    return DefaultTextStyle(
+                                      style: const TextStyle(fontFamily: "Shared Tech"),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          if (seedString != null) {
+                                            Clipboard.setData(ClipboardData(text: seedString)).then(
+                                              (_) => toastification.showCustom(
+                                                autoCloseDuration: const Duration(
+                                                  milliseconds: 2000,
+                                                ),
+                                                animationDuration: Duration.zero,
+                                                alignment: Alignment.bottomRight,
+                                                builder: (_, __) {
+                                                  return const UINormalBox(
+                                                    foregroundColor: PublicTheme.loreYellow,
+                                                    child: Text("Copied seed"),
+                                                  );
+                                                },
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            Text.rich(
+                                              TextSpan(
+                                                children: <InlineSpan>[
+                                                  const TextSpan(
+                                                    text: "Seed:\n",
+                                                    style: TextStyle(
+                                                      color: PublicTheme.loreYellow,
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: seedString ?? "???",
+                                                    style: const TextStyle(
+                                                      color: PublicTheme.normalWhite,
+                                                      fontFamily: "Fira Code",
+                                                      fontSize: 20,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -288,11 +352,14 @@ class _ContentBodyState extends State<_ContentBody>
     );
   }
 
+  String? customSeed;
+
   IntrinsicWidth _modifierButtons(BuildContext context) {
     // ignore unstable states shit with ancestors
     return IntrinsicWidth(
       child: Column(
         spacing: 4,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           IntrinsicHeight(
             child: Row(
@@ -499,66 +566,266 @@ class _ContentBodyState extends State<_ContentBody>
               ],
             ),
           ),
-          Row(
-            spacing: 4,
-            children: <Widget>[
-              Tooltip(
-                message: "Filters",
-                child: DisableableWidget(
-                  disabled: rerolling,
-                  child: UINormalBoxButton(
-                    foregroundColor: PublicTheme.loreYellow,
-                    onTap:
-                        () async => await showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            final Variant1Filter currFilter =
-                                filter ??
-                                // ignore: prefer_const_constructors
-                                Variant1Filter(
-                                  blockedMissions: <Mission>{},
-                                  blockedPrimaries: <Gun>{},
-                                  blockedSpecials: <Gun>{},
-                                  blockedTools: <ToolItem>{},
-                                  blockedMelees: <MeleeWeapon>{},
-                                  blockedBoosters: <Boosters>{},
-                                );
-                            return AlertDialog(
-                              scrollable: true,
-                              title: const Text("Apply Filters"),
-                              content: IntrinsicWidth(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  spacing: 6,
-                                  children: <Widget>[
-                                    UINormalBoxButton(
-                                      onTap:
-                                          () => Navigator.push(
+          IntrinsicHeight(
+            child: Row(
+              spacing: 4,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Tooltip(
+                  message: "Filters",
+                  child: DisableableWidget(
+                    disabled: rerolling,
+                    child: UINormalBoxButton(
+                      foregroundColor: PublicTheme.loreYellow,
+                      onTap:
+                          () async => await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              final Variant1Filter currFilter =
+                                  filter ??
+                                  // ignore: prefer_const_constructors
+                                  Variant1Filter(
+                                    blockedMissions: <Mission>{},
+                                    blockedPrimaries: <Gun>{},
+                                    blockedSpecials: <Gun>{},
+                                    blockedTools: <ToolItem>{},
+                                    blockedMelees: <MeleeWeapon>{},
+                                    blockedBoosters: <Boosters>{},
+                                  );
+                              return AlertDialog(
+                                scrollable: true,
+                                title: const Text("Apply Filters"),
+                                content: IntrinsicWidth(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    spacing: 6,
+                                    children: <Widget>[
+                                      UINormalBoxButton(
+                                        onTap:
+                                            () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute<Widget>(
+                                                builder:
+                                                    (BuildContext context) => Scaffold(
+                                                      appBar: AppBar(
+                                                        actionsPadding: const EdgeInsets.symmetric(
+                                                          horizontal: 8,
+                                                        ),
+                                                        title: const Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment.start,
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          children: <Widget>[
+                                                            Text("Filter Rundowns"),
+                                                            SizedBox(height: 6),
+                                                            Text(
+                                                              "Scroll horizontally by holding [SHIFT]",
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: PublicTheme.dangerRed,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        actions: <Widget>[
+                                                          UINormalBoxButton(
+                                                            onTap: () {
+                                                              filter = currFilter;
+                                                              Navigator.pop(context);
+                                                            },
+                                                            child: const Row(
+                                                              spacing: 4,
+                                                              children: <Widget>[
+                                                                Icon(Icons.input_sharp),
+                                                                Text("Apply"),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      body: ListView.builder(
+                                                        scrollDirection: Axis.horizontal,
+                                                        itemCount: Preset.vanilla.rundowns.length,
+                                                        itemBuilder: (BuildContext context, int i) {
+                                                          return Padding(
+                                                            padding: const EdgeInsets.symmetric(
+                                                              horizontal: 18,
+                                                            ),
+                                                            child: IntrinsicWidth(
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment.start,
+                                                                children: <Widget>[
+                                                                  Builder(
+                                                                    builder: (
+                                                                      BuildContext context,
+                                                                    ) {
+                                                                      final String name =
+                                                                          Preset
+                                                                              .vanilla
+                                                                              .rundowns[i]
+                                                                              .canonicalName
+                                                                              .toUpperCase();
+
+                                                                      if (!name.startsWith(
+                                                                        "ALT://",
+                                                                      )) {
+                                                                        final List<String> parts =
+                                                                            name.split("\"");
+                                                                        return Text(
+                                                                          "${parts[0]}\n\"${parts.sublist(1).join()}\"",
+                                                                          style: const TextStyle(
+                                                                            color:
+                                                                                PublicTheme
+                                                                                    .normalWhite,
+                                                                            fontSize: 20,
+                                                                            fontFamily:
+                                                                                "Shared Tech",
+                                                                          ),
+                                                                        );
+                                                                      }
+                                                                      final List<String> parts =
+                                                                          name
+                                                                              .split("ALT://")
+                                                                              .last
+                                                                              .split("\"");
+                                                                      return Text.rich(
+                                                                        TextSpan(
+                                                                          children: <InlineSpan>[
+                                                                            const TextSpan(
+                                                                              text: "ALT://",
+                                                                              style: TextStyle(
+                                                                                color:
+                                                                                    PublicTheme
+                                                                                        .loreYellow,
+                                                                              ),
+                                                                            ),
+                                                                            TextSpan(
+                                                                              text:
+                                                                                  "${parts[0]}\nTITLE: \"${parts.sublist(1).join()}\"",
+                                                                              style: const TextStyle(
+                                                                                color:
+                                                                                    PublicTheme
+                                                                                        .normalWhite,
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                          style: const TextStyle(
+                                                                            fontSize: 20,
+                                                                            fontFamily:
+                                                                                "Shared Tech",
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: SingleChildScrollView(
+                                                                      child: IntrinsicWidth(
+                                                                        child: Padding(
+                                                                          padding:
+                                                                              const EdgeInsets.only(
+                                                                                bottom: 30,
+                                                                                right: 30,
+                                                                              ),
+                                                                          child: Column(
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment
+                                                                                    .stretch,
+                                                                            children: List<
+                                                                              Widget
+                                                                            >.generate(
+                                                                              Preset
+                                                                                  .vanilla
+                                                                                  .rundowns[i]
+                                                                                  .allMissions
+                                                                                  .length,
+                                                                              (int j) {
+                                                                                final List<String>
+                                                                                parts = Preset
+                                                                                    .vanilla
+                                                                                    .rundowns[i]
+                                                                                    .allMissions[j]
+                                                                                    .canonicalName
+                                                                                    .split("\"");
+                                                                                return Padding(
+                                                                                  padding:
+                                                                                      const EdgeInsets.only(
+                                                                                        bottom: 8,
+                                                                                      ),
+                                                                                  child: DisableableWidget(
+                                                                                    disabled: false,
+                                                                                    child: Row(
+                                                                                      spacing: 6,
+                                                                                      children: <
+                                                                                        Widget
+                                                                                      >[
+                                                                                        UINormalBox(
+                                                                                          padding:
+                                                                                              const EdgeInsets.only(
+                                                                                                left:
+                                                                                                    2,
+                                                                                              ),
+                                                                                          foregroundColor:
+                                                                                              Preset.vanilla.rundowns[i].allMissions[j].isLore
+                                                                                                  ? PublicTheme.loreYellow
+                                                                                                  : null,
+                                                                                          thick:
+                                                                                              true,
+                                                                                          child: Text(
+                                                                                            parts
+                                                                                                .first,
+                                                                                            style: const TextStyle(
+                                                                                              fontSize:
+                                                                                                  26,
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                        Text(
+                                                                                          "\"${parts.sublist(1).join()}\""
+                                                                                              .toUpperCase(),
+                                                                                          style: const TextStyle(
+                                                                                            fontSize:
+                                                                                                20,
+                                                                                            color:
+                                                                                                PublicTheme.hiddenGray,
+                                                                                            fontFamily:
+                                                                                                "Shared Tech",
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
+                                                                                );
+                                                                              },
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                              ),
+                                            ),
+                                        foregroundColor: PublicTheme.loreYellow,
+                                        child: const Text("Filter Missions"),
+                                      ),
+                                      UINormalBoxButton(
+                                        onTap: () {
+                                          Navigator.push(
                                             context,
                                             MaterialPageRoute<Widget>(
                                               builder:
                                                   (BuildContext context) => Scaffold(
                                                     appBar: AppBar(
-                                                      actionsPadding: const EdgeInsets.symmetric(
-                                                        horizontal: 8,
-                                                      ),
-                                                      title: const Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment.start,
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        children: <Widget>[
-                                                          Text("Filter Rundowns"),
-                                                          SizedBox(height: 6),
-                                                          Text(
-                                                            "Scroll horizontally by holding [SHIFT]",
-                                                            style: TextStyle(
-                                                              fontSize: 14,
-                                                              color: PublicTheme.dangerRed,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
+                                                      title: const Text("Filter Tools"),
                                                       actions: <Widget>[
                                                         UINormalBoxButton(
                                                           onTap: () {
@@ -575,860 +842,810 @@ class _ContentBodyState extends State<_ContentBody>
                                                         ),
                                                       ],
                                                     ),
-                                                    body: ListView.builder(
-                                                      scrollDirection: Axis.horizontal,
-                                                      itemCount: Preset.vanilla.rundowns.length,
-                                                      itemBuilder: (BuildContext context, int i) {
-                                                        return Padding(
-                                                          padding: const EdgeInsets.symmetric(
-                                                            horizontal: 18,
-                                                          ),
-                                                          child: IntrinsicWidth(
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment.start,
-                                                              children: <Widget>[
-                                                                Builder(
-                                                                  builder: (BuildContext context) {
-                                                                    final String name =
-                                                                        Preset
-                                                                            .vanilla
-                                                                            .rundowns[i]
-                                                                            .canonicalName
-                                                                            .toUpperCase();
-
-                                                                    if (!name.startsWith(
-                                                                      "ALT://",
-                                                                    )) {
-                                                                      final List<String> parts =
-                                                                          name.split("\"");
-                                                                      return Text(
-                                                                        "${parts[0]}\n\"${parts.sublist(1).join()}\"",
-                                                                        style: const TextStyle(
-                                                                          color:
-                                                                              PublicTheme
-                                                                                  .normalWhite,
-                                                                          fontSize: 20,
-                                                                          fontFamily: "Shared Tech",
-                                                                        ),
-                                                                      );
-                                                                    }
-                                                                    final List<String> parts = name
-                                                                        .split("ALT://")
-                                                                        .last
-                                                                        .split("\"");
-                                                                    return Text.rich(
-                                                                      TextSpan(
-                                                                        children: <InlineSpan>[
-                                                                          const TextSpan(
-                                                                            text: "ALT://",
-                                                                            style: TextStyle(
-                                                                              color:
-                                                                                  PublicTheme
-                                                                                      .loreYellow,
-                                                                            ),
-                                                                          ),
-                                                                          TextSpan(
-                                                                            text:
-                                                                                "${parts[0]}\nTITLE: \"${parts.sublist(1).join()}\"",
-                                                                            style: const TextStyle(
-                                                                              color:
-                                                                                  PublicTheme
-                                                                                      .normalWhite,
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                        style: const TextStyle(
-                                                                          fontSize: 20,
-                                                                          fontFamily: "Shared Tech",
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  },
-                                                                ),
-                                                                Expanded(
-                                                                  child: SingleChildScrollView(
-                                                                    child: IntrinsicWidth(
-                                                                      child: Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.only(
-                                                                              bottom: 30,
-                                                                              right: 30,
-                                                                            ),
-                                                                        child: Column(
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment
-                                                                                  .stretch,
-                                                                          children: List<
-                                                                            Widget
-                                                                          >.generate(
-                                                                            Preset
-                                                                                .vanilla
-                                                                                .rundowns[i]
-                                                                                .allMissions
-                                                                                .length,
-                                                                            (int j) {
-                                                                              final List<String>
-                                                                              parts = Preset
-                                                                                  .vanilla
-                                                                                  .rundowns[i]
-                                                                                  .allMissions[j]
-                                                                                  .canonicalName
-                                                                                  .split("\"");
-                                                                              return Padding(
-                                                                                padding:
-                                                                                    const EdgeInsets.only(
-                                                                                      bottom: 8,
-                                                                                    ),
-                                                                                child: DisableableWidget(
-                                                                                  disabled: false,
-                                                                                  child: Row(
-                                                                                    spacing: 6,
-                                                                                    children: <
-                                                                                      Widget
-                                                                                    >[
-                                                                                      UINormalBox(
-                                                                                        padding:
-                                                                                            const EdgeInsets.only(
-                                                                                              left:
-                                                                                                  2,
-                                                                                            ),
-                                                                                        foregroundColor:
-                                                                                            Preset.vanilla.rundowns[i].allMissions[j].isLore
-                                                                                                ? PublicTheme.loreYellow
-                                                                                                : null,
-                                                                                        thick: true,
-                                                                                        child: Text(
-                                                                                          parts
-                                                                                              .first,
-                                                                                          style: const TextStyle(
-                                                                                            fontSize:
-                                                                                                26,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                      Text(
-                                                                                        "\"${parts.sublist(1).join()}\""
-                                                                                            .toUpperCase(),
-                                                                                        style: const TextStyle(
-                                                                                          fontSize:
-                                                                                              20,
-                                                                                          color:
-                                                                                              PublicTheme
-                                                                                                  .hiddenGray,
-                                                                                          fontFamily:
-                                                                                              "Shared Tech",
-                                                                                        ),
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
-                                                                                ),
-                                                                              );
-                                                                            },
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
+                                                    body: Padding(
+                                                      padding: const EdgeInsets.symmetric(
+                                                        horizontal: 22,
+                                                      ),
+                                                      child: Column(
+                                                        children: <Widget>[
+                                                          const Text(
+                                                            "Block items from being generated by the generator by unselecting them.",
+                                                            style: TextStyle(
+                                                              fontWeight: FontWeight.bold,
                                                             ),
                                                           ),
-                                                        );
-                                                      },
+                                                          const SizedBox(height: 10),
+                                                          SingleChildScrollView(
+                                                            physics:
+                                                                const AlwaysScrollableScrollPhysics(
+                                                                  parent: BouncingScrollPhysics(),
+                                                                ),
+                                                            child: Wrap(
+                                                              spacing: 12,
+                                                              runSpacing: 12,
+                                                              runAlignment:
+                                                                  WrapAlignment.spaceEvenly,
+                                                              children: List<
+                                                                Widget
+                                                              >.generate(Preset.vanilla.primaries.length, (
+                                                                int i,
+                                                              ) {
+                                                                final Gun item =
+                                                                    Preset.vanilla.primaries[i];
+                                                                return Tooltip(
+                                                                  message: item.canonicalName,
+                                                                  child: FilterToggleItemExtended(
+                                                                    toggled:
+                                                                        !currFilter.blockedPrimaries
+                                                                            .contains(item),
+                                                                    consumer: (bool r) {
+                                                                      if (!r &&
+                                                                          currFilter
+                                                                                      .blockedPrimaries
+                                                                                      .length +
+                                                                                  1 ==
+                                                                              Preset
+                                                                                  .vanilla
+                                                                                  .primaries
+                                                                                  .length) {
+                                                                        showDialog(
+                                                                          context: context,
+                                                                          builder:
+                                                                              (
+                                                                                BuildContext
+                                                                                context,
+                                                                              ) => AlertDialog(
+                                                                                actions: <Widget>[
+                                                                                  UINormalBoxButton(
+                                                                                    onTap:
+                                                                                        () => Navigator.pop(
+                                                                                          context,
+                                                                                        ),
+                                                                                    child:
+                                                                                        const Text(
+                                                                                          "Ok",
+                                                                                        ),
+                                                                                  ),
+                                                                                ],
+                                                                                icon: const Icon(
+                                                                                  Icons.error,
+                                                                                ),
+                                                                                title: const Text(
+                                                                                  "At least one item needs to be unblocked!",
+                                                                                ),
+                                                                              ),
+                                                                        );
+                                                                        return false;
+                                                                      } else if (!r) {
+                                                                        currFilter.blockedPrimaries
+                                                                            .add(item);
+                                                                      } else {
+                                                                        currFilter.blockedPrimaries
+                                                                            .remove(item);
+                                                                      }
+                                                                      return true;
+                                                                    },
+                                                                    item: item,
+                                                                  ),
+                                                                );
+                                                              }),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                             ),
-                                          ),
-                                      foregroundColor: PublicTheme.loreYellow,
-                                      child: const Text("Filter Missions"),
-                                    ),
-                                    UINormalBoxButton(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute<Widget>(
-                                            builder:
-                                                (BuildContext context) => Scaffold(
-                                                  appBar: AppBar(
-                                                    title: const Text("Filter Tools"),
-                                                    actions: <Widget>[
-                                                      UINormalBoxButton(
-                                                        onTap: () {
-                                                          filter = currFilter;
-                                                          Navigator.pop(context);
-                                                        },
-                                                        child: const Row(
-                                                          spacing: 4,
-                                                          children: <Widget>[
-                                                            Icon(Icons.input_sharp),
-                                                            Text("Apply"),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  body: Padding(
-                                                    padding: const EdgeInsets.symmetric(
-                                                      horizontal: 22,
-                                                    ),
-                                                    child: Column(
-                                                      children: <Widget>[
-                                                        const Text(
-                                                          "Block items from being generated by the generator by unselecting them.",
-                                                          style: TextStyle(
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(height: 10),
-                                                        SingleChildScrollView(
-                                                          physics:
-                                                              const AlwaysScrollableScrollPhysics(
-                                                                parent: BouncingScrollPhysics(),
-                                                              ),
-                                                          child: Wrap(
-                                                            spacing: 12,
-                                                            runSpacing: 12,
-                                                            runAlignment: WrapAlignment.spaceEvenly,
-                                                            children: List<
-                                                              Widget
-                                                            >.generate(Preset.vanilla.primaries.length, (
-                                                              int i,
-                                                            ) {
-                                                              final Gun item =
-                                                                  Preset.vanilla.primaries[i];
-                                                              return Tooltip(
-                                                                message: item.canonicalName,
-                                                                child: FilterToggleItemExtended(
-                                                                  toggled:
-                                                                      !currFilter.blockedPrimaries
-                                                                          .contains(item),
-                                                                  consumer: (bool r) {
-                                                                    if (!r &&
-                                                                        currFilter
-                                                                                    .blockedPrimaries
-                                                                                    .length +
-                                                                                1 ==
-                                                                            Preset
-                                                                                .vanilla
-                                                                                .primaries
-                                                                                .length) {
-                                                                      showDialog(
-                                                                        context: context,
-                                                                        builder:
-                                                                            (
-                                                                              BuildContext context,
-                                                                            ) => AlertDialog(
-                                                                              actions: <Widget>[
-                                                                                UINormalBoxButton(
-                                                                                  onTap:
-                                                                                      () =>
-                                                                                          Navigator.pop(
-                                                                                            context,
-                                                                                          ),
-                                                                                  child: const Text(
-                                                                                    "Ok",
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                              icon: const Icon(
-                                                                                Icons.error,
-                                                                              ),
-                                                                              title: const Text(
-                                                                                "At least one item needs to be unblocked!",
-                                                                              ),
-                                                                            ),
-                                                                      );
-                                                                      return false;
-                                                                    } else if (!r) {
-                                                                      currFilter.blockedPrimaries
-                                                                          .add(item);
-                                                                    } else {
-                                                                      currFilter.blockedPrimaries
-                                                                          .remove(item);
-                                                                    }
-                                                                    return true;
-                                                                  },
-                                                                  item: item,
-                                                                ),
-                                                              );
-                                                            }),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                          ),
-                                        );
-                                      },
-                                      foregroundColor: PublicTheme.loreYellow,
+                                          );
+                                        },
+                                        foregroundColor: PublicTheme.loreYellow,
 
-                                      child: const Text("Filter Primary Weapons"),
-                                    ),
-                                    UINormalBoxButton(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute<Widget>(
-                                            builder:
-                                                (BuildContext context) => Scaffold(
-                                                  appBar: AppBar(
-                                                    title: const Text("Filter Special Weapons"),
-                                                    actions: <Widget>[
-                                                      UINormalBoxButton(
-                                                        onTap: () {
-                                                          filter = currFilter;
-                                                          Navigator.pop(context);
-                                                        },
-                                                        child: const Row(
-                                                          spacing: 4,
-                                                          children: <Widget>[
-                                                            Icon(Icons.input_sharp),
-                                                            Text("Apply"),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  body: Padding(
-                                                    padding: const EdgeInsets.symmetric(
-                                                      horizontal: 22,
-                                                    ),
-                                                    child: Column(
-                                                      children: <Widget>[
-                                                        const Text(
-                                                          "Block items from being generated by the generator by unselecting them.",
-                                                          style: TextStyle(
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(height: 10),
-                                                        SingleChildScrollView(
-                                                          child: Wrap(
-                                                            spacing: 12,
-                                                            runSpacing: 12,
-                                                            runAlignment: WrapAlignment.spaceEvenly,
-                                                            children: List<
-                                                              Widget
-                                                            >.generate(Preset.vanilla.specials.length, (
-                                                              int i,
-                                                            ) {
-                                                              final Gun item =
-                                                                  Preset.vanilla.specials[i];
-                                                              return Tooltip(
-                                                                message: item.canonicalName,
-                                                                child: FilterToggleItemExtended(
-                                                                  toggled:
-                                                                      !currFilter.blockedSpecials
-                                                                          .contains(item),
-                                                                  consumer: (bool r) {
-                                                                    if (!r &&
-                                                                        currFilter
-                                                                                    .blockedSpecials
-                                                                                    .length +
-                                                                                1 ==
-                                                                            Preset
-                                                                                .vanilla
-                                                                                .specials
-                                                                                .length) {
-                                                                      showDialog(
-                                                                        context: context,
-                                                                        builder:
-                                                                            (
-                                                                              BuildContext context,
-                                                                            ) => AlertDialog(
-                                                                              actions: <Widget>[
-                                                                                FilledButton(
-                                                                                  onPressed:
-                                                                                      () =>
-                                                                                          Navigator.pop(
-                                                                                            context,
-                                                                                          ),
-                                                                                  child: const Text(
-                                                                                    "Ok",
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                              icon: const Icon(
-                                                                                Icons.error,
-                                                                              ),
-                                                                              title: const Text(
-                                                                                "At least one item needs to be unblocked!",
-                                                                              ),
-                                                                            ),
-                                                                      );
-                                                                      return false;
-                                                                    } else if (!r) {
-                                                                      currFilter.blockedSpecials
-                                                                          .add(item);
-                                                                    } else {
-                                                                      currFilter.blockedSpecials
-                                                                          .remove(item);
-                                                                    }
-                                                                    return true;
-                                                                  },
-                                                                  item: item,
-                                                                ),
-                                                              );
-                                                            }),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                          ),
-                                        );
-                                      },
-                                      foregroundColor: PublicTheme.loreYellow,
-
-                                      child: const Text("Filter Special Weapons"),
-                                    ),
-                                    UINormalBoxButton(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute<Widget>(
-                                            builder:
-                                                (BuildContext context) => Scaffold(
-                                                  appBar: AppBar(
-                                                    title: const Text("Filter Tools"),
-                                                    actions: <Widget>[
-                                                      UINormalBoxButton(
-                                                        onTap: () {
-                                                          filter = currFilter;
-                                                          Navigator.pop(context);
-                                                        },
-                                                        child: const Row(
-                                                          spacing: 4,
-                                                          children: <Widget>[
-                                                            Icon(Icons.input_sharp),
-                                                            Text("Apply"),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  body: Padding(
-                                                    padding: const EdgeInsets.symmetric(
-                                                      horizontal: 22,
-                                                    ),
-                                                    child: Column(
-                                                      children: <Widget>[
-                                                        const Text(
-                                                          "Block items from being generated by the generator by unselecting them.",
-                                                          style: TextStyle(
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(height: 10),
-                                                        SingleChildScrollView(
-                                                          child: Wrap(
-                                                            spacing: 12,
-                                                            runSpacing: 12,
-                                                            runAlignment: WrapAlignment.spaceEvenly,
-                                                            children: List<
-                                                              Widget
-                                                            >.generate(Preset.vanilla.tools.length, (
-                                                              int i,
-                                                            ) {
-                                                              final ToolItem item =
-                                                                  Preset.vanilla.tools[i];
-                                                              return Tooltip(
-                                                                message: item.canonicalName,
-                                                                child: FilterToggleItemExtended(
-                                                                  toggled:
-                                                                      !currFilter.blockedTools
-                                                                          .contains(item),
-                                                                  consumer: (bool r) {
-                                                                    if (!r &&
-                                                                        currFilter
-                                                                                    .blockedTools
-                                                                                    .length +
-                                                                                1 ==
-                                                                            Preset
-                                                                                .vanilla
-                                                                                .tools
-                                                                                .length) {
-                                                                      showDialog(
-                                                                        context: context,
-                                                                        builder:
-                                                                            (
-                                                                              BuildContext context,
-                                                                            ) => AlertDialog(
-                                                                              actions: <Widget>[
-                                                                                UINormalBoxButton(
-                                                                                  onTap:
-                                                                                      () =>
-                                                                                          Navigator.pop(
-                                                                                            context,
-                                                                                          ),
-                                                                                  child: const Text(
-                                                                                    "Ok",
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                              icon: const Icon(
-                                                                                Icons.error,
-                                                                              ),
-                                                                              title: const Text(
-                                                                                "At least one item needs to be unblocked!",
-                                                                              ),
-                                                                            ),
-                                                                      );
-                                                                      return false;
-                                                                    } else if (!r) {
-                                                                      currFilter.blockedTools.add(
-                                                                        item,
-                                                                      );
-                                                                    } else {
-                                                                      currFilter.blockedTools
-                                                                          .remove(item);
-                                                                    }
-                                                                    return true;
-                                                                  },
-                                                                  item: item,
-                                                                ),
-                                                              );
-                                                            }),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                          ),
-                                        );
-                                      },
-                                      foregroundColor: PublicTheme.loreYellow,
-
-                                      child: const Text("Filter Tools"),
-                                    ),
-                                    UINormalBoxButton(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute<Widget>(
-                                            builder:
-                                                (BuildContext context) => Scaffold(
-                                                  appBar: AppBar(
-                                                    title: const Text("Filter Melee Weapons"),
-                                                    actions: <Widget>[
-                                                      UINormalBoxButton(
-                                                        onTap: () {
-                                                          filter = currFilter;
-                                                          Navigator.pop(context);
-                                                        },
-                                                        child: const Row(
-                                                          spacing: 4,
-                                                          children: <Widget>[
-                                                            Icon(Icons.input_sharp),
-                                                            Text("Apply"),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  body: Padding(
-                                                    padding: const EdgeInsets.symmetric(
-                                                      horizontal: 22,
-                                                    ),
-                                                    child: Column(
-                                                      children: <Widget>[
-                                                        const Text(
-                                                          "Block items from being generated by the generator by unselecting them.",
-                                                          style: TextStyle(
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(height: 10),
-                                                        SingleChildScrollView(
-                                                          child: Wrap(
-                                                            spacing: 12,
-                                                            runSpacing: 12,
-                                                            runAlignment: WrapAlignment.spaceEvenly,
-                                                            children: List<
-                                                              Widget
-                                                            >.generate(Preset.vanilla.melees.length, (
-                                                              int i,
-                                                            ) {
-                                                              final MeleeWeapon item =
-                                                                  Preset.vanilla.melees[i];
-                                                              return Tooltip(
-                                                                message:
-                                                                    Preset
-                                                                        .vanilla
-                                                                        .melees[i]
-                                                                        .canonicalName,
-                                                                child: FilterToggleItemExtended(
-                                                                  toggled:
-                                                                      !currFilter.blockedMelees
-                                                                          .contains(item),
-                                                                  consumer: (bool r) {
-                                                                    if (!r &&
-                                                                        currFilter
-                                                                                    .blockedMelees
-                                                                                    .length +
-                                                                                1 ==
-                                                                            Preset
-                                                                                .vanilla
-                                                                                .melees
-                                                                                .length) {
-                                                                      showDialog(
-                                                                        context: context,
-                                                                        builder:
-                                                                            (
-                                                                              BuildContext context,
-                                                                            ) => AlertDialog(
-                                                                              actions: <Widget>[
-                                                                                UINormalBoxButton(
-                                                                                  onTap:
-                                                                                      () =>
-                                                                                          Navigator.pop(
-                                                                                            context,
-                                                                                          ),
-                                                                                  child: const Text(
-                                                                                    "Ok",
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                              icon: const Icon(
-                                                                                Icons.error,
-                                                                              ),
-                                                                              title: const Text(
-                                                                                "At least one item needs to be unblocked!",
-                                                                              ),
-                                                                            ),
-                                                                      );
-                                                                      return false;
-                                                                    } else if (!r) {
-                                                                      currFilter.blockedMelees.add(
-                                                                        item,
-                                                                      );
-                                                                    } else {
-                                                                      currFilter.blockedMelees
-                                                                          .remove(item);
-                                                                    }
-                                                                    return true;
-                                                                  },
-                                                                  item: item,
-                                                                ),
-                                                              );
-                                                            }),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                          ),
-                                        );
-                                      },
-                                      foregroundColor: PublicTheme.loreYellow,
-
-                                      child: const Text("Filter Melees"),
-                                    ),
-                                    UINormalBoxButton(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute<Widget>(
-                                            builder:
-                                                (BuildContext context) => Scaffold(
-                                                  appBar: AppBar(
-                                                    title: const Text("Filter Boosters"),
-                                                  ),
-                                                  body: Padding(
-                                                    padding: const EdgeInsets.symmetric(
-                                                      horizontal: 22,
-                                                    ),
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      spacing: 8,
-                                                      children: <Widget>[
-                                                        const Text(
-                                                          "Unselect the boosters you want to block from being generated.",
-                                                        ),
-                                                        const SizedBox(height: 8),
-                                                        Row(
-                                                          spacing: 8,
-                                                          children: <Widget>[
-                                                            Tooltip(
-                                                              message: "Muted Boosters",
-                                                              child: FilterToggleItem(
-                                                                toggled:
-                                                                    !currFilter.blockedBoosters
-                                                                        .contains(Boosters.MUTED),
-                                                                consumer:
-                                                                    (bool r) =>
-                                                                        !r
-                                                                            ? currFilter
-                                                                                .blockedBoosters
-                                                                                .add(Boosters.MUTED)
-                                                                            : currFilter
-                                                                                .blockedBoosters
-                                                                                .remove(
-                                                                                  Boosters.MUTED,
-                                                                                ),
-                                                                child: Image.asset(
-                                                                  "assets/ingame/muted.png",
-                                                                  width: 48,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Tooltip(
-                                                              message: "Bold Boosters",
-                                                              child: FilterToggleItem(
-                                                                toggled:
-                                                                    !currFilter.blockedBoosters
-                                                                        .contains(Boosters.BOLD),
-                                                                consumer:
-                                                                    (bool r) =>
-                                                                        !r
-                                                                            ? currFilter
-                                                                                .blockedBoosters
-                                                                                .add(Boosters.BOLD)
-                                                                            : currFilter
-                                                                                .blockedBoosters
-                                                                                .remove(
-                                                                                  Boosters.BOLD,
-                                                                                ),
-                                                                child: Image.asset(
-                                                                  "assets/ingame/bold.png",
-                                                                  width: 48,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Tooltip(
-                                                              message: "Aggressive Boosters",
-                                                              child: FilterToggleItem(
-                                                                toggled:
-                                                                    !currFilter.blockedBoosters
-                                                                        .contains(
-                                                                          Boosters.AGGRESIVE,
-                                                                        ),
-                                                                consumer:
-                                                                    (bool r) =>
-                                                                        !r
-                                                                            ? currFilter
-                                                                                .blockedBoosters
-                                                                                .add(
-                                                                                  Boosters
-                                                                                      .AGGRESIVE,
-                                                                                )
-                                                                            : currFilter
-                                                                                .blockedBoosters
-                                                                                .remove(
-                                                                                  Boosters
-                                                                                      .AGGRESIVE,
-                                                                                ),
-                                                                child: Image.asset(
-                                                                  "assets/ingame/aggressive.png",
-                                                                  width: 48,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        const SizedBox(height: 14),
+                                        child: const Text("Filter Primary Weapons"),
+                                      ),
+                                      UINormalBoxButton(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute<Widget>(
+                                              builder:
+                                                  (BuildContext context) => Scaffold(
+                                                    appBar: AppBar(
+                                                      title: const Text("Filter Special Weapons"),
+                                                      actions: <Widget>[
                                                         UINormalBoxButton(
                                                           onTap: () {
-                                                            debugPrint(
-                                                              "BLOCKED_BOOSTERS = ${currFilter.blockedBoosters.toString()}",
-                                                            );
+                                                            filter = currFilter;
                                                             Navigator.pop(context);
                                                           },
-                                                          child: const Text("OK"),
+                                                          child: const Row(
+                                                            spacing: 4,
+                                                            children: <Widget>[
+                                                              Icon(Icons.input_sharp),
+                                                              Text("Apply"),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
+                                                    body: Padding(
+                                                      padding: const EdgeInsets.symmetric(
+                                                        horizontal: 22,
+                                                      ),
+                                                      child: Column(
+                                                        children: <Widget>[
+                                                          const Text(
+                                                            "Block items from being generated by the generator by unselecting them.",
+                                                            style: TextStyle(
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(height: 10),
+                                                          SingleChildScrollView(
+                                                            child: Wrap(
+                                                              spacing: 12,
+                                                              runSpacing: 12,
+                                                              runAlignment:
+                                                                  WrapAlignment.spaceEvenly,
+                                                              children: List<
+                                                                Widget
+                                                              >.generate(Preset.vanilla.specials.length, (
+                                                                int i,
+                                                              ) {
+                                                                final Gun item =
+                                                                    Preset.vanilla.specials[i];
+                                                                return Tooltip(
+                                                                  message: item.canonicalName,
+                                                                  child: FilterToggleItemExtended(
+                                                                    toggled:
+                                                                        !currFilter.blockedSpecials
+                                                                            .contains(item),
+                                                                    consumer: (bool r) {
+                                                                      if (!r &&
+                                                                          currFilter
+                                                                                      .blockedSpecials
+                                                                                      .length +
+                                                                                  1 ==
+                                                                              Preset
+                                                                                  .vanilla
+                                                                                  .specials
+                                                                                  .length) {
+                                                                        showDialog(
+                                                                          context: context,
+                                                                          builder:
+                                                                              (
+                                                                                BuildContext
+                                                                                context,
+                                                                              ) => AlertDialog(
+                                                                                actions: <Widget>[
+                                                                                  FilledButton(
+                                                                                    onPressed:
+                                                                                        () => Navigator.pop(
+                                                                                          context,
+                                                                                        ),
+                                                                                    child:
+                                                                                        const Text(
+                                                                                          "Ok",
+                                                                                        ),
+                                                                                  ),
+                                                                                ],
+                                                                                icon: const Icon(
+                                                                                  Icons.error,
+                                                                                ),
+                                                                                title: const Text(
+                                                                                  "At least one item needs to be unblocked!",
+                                                                                ),
+                                                                              ),
+                                                                        );
+                                                                        return false;
+                                                                      } else if (!r) {
+                                                                        currFilter.blockedSpecials
+                                                                            .add(item);
+                                                                      } else {
+                                                                        currFilter.blockedSpecials
+                                                                            .remove(item);
+                                                                      }
+                                                                      return true;
+                                                                    },
+                                                                    item: item,
+                                                                  ),
+                                                                );
+                                                              }),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                          ),
-                                        );
-                                      },
-                                      foregroundColor: PublicTheme.loreYellow,
+                                            ),
+                                          );
+                                        },
+                                        foregroundColor: PublicTheme.loreYellow,
 
-                                      child: const Text("Filter Boosters"),
-                                    ),
-                                  ],
+                                        child: const Text("Filter Special Weapons"),
+                                      ),
+                                      UINormalBoxButton(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute<Widget>(
+                                              builder:
+                                                  (BuildContext context) => Scaffold(
+                                                    appBar: AppBar(
+                                                      title: const Text("Filter Tools"),
+                                                      actions: <Widget>[
+                                                        UINormalBoxButton(
+                                                          onTap: () {
+                                                            filter = currFilter;
+                                                            Navigator.pop(context);
+                                                          },
+                                                          child: const Row(
+                                                            spacing: 4,
+                                                            children: <Widget>[
+                                                              Icon(Icons.input_sharp),
+                                                              Text("Apply"),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    body: Padding(
+                                                      padding: const EdgeInsets.symmetric(
+                                                        horizontal: 22,
+                                                      ),
+                                                      child: Column(
+                                                        children: <Widget>[
+                                                          const Text(
+                                                            "Block items from being generated by the generator by unselecting them.",
+                                                            style: TextStyle(
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(height: 10),
+                                                          SingleChildScrollView(
+                                                            child: Wrap(
+                                                              spacing: 12,
+                                                              runSpacing: 12,
+                                                              runAlignment:
+                                                                  WrapAlignment.spaceEvenly,
+                                                              children: List<
+                                                                Widget
+                                                              >.generate(Preset.vanilla.tools.length, (
+                                                                int i,
+                                                              ) {
+                                                                final ToolItem item =
+                                                                    Preset.vanilla.tools[i];
+                                                                return Tooltip(
+                                                                  message: item.canonicalName,
+                                                                  child: FilterToggleItemExtended(
+                                                                    toggled:
+                                                                        !currFilter.blockedTools
+                                                                            .contains(item),
+                                                                    consumer: (bool r) {
+                                                                      if (!r &&
+                                                                          currFilter
+                                                                                      .blockedTools
+                                                                                      .length +
+                                                                                  1 ==
+                                                                              Preset
+                                                                                  .vanilla
+                                                                                  .tools
+                                                                                  .length) {
+                                                                        showDialog(
+                                                                          context: context,
+                                                                          builder:
+                                                                              (
+                                                                                BuildContext
+                                                                                context,
+                                                                              ) => AlertDialog(
+                                                                                actions: <Widget>[
+                                                                                  UINormalBoxButton(
+                                                                                    onTap:
+                                                                                        () => Navigator.pop(
+                                                                                          context,
+                                                                                        ),
+                                                                                    child:
+                                                                                        const Text(
+                                                                                          "Ok",
+                                                                                        ),
+                                                                                  ),
+                                                                                ],
+                                                                                icon: const Icon(
+                                                                                  Icons.error,
+                                                                                ),
+                                                                                title: const Text(
+                                                                                  "At least one item needs to be unblocked!",
+                                                                                ),
+                                                                              ),
+                                                                        );
+                                                                        return false;
+                                                                      } else if (!r) {
+                                                                        currFilter.blockedTools.add(
+                                                                          item,
+                                                                        );
+                                                                      } else {
+                                                                        currFilter.blockedTools
+                                                                            .remove(item);
+                                                                      }
+                                                                      return true;
+                                                                    },
+                                                                    item: item,
+                                                                  ),
+                                                                );
+                                                              }),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                        foregroundColor: PublicTheme.loreYellow,
+
+                                        child: const Text("Filter Tools"),
+                                      ),
+                                      UINormalBoxButton(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute<Widget>(
+                                              builder:
+                                                  (BuildContext context) => Scaffold(
+                                                    appBar: AppBar(
+                                                      title: const Text("Filter Melee Weapons"),
+                                                      actions: <Widget>[
+                                                        UINormalBoxButton(
+                                                          onTap: () {
+                                                            filter = currFilter;
+                                                            Navigator.pop(context);
+                                                          },
+                                                          child: const Row(
+                                                            spacing: 4,
+                                                            children: <Widget>[
+                                                              Icon(Icons.input_sharp),
+                                                              Text("Apply"),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    body: Padding(
+                                                      padding: const EdgeInsets.symmetric(
+                                                        horizontal: 22,
+                                                      ),
+                                                      child: Column(
+                                                        children: <Widget>[
+                                                          const Text(
+                                                            "Block items from being generated by the generator by unselecting them.",
+                                                            style: TextStyle(
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(height: 10),
+                                                          SingleChildScrollView(
+                                                            child: Wrap(
+                                                              spacing: 12,
+                                                              runSpacing: 12,
+                                                              runAlignment:
+                                                                  WrapAlignment.spaceEvenly,
+                                                              children: List<
+                                                                Widget
+                                                              >.generate(Preset.vanilla.melees.length, (
+                                                                int i,
+                                                              ) {
+                                                                final MeleeWeapon item =
+                                                                    Preset.vanilla.melees[i];
+                                                                return Tooltip(
+                                                                  message:
+                                                                      Preset
+                                                                          .vanilla
+                                                                          .melees[i]
+                                                                          .canonicalName,
+                                                                  child: FilterToggleItemExtended(
+                                                                    toggled:
+                                                                        !currFilter.blockedMelees
+                                                                            .contains(item),
+                                                                    consumer: (bool r) {
+                                                                      if (!r &&
+                                                                          currFilter
+                                                                                      .blockedMelees
+                                                                                      .length +
+                                                                                  1 ==
+                                                                              Preset
+                                                                                  .vanilla
+                                                                                  .melees
+                                                                                  .length) {
+                                                                        showDialog(
+                                                                          context: context,
+                                                                          builder:
+                                                                              (
+                                                                                BuildContext
+                                                                                context,
+                                                                              ) => AlertDialog(
+                                                                                actions: <Widget>[
+                                                                                  UINormalBoxButton(
+                                                                                    onTap:
+                                                                                        () => Navigator.pop(
+                                                                                          context,
+                                                                                        ),
+                                                                                    child:
+                                                                                        const Text(
+                                                                                          "Ok",
+                                                                                        ),
+                                                                                  ),
+                                                                                ],
+                                                                                icon: const Icon(
+                                                                                  Icons.error,
+                                                                                ),
+                                                                                title: const Text(
+                                                                                  "At least one item needs to be unblocked!",
+                                                                                ),
+                                                                              ),
+                                                                        );
+                                                                        return false;
+                                                                      } else if (!r) {
+                                                                        currFilter.blockedMelees
+                                                                            .add(item);
+                                                                      } else {
+                                                                        currFilter.blockedMelees
+                                                                            .remove(item);
+                                                                      }
+                                                                      return true;
+                                                                    },
+                                                                    item: item,
+                                                                  ),
+                                                                );
+                                                              }),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                        foregroundColor: PublicTheme.loreYellow,
+
+                                        child: const Text("Filter Melees"),
+                                      ),
+                                      UINormalBoxButton(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute<Widget>(
+                                              builder:
+                                                  (BuildContext context) => Scaffold(
+                                                    appBar: AppBar(
+                                                      title: const Text("Filter Boosters"),
+                                                    ),
+                                                    body: Padding(
+                                                      padding: const EdgeInsets.symmetric(
+                                                        horizontal: 22,
+                                                      ),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment.start,
+                                                        spacing: 8,
+                                                        children: <Widget>[
+                                                          const Text(
+                                                            "Unselect the boosters you want to block from being generated.",
+                                                          ),
+                                                          const SizedBox(height: 8),
+                                                          Row(
+                                                            spacing: 8,
+                                                            children: <Widget>[
+                                                              Tooltip(
+                                                                message: "Muted Boosters",
+                                                                child: FilterToggleItem(
+                                                                  toggled:
+                                                                      !currFilter.blockedBoosters
+                                                                          .contains(Boosters.MUTED),
+                                                                  consumer:
+                                                                      (bool r) =>
+                                                                          !r
+                                                                              ? currFilter
+                                                                                  .blockedBoosters
+                                                                                  .add(
+                                                                                    Boosters.MUTED,
+                                                                                  )
+                                                                              : currFilter
+                                                                                  .blockedBoosters
+                                                                                  .remove(
+                                                                                    Boosters.MUTED,
+                                                                                  ),
+                                                                  child: Image.asset(
+                                                                    "assets/ingame/muted.png",
+                                                                    width: 48,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Tooltip(
+                                                                message: "Bold Boosters",
+                                                                child: FilterToggleItem(
+                                                                  toggled:
+                                                                      !currFilter.blockedBoosters
+                                                                          .contains(Boosters.BOLD),
+                                                                  consumer:
+                                                                      (bool r) =>
+                                                                          !r
+                                                                              ? currFilter
+                                                                                  .blockedBoosters
+                                                                                  .add(
+                                                                                    Boosters.BOLD,
+                                                                                  )
+                                                                              : currFilter
+                                                                                  .blockedBoosters
+                                                                                  .remove(
+                                                                                    Boosters.BOLD,
+                                                                                  ),
+                                                                  child: Image.asset(
+                                                                    "assets/ingame/bold.png",
+                                                                    width: 48,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Tooltip(
+                                                                message: "Aggressive Boosters",
+                                                                child: FilterToggleItem(
+                                                                  toggled:
+                                                                      !currFilter.blockedBoosters
+                                                                          .contains(
+                                                                            Boosters.AGGRESIVE,
+                                                                          ),
+                                                                  consumer:
+                                                                      (bool r) =>
+                                                                          !r
+                                                                              ? currFilter
+                                                                                  .blockedBoosters
+                                                                                  .add(
+                                                                                    Boosters
+                                                                                        .AGGRESIVE,
+                                                                                  )
+                                                                              : currFilter
+                                                                                  .blockedBoosters
+                                                                                  .remove(
+                                                                                    Boosters
+                                                                                        .AGGRESIVE,
+                                                                                  ),
+                                                                  child: Image.asset(
+                                                                    "assets/ingame/aggressive.png",
+                                                                    width: 48,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          const SizedBox(height: 14),
+                                                          UINormalBoxButton(
+                                                            onTap: () {
+                                                              debugPrint(
+                                                                "BLOCKED_BOOSTERS = ${currFilter.blockedBoosters.toString()}",
+                                                              );
+                                                              Navigator.pop(context);
+                                                            },
+                                                            child: const Text("OK"),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                        foregroundColor: PublicTheme.loreYellow,
+
+                                        child: const Text("Filter Boosters"),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              actions: <Widget>[
-                                UINormalBoxButton(
-                                  onTap: () => Navigator.pop(context),
-                                  foregroundColor: PublicTheme.dangerRed,
-                                  child: const Text("Cancel"),
-                                ),
-                                UINormalBoxButton(
-                                  onTap: () {
-                                    filter = currFilter;
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text("Ok"),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                    child: const Icon(CommunityMaterialIcons.filter),
-                  ),
-                ),
-              ),
-              Tooltip(
-                message: "Randomize Rundown Once",
-                child: DisableableWidget(
-                  disabled: rerolling,
-                  child: UINormalBoxButton(
-                    onTap: () async {
-                      try {
-                        Provider.of<CurrentRun>(
-                          context,
-                          listen: false,
-                        ).value = Variant1Generator.produceFrom(
-                          Preset.vanilla,
-                          true,
-                          false,
-                          Provider.of<CurrentRun>(context, listen: false).run,
-                        );
-                      } catch (error) {
-                        await showDialog(
-                          context: context,
-                          builder:
-                              (BuildContext context) => AlertDialog(
                                 actions: <Widget>[
                                   UINormalBoxButton(
                                     onTap: () => Navigator.pop(context),
+                                    foregroundColor: PublicTheme.dangerRed,
+                                    child: const Text("Cancel"),
+                                  ),
+                                  UINormalBoxButton(
+                                    onTap: () {
+                                      filter = currFilter;
+                                      Navigator.pop(context);
+                                    },
                                     child: const Text("Ok"),
                                   ),
                                 ],
-                                title: const Text(
-                                  "Oh no!",
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Shared Tech",
-                                    color: PublicTheme.normalWhite,
-                                  ),
-                                ),
-                                content: Text(
-                                  error.toString(),
-                                  style: const TextStyle(
-                                    color: PublicTheme.dangerRed,
-                                    fontFamily: "Shared Tech",
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                        );
-                      }
-                    },
-                    child: const Icon(CommunityMaterialIcons.account_hard_hat),
+                              );
+                            },
+                          ),
+                      child: const Icon(CommunityMaterialIcons.filter),
+                    ),
                   ),
                 ),
-              ),
-            ],
+                Tooltip(
+                  message: "Randomize Rundown Once",
+                  child: DisableableWidget(
+                    disabled: rerolling,
+                    child: UINormalBoxButton(
+                      onTap: () async {
+                        try {
+                          Provider.of<CurrentRun>(
+                            context,
+                            listen: false,
+                          ).value = Variant1Generator.produceFrom(
+                            Preset.vanilla,
+                            true,
+                            false,
+                            Provider.of<CurrentRun>(context, listen: false).run,
+                          );
+                        } catch (error) {
+                          await showDialog(
+                            context: context,
+                            builder:
+                                (BuildContext context) => AlertDialog(
+                                  actions: <Widget>[
+                                    UINormalBoxButton(
+                                      onTap: () => Navigator.pop(context),
+                                      child: const Text("Ok"),
+                                    ),
+                                  ],
+                                  title: const Text(
+                                    "Oh no!",
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Shared Tech",
+                                      color: PublicTheme.normalWhite,
+                                    ),
+                                  ),
+                                  content: Text(
+                                    error.toString(),
+                                    style: const TextStyle(
+                                      color: PublicTheme.dangerRed,
+                                      fontFamily: "Shared Tech",
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ),
+                          );
+                        }
+                      },
+                      child: const Icon(CommunityMaterialIcons.account_hard_hat),
+                    ),
+                  ),
+                ),
+                DisableableWidget(
+                  disabled: Provider.of<CurrentRun>(context).run == null,
+                  child: UINormalBoxButton(
+                    foregroundColor: PublicTheme.fumingGreen,
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          final String seedString =
+                              Provider.of<CurrentRun>(context).run!.seed.toString();
+                          return AlertDialog(
+                            content: DefaultTextStyle(
+                              style: const TextStyle(fontFamily: "Shared Tech"),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Text.rich(
+                                    TextSpan(
+                                      children: <InlineSpan>[
+                                        const TextSpan(
+                                          text: "Current Seed:\n",
+                                          style: TextStyle(
+                                            color: PublicTheme.loreYellow,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: seedString,
+                                          style: const TextStyle(
+                                            color: PublicTheme.normalWhite,
+                                            fontFamily: "Fira Code",
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 16),
+                                    child: DroopedDivider(
+                                      amount: 6,
+                                      color: PublicTheme.normalWhite,
+                                      thickness: 2,
+                                    ),
+                                  ),
+                                  const Text(
+                                    "Input Custom Seed\n",
+                                    style: TextStyle(color: PublicTheme.loreYellow, fontSize: 18),
+                                  ),
+                                  UINormalBoxInput(
+                                    onChanged: (String str) {
+                                      customSeed = str.isEmpty ? null : str;
+                                    },
+                                    title: "Seed value",
+                                  ),
+                                  Row(
+                                    // another hack to get the alignment to work better :)
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      DisableableWidget(
+                                        disabled: rerolling,
+                                        child: UINormalBoxButton(
+                                          child: const Text("REGENERATE"),
+                                          onTap: () {
+                                            if (customSeed != null) {
+                                              debugPrint("Regenerating with seed: $customSeed");
+                                              // if null it means the string was typed with non numeric characters
+                                              final int seed =
+                                                  int.tryParse(customSeed!) ??
+                                                  sha512256
+                                                          .convert(utf8.encode(customSeed!))
+                                                          .bytes
+                                                          .reduce((int a, int b) => a + b) &
+                                                      0xFFFFFFFF;
+                                              debugPrint("Computed Seed value: $seed");
+                                              Provider.of<CurrentRun>(
+                                                context,
+                                                listen: false,
+                                              ).value = Variant1Generator.produceFrom(
+                                                Preset.vanilla,
+                                                true,
+                                                true,
+                                                null,
+                                                filter,
+                                                seed,
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              UINormalBoxButton(
+                                child: const Text("COPY SEED"),
+                                onTap: () {
+                                  Clipboard.setData(ClipboardData(text: seedString)).then(
+                                    (_) => toastification.showCustom(
+                                      autoCloseDuration: const Duration(milliseconds: 2000),
+                                      animationDuration: Duration.zero,
+                                      alignment: Alignment.bottomRight,
+                                      builder: (_, __) {
+                                        return const UINormalBox(
+                                          foregroundColor: PublicTheme.loreYellow,
+                                          child: Text("Copied seed"),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
+                              UINormalBoxButton(
+                                foregroundColor: PublicTheme.dangerRed,
+                                onTap: () => Navigator.pop(context),
+                                child: const Text("OK"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: const Center(
+                      child: Text("SEED TUNER"),
+                    ), // instead of using the word "View" i had to use "tuner" because to match the length of the previous button of "USAGE INFO" is 9 letters in order to match the same length, a hack tbh
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
