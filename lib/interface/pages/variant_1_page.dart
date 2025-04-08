@@ -1514,23 +1514,22 @@ class _ContentBodyState extends State<_ContentBody>
                     ),
                   ),
                 ),
-                DisableableWidget(
-                  disabled: Provider.of<CurrentRun>(context).run == null,
-                  child: UINormalBoxButton(
-                    foregroundColor: PublicTheme.fumingGreen,
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          final String seedString =
-                              Provider.of<CurrentRun>(context).run!.seed.toString();
-                          return AlertDialog(
-                            content: DefaultTextStyle(
-                              style: const TextStyle(fontFamily: "Shared Tech"),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
+                UINormalBoxButton(
+                  foregroundColor: PublicTheme.fumingGreen,
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        final String? seedString =
+                            Provider.of<CurrentRun>(context).run?.seed.toString();
+                        return AlertDialog(
+                          content: DefaultTextStyle(
+                            style: const TextStyle(fontFamily: "Shared Tech"),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                if (seedString != null)
                                   Text.rich(
                                     TextSpan(
                                       children: <InlineSpan>[
@@ -1552,6 +1551,7 @@ class _ContentBodyState extends State<_ContentBody>
                                       ],
                                     ),
                                   ),
+                                if (seedString != null)
                                   const Padding(
                                     padding: EdgeInsets.symmetric(vertical: 16),
                                     child: DroopedDivider(
@@ -1560,57 +1560,58 @@ class _ContentBodyState extends State<_ContentBody>
                                       thickness: 2,
                                     ),
                                   ),
-                                  const Text(
-                                    "Input Custom Seed\n",
-                                    style: TextStyle(color: PublicTheme.loreYellow, fontSize: 18),
-                                  ),
-                                  UINormalBoxInput(
-                                    onChanged: (String str) {
-                                      customSeed = str.isEmpty ? null : str;
-                                    },
-                                    title: "Seed value",
-                                  ),
-                                  Row(
-                                    // another hack to get the alignment to work better :)
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      DisableableWidget(
-                                        disabled: rerolling,
-                                        child: UINormalBoxButton(
-                                          child: const Text("REGENERATE"),
-                                          onTap: () {
-                                            if (customSeed != null) {
-                                              debugPrint("Regenerating with seed: $customSeed");
-                                              // if null it means the string was typed with non numeric characters
-                                              final int seed =
-                                                  int.tryParse(customSeed!) ??
-                                                  sha512256
-                                                          .convert(utf8.encode(customSeed!))
-                                                          .bytes
-                                                          .reduce((int a, int b) => a + b) &
-                                                      0xFFFFFFFF;
-                                              debugPrint("Computed Seed value: $seed");
-                                              Provider.of<CurrentRun>(
-                                                context,
-                                                listen: false,
-                                              ).value = Variant1Generator.produceFrom(
-                                                Preset.vanilla,
-                                                true,
-                                                true,
-                                                null,
-                                                filter,
-                                                seed,
-                                              );
-                                            }
-                                          },
-                                        ),
+                                const Text(
+                                  "Input Custom Seed\n",
+                                  style: TextStyle(color: PublicTheme.loreYellow, fontSize: 18),
+                                ),
+                                UINormalBoxInput(
+                                  onChanged: (String str) {
+                                    customSeed = str.isEmpty ? null : str;
+                                  },
+                                  title: "Seed value",
+                                ),
+                                Row(
+                                  // another hack to get the alignment to work better :)
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    DisableableWidget(
+                                      disabled: rerolling,
+                                      child: UINormalBoxButton(
+                                        child: const Text("REGENERATE"),
+                                        onTap: () {
+                                          if (customSeed != null) {
+                                            debugPrint("Regenerating with seed: $customSeed");
+                                            // if null it means the string was typed with non numeric characters
+                                            final int seed =
+                                                int.tryParse(customSeed!) ??
+                                                sha512256
+                                                        .convert(utf8.encode(customSeed!))
+                                                        .bytes
+                                                        .reduce((int a, int b) => a + b) &
+                                                    0xFFFFFFFF;
+                                            debugPrint("Computed Seed value: $seed");
+                                            Provider.of<CurrentRun>(
+                                              context,
+                                              listen: false,
+                                            ).value = Variant1Generator.produceFrom(
+                                              Preset.vanilla,
+                                              true,
+                                              true,
+                                              null,
+                                              filter,
+                                              seed,
+                                            );
+                                          }
+                                        },
                                       ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            actions: <Widget>[
+                          ),
+                          actions: <Widget>[
+                            if (seedString != null)
                               UINormalBoxButton(
                                 child: const Text("COPY SEED"),
                                 onTap: () {
@@ -1629,20 +1630,19 @@ class _ContentBodyState extends State<_ContentBody>
                                   );
                                 },
                               ),
-                              UINormalBoxButton(
-                                foregroundColor: PublicTheme.dangerRed,
-                                onTap: () => Navigator.pop(context),
-                                child: const Text("OK"),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: const Center(
-                      child: Text("SEED TUNER"),
-                    ), // instead of using the word "View" i had to use "tuner" because to match the length of the previous button of "USAGE INFO" is 9 letters in order to match the same length, a hack tbh
-                  ),
+                            UINormalBoxButton(
+                              foregroundColor: PublicTheme.dangerRed,
+                              onTap: () => Navigator.pop(context),
+                              child: const Text("OK"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: const Center(
+                    child: Text("SEED TUNER"),
+                  ), // instead of using the word "View" i had to use "tuner" because to match the length of the previous button of "USAGE INFO" is 9 letters in order to match the same length, a hack tbh
                 ),
               ],
             ),
