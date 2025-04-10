@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:toastification/toastification.dart';
 
+/// everything of the ui/ux part starts here
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
@@ -13,13 +14,20 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: <SingleChildWidget>[
+        // add global providers here
         ChangeNotifierProvider<CurrentRun>.value(value: CurrentRun.instance),
       ],
       builder:
+          // the toastification package is used here to provide for easy use of toasts and building custom toasts
+          // anywhere in the application
           (BuildContext context, Widget? child) => ToastificationWrapper(
             child: DefaultTextStyle(
+              // shared tech is a font that i scraped from online information
+              // the other font gtfo uses is fira code
               style: const TextStyle(fontFamily: "Shared Tech", color: PublicTheme.normalWhite),
+              // using a materialapp because it is the simplest way to start off a fully custom laf flutter app
               child: MaterialApp(
+                // theming the actual application with the proper colors and styles from gtfo
                 theme: ThemeData(
                   textSelectionTheme: TextSelectionThemeData(
                     cursorColor: PublicTheme.normalWhite,
@@ -132,8 +140,8 @@ class MainApp extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 debugShowCheckedModeBanner: false,
+                // Manager is for the page manager and operates the side navrail and the page display
                 home: const Manager(),
               ),
             ),

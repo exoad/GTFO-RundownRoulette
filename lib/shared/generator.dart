@@ -3,10 +3,16 @@ import 'package:gtfo_rundown_roulette/utils/seeded_generator.dart';
 import 'package:xrandom/xrandom.dart';
 
 extension IterableRandomExtension<T> on List<T> {
+  /// selects an element from `this` list
   T pick([int? seed]) {
     return SeededGenerator.pickFrom(this, 1, seed).picked.first;
   }
 
+  /// goes through `this` list and adds it to a resulting list if a rolling
+  /// [seed] is rolled to be `true`.
+  ///
+  /// the resulting list ranges from nothing to all elements in the array both of
+  /// which are equally rare (prng)
   List<T> pickMultiple([int? seed]) {
     final List<T> res = <T>[];
     final Xrandom rng = Xrandom(seed);
@@ -20,7 +26,13 @@ extension IterableRandomExtension<T> on List<T> {
 }
 
 @pragma("vm:entry-point")
+/// literally just another wrapper thrown by anything within the variant 1 generation process
+///
+/// it contains a single value [message] that will be printed out for the error
+///
+/// see: [Error] and [Variant1Filter]
 class Variant1FilterInvarianceError extends Error {
+  /// description of the thing that went wrong or a help message
   final String message;
   @pragma("vm:entry-point")
   Variant1FilterInvarianceError(this.message);
@@ -28,6 +40,7 @@ class Variant1FilterInvarianceError extends Error {
   String toString() => message;
 }
 
+/// a filter is a data class that holds what items to prevent the generator from picking
 class Variant1Filter {
   final Set<Mission> blockedMissions;
   final Set<Gun> blockedPrimaries;
@@ -45,6 +58,7 @@ class Variant1Filter {
     required this.blockedBoosters,
   });
 
+  /// the default value where everything is available for the generator to choose from
   static const Variant1Filter unblocked = Variant1Filter(
     blockedMelees: <MeleeWeapon>{},
     blockedMissions: <Mission>{},
@@ -53,6 +67,9 @@ class Variant1Filter {
     blockedTools: <ToolItem>{},
     blockedBoosters: <Boosters>{},
   );
+
+  // == these functions here check if a value is not blocked ==
+  // == basically asking is "x" blocked ?                    ==
 
   bool isValidMission(Mission mission) => !blockedMissions.contains(mission);
   bool isValidBooster(Boosters booster) => !blockedBoosters.contains(booster);
@@ -67,6 +84,7 @@ class Variant1Filter {
         : value.where((Boosters booster) => !blockedBoosters.contains(booster)).toList();
   }
 
+  /// applies a filter for primary guns
   List<Gun> applyPrimaryGuns(List<Gun> value) {
     if (blockedPrimaries.isEmpty) {
       return value;
@@ -80,6 +98,7 @@ class Variant1Filter {
     return filtered;
   }
 
+  /// applies a filter for special weapons
   List<Gun> applySpecialGuns(List<Gun> value) {
     if (blockedSpecials.isEmpty) {
       return value;
@@ -93,6 +112,7 @@ class Variant1Filter {
     return filtered;
   }
 
+  /// applies a filter for tools
   List<ToolItem> applyTools(List<ToolItem> value) {
     if (blockedTools.isEmpty) {
       return value;
@@ -107,6 +127,7 @@ class Variant1Filter {
     return filtered;
   }
 
+  /// applies a filter for melee weapons
   List<MeleeWeapon> applyMelee(List<MeleeWeapon> value) {
     if (blockedMelees.isEmpty) {
       return value;
@@ -121,6 +142,7 @@ class Variant1Filter {
     return filtered;
   }
 
+  /// applies a filter for missions
   List<Mission> applyMissions(List<Mission> value) {
     if (blockedMissions.isEmpty) {
       return value;
@@ -136,7 +158,19 @@ class Variant1Filter {
   }
 }
 
+/// the variant 1 is just a simple randomizer that can use a filter to decide which items to randomly
+/// choose and which to ignore. it is the most generic randomizer for choose rundowns and loadouts
+///
+/// the [Variant1Generator.produceFrom] is the defacto function to use.
 class Variant1Generator {
+  /// if [seed] is not provided, then one is generated using [SeededGenerator.seedFromTimeMS] and truncated
+  /// to 32 bits to work for the generator.
+  ///
+  /// [filter] see [Variant1Filter] on its usage and how to block certain items.
+  ///
+  /// [rollRundowns] and [rollWeapons] decides on whether [previous]'s values should be preserved. this means that
+  /// [previous] needs to be provided (ie not null) in order to be effective. if [previous] is not provided, then
+  /// [rollWeapons] and [rollRundown] should either all be `true` or left alone.
   static GeneratedRun produceFrom(
     Preset preset, [
     bool rollRundown = true,
@@ -150,6 +184,11 @@ class Variant1Generator {
         "Cannot not roll without providing a basis of the previous generated run!",
       );
     }
+    // this is the hollistic seed that we use for everything to make sure everything stays the same
+    //
+    // if we didnt do it this way, the generator would produce seeding for each loadout with a unique seed
+    // additionally, we also need to consider seeding the seeds differently for each loadout because if we use
+    // the effectiveSeed exactly, the loadouts will all be the same. to see this, look at the nested function createLoadout below
     final int effectiveSeed = (seed ?? SeededGenerator.seedFromTimeMS) & 0xFFFFFFFF;
     final Xrandom runRandom = Xrandom(effectiveSeed);
     Rundown? rundown;
@@ -177,6 +216,10 @@ class Variant1Generator {
     final List<Gun> availablePrimaries = effectiveFilter.applyPrimaryGuns(preset.primaries);
     final List<Gun> availableSpecials = effectiveFilter.applySpecialGuns(preset.specials);
     final List<Boosters> availableBoosters = effectiveFilter.applyBoosters(Boosters.values);
+    // this nested function is crucial in making sure all of the weapons are picked independently from each
+    // other, if not all the loadouts will have the same seed AND the same weapons.
+    //
+    // the goal of this function is to get the same seed BUT different weapons
     Loadout createLoadout(int loadoutSeed) {
       final int loadoutEffectiveSeed = loadoutSeed & 0xFFFFFFFF;
       return Loadout(

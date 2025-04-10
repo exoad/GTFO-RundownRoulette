@@ -20,6 +20,9 @@ import 'package:gtfo_rundown_roulette/utils/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 
+/// the page for using the variant 1 generator, the most basic generator in the randomizer
+///
+/// it forwards building to [_ContentBody]
 class Variant1RootScaffold extends StatelessWidget {
   const Variant1RootScaffold({super.key});
 
@@ -38,32 +41,31 @@ class _ContentBody extends StatefulWidget {
 
 class _ContentBodyState extends State<_ContentBody>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+  /// represents the current filter being used and will be applied on the next generation call
   Variant1Filter? filter;
+
+  /// whether the content body is in the process of rerolling
+  /// it is here to prevent certain interactions from happening
+  ///
+  /// !! this is just a temporary crutch and ignorant fix and will
+  /// !! be removed in the future versions
   bool rerolling = false;
+
+  /// this is resolved from the settings on whether to use the rolling animation.
   bool rollingAnimation = false;
-  late AnimationController animationController;
-
-  @override
-  void initState() {
-    super.initState();
-    animationController = AnimationController(vsync: this);
-  }
-
-  @override
-  void dispose() {
-    animationController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return DefaultTextStyle(
-      style: const TextStyle(fontFamily: "Shared Tech"),
+      style: const TextStyle(
+        fontFamily: "Shared Tech",
+      ), // there will be a lot of these to make do without having a million textstyles with font family set to Shared Tech
       child: Padding(
         padding: const EdgeInsets.all(6),
         child: Column(
           children: <Widget>[
+            // this part is the top row of the widgets such as the missions display box and the controls on the right side
             IntrinsicHeight(
               child: Row(
                 spacing: 4,
@@ -83,6 +85,7 @@ class _ContentBodyState extends State<_ContentBody>
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
+                              // the mission display box which includes the mission canonical names and descriptions
                               Expanded(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -114,6 +117,7 @@ class _ContentBodyState extends State<_ContentBody>
                                   ],
                                 ),
                               ),
+                              // sectors
                               Flexible(
                                 flex: 2,
                                 child:
@@ -182,6 +186,9 @@ class _ContentBodyState extends State<_ContentBody>
                                           ],
                                         ),
                               ),
+                              // display the seed, when the user clicks on the text, they will also copy the current seed
+                              // this is just a more convenient direct way to see the seed as compared to having to
+                              // use the seed tuner
                               Expanded(
                                 child: Builder(
                                   builder: (BuildContext context) {
@@ -247,11 +254,15 @@ class _ContentBodyState extends State<_ContentBody>
                       ),
                     ),
                   ),
+                  // these are the buttons on the side that control filters and randomization
                   _modifierButtons(context),
                 ],
               ),
             ),
             const SizedBox(height: 12),
+            // here are the loadout cards for the individual player slots
+            //
+            // !! the colors here are once again approximations from screenshots i took
             Expanded(
               child: Row(
                 spacing: 8,
@@ -352,6 +363,7 @@ class _ContentBodyState extends State<_ContentBody>
     );
   }
 
+  /// this variable is used for the seed tuner, see [_modifierButtons]
   String? customSeed;
 
   IntrinsicWidth _modifierButtons(BuildContext context) {
@@ -1752,12 +1764,14 @@ class _FilterToggleItemStateExtended extends State<FilterToggleItemExtended> {
           colorFilter:
               toggled
                   ? const ColorFilter.matrix(<double>[
+                    // normalized filter (ie displays normal colors)
                     1.0, 0.0, 0.0, 0.0, 0.0, //
                     0.0, 1.0, 0.0, 0.0, 0.0, //
                     0.0, 0.0, 1.0, 0.0, 0.0, //
                     0.0, 0.0, 0.0, 1.0, 0.0, //
                   ])
                   : const ColorFilter.matrix(<double>[
+                    // this is a grayscale filter
                     // values from wikipedia
                     0.2126 * 0.8, 0.7152 * 0.8, 0.0722 * 0.8, 0, 0, //
                     0.2126 * 0.8, 0.7152 * 0.8, 0.0722 * 0.8, 0, 0, //

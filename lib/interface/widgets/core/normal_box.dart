@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gtfo_rundown_roulette/public.dart';
 
+/// the defacto look of boxed items in gtfo where the left border is thicker than the others
+///
+/// it can be a multitude of colors, but the ones i was able to gather are located in [PublicTheme]
+///
+/// it used for buttons primarily as well as information boxes. for the usage on buttons primarily
+/// see its alternate: [UINormalBoxButton]. 
 class UINormalBox extends StatelessWidget {
   final Widget child;
   final Color? foregroundColor;

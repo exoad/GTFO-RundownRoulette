@@ -2,6 +2,12 @@ import "package:xrandom/xrandom.dart";
 
 typedef RandomGeneration<T> = ({List<T> picked, int seed});
 
+/// a seeded generator is a prng where it uses a seed to generate and thus the same seed will get
+/// the same sequence back.
+///
+/// it uses [Xrandom] which is backed by a 32 bit simple xorshift. this means that when using this
+/// generator, [SeededGenerator] itself will truncate to 32 bits. if [Xrandom] alone with a bit length
+/// of more than 32 bits, there will be an error thrown.
 class SeededGenerator {
   /// uses [DateTime]'s millisecondsSinceEpoch method to get a seed
   static int get seedFromTimeMS => DateTime.now().millisecondsSinceEpoch & 0xFFFFFFFF;

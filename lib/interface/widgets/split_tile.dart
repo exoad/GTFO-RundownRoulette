@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gtfo_rundown_roulette/public.dart';
 
+/// a split tile basically is just a scrolling page with the following layout:
+///
+/// {label}                < ~~~ spacer ~~~ >         |child|
+/// {description}          < ~~~ spacer ~~~ >         |child|
+///
+/// it is used for the settings dialog in the home page
+///
+/// a common left side component thus is the [SplitTileSingulateLabel] which
+/// provides the exact layout above
 class SplitTile extends StatelessWidget {
   final Map<Widget, Widget> children;
 

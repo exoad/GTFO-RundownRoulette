@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/diagonal_trace.dart';
 
+/// a widget that applies a grayscale filter, a [DiagonalTracePainter], and an [AbsorbPainter] onto its child
+/// if its set to be disabled.
+///
+/// a good visual indicator for users
 class DisableableWidget extends StatelessWidget {
   final bool disabled;
   final Widget child;
@@ -32,6 +36,7 @@ class DisableableWidget extends StatelessWidget {
   }
 }
 
+/// a custom [SliverGridDelegate] for more fine grain control of its properties
 class SliverGridDelegateAll extends SliverGridDelegate {
   const SliverGridDelegateAll({
     required this.crossAxisCount,
