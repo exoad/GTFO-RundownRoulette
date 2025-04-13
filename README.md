@@ -2,6 +2,8 @@
 
 A randomizer to make your vanilla GTFO experience more fun!
 
+<img src="./repository/screenshot.png" width=800 />
+
 **Join the [Official GTFO Discord](https://www.discord.com/invite/gtfo)! I host games there often**
 
 > [!WARNING]
