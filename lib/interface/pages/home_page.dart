@@ -62,7 +62,7 @@ class HomePage extends StatelessWidget {
                     const SizedBox(height: 20),
                     // once again, we need to check if this current element is mounted in the widget tree to determine if we should render this costly effect or not
                     if (context.mounted)
-                      const RepaintBoundary(child: SizedBox(height: 52, child: _Title())),
+                      const RepaintBoundary(child: SizedBox(height: 64, child: _Title())),
                     const SizedBox(height: 8),
                     const Text(
                       "BUILD ${Public.build} | SIG ${Public.versionSignature} | ${Public.isRelease ? 'PUB' : 'DEV'}",
@@ -483,7 +483,7 @@ class _TitleState extends State<_Title> with SingleTickerProviderStateMixin {
           const Text(
             "RUNDOWN ROULETTE",
             style: TextStyle(
-              fontSize: 40,
+              fontSize: 48,
               fontFamily: "Shared Tech",
               fontWeight: FontWeight.bold,
               color: PublicTheme.loreYellow,

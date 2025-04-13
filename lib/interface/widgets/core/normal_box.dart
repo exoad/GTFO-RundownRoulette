@@ -7,7 +7,7 @@ import 'package:gtfo_rundown_roulette/public.dart';
 /// it can be a multitude of colors, but the ones i was able to gather are located in [PublicTheme]
 ///
 /// it used for buttons primarily as well as information boxes. for the usage on buttons primarily
-/// see its alternate: [UINormalBoxButton]. 
+/// see its alternate: [UINormalBoxButton].
 class UINormalBox extends StatelessWidget {
   final Widget child;
   final Color? foregroundColor;
@@ -60,9 +60,11 @@ class UINormalBoxButton extends StatelessWidget {
   final Color? foregroundColor;
   final bool thick;
   final void Function() onTap;
+  final EdgeInsetsGeometry padding;
 
   const UINormalBoxButton({
     super.key,
+    this.padding = const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
     required this.child,
     this.foregroundColor,
     required this.onTap,
@@ -73,7 +75,12 @@ class UINormalBoxButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: UINormalBox(foregroundColor: foregroundColor, thick: thick, child: child),
+      child: UINormalBox(
+        padding: padding,
+        foregroundColor: foregroundColor,
+        thick: thick,
+        child: child,
+      ),
     );
   }
 }

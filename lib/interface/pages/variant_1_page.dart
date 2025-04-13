@@ -767,18 +767,41 @@ class _ContentBodyState extends State<_ContentBody>
                                                                                         bottom: 8,
                                                                                       ),
                                                                                   child: DisableableWidget(
-                                                                                    disabled: false,
+                                                                                    disabled:
+                                                                                        !currFilter.isValidMission(
+                                                                                          Preset
+                                                                                              .vanilla
+                                                                                              .rundowns[i]
+                                                                                              .allMissions[j],
+                                                                                        ),
                                                                                     child: Row(
                                                                                       spacing: 6,
                                                                                       children: <
                                                                                         Widget
                                                                                       >[
-                                                                                        UINormalBox(
+                                                                                        UINormalBoxButton(
                                                                                           padding:
                                                                                               const EdgeInsets.only(
                                                                                                 left:
                                                                                                     2,
                                                                                               ),
+                                                                                          onTap: () {
+                                                                                            final Mission
+                                                                                            toBlock =
+                                                                                                Preset.vanilla.rundowns[i].allMissions[j];
+                                                                                            currFilter.isValidMission(
+                                                                                                  toBlock,
+                                                                                                )
+                                                                                                ? currFilter.blockedMissions.add(
+                                                                                                  toBlock,
+                                                                                                )
+                                                                                                : currFilter.blockedMissions.remove(
+                                                                                                  toBlock,
+                                                                                                );
+                                                                                            debugPrint(
+                                                                                              "BLOCKED_MISSION_ENACT:  ${toBlock.canonicalName}",
+                                                                                            );
+                                                                                          },
                                                                                           foregroundColor:
                                                                                               Preset.vanilla.rundowns[i].allMissions[j].isLore
                                                                                                   ? PublicTheme.loreYellow
