@@ -19,13 +19,13 @@ class SplitTile extends StatelessWidget {
     return SingleChildScrollView(
       child: IntrinsicWidth(
         child: Column(
-          spacing: 6,
+          spacing: 8,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             for (MapEntry<Widget, Widget> entry in children.entries)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                spacing: 14,
+                spacing: 12,
                 children: <Widget>[entry.key, entry.value],
               ),
           ],

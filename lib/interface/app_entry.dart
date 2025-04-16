@@ -80,6 +80,9 @@ class MainApp extends StatelessWidget {
                     ),
                   ),
                   appBarTheme: const AppBarTheme(
+                    actionsIconTheme: IconThemeData(color: PublicTheme.normalWhite),
+                    iconTheme: IconThemeData(color: PublicTheme.normalWhite),
+                    foregroundColor: PublicTheme.normalWhite,
                     backgroundColor: PublicTheme.abyssBlack,
                     titleTextStyle: TextStyle(
                       color: PublicTheme.normalWhite,

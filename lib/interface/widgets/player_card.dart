@@ -78,11 +78,14 @@ class PlayerCardState extends State<PlayerCard> with TickerProviderStateMixin {
                     ); // this linear gradient does cause troubles with web rendering though, thats one thing to note. very harsh edges where the filter is misaligned on web. flutter and skia issue
                   },
                   blendMode: BlendMode.dstIn,
-                  child: Image.asset(
-                    widget.bgImage,
-                    // we dont need that much quality, so we save on performance by using low filterquality which means when scaling up, there are no anti-aliasing to be done to smooth out the pixels.
-                    filterQuality: FilterQuality.low,
-                  ),
+                  child:
+                      kPrefs.getSafeBool("be_descriptive")
+                          ? Image.asset(
+                            widget.bgImage,
+                            // we dont need that much quality, so we save on performance by using low filterquality which means when scaling up, there are no anti-aliasing to be done to smooth out the pixels.
+                            filterQuality: FilterQuality.low,
+                          )
+                          : const ColoredBox(color: PublicTheme.murkyDarkGrey),
                 ),
               ),
             ),

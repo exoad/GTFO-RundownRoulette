@@ -42,7 +42,15 @@ class _ContentBody extends StatefulWidget {
 class _ContentBodyState extends State<_ContentBody>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   /// represents the current filter being used and will be applied on the next generation call
-  Variant1Filter? filter;
+  // ignore: prefer_const_constructors
+  final Variant1Filter filter = Variant1Filter(
+    blockedMissions: <Mission>{},
+    blockedPrimaries: <Gun>{},
+    blockedSpecials: <Gun>{},
+    blockedTools: <ToolItem>{},
+    blockedMelees: <MeleeWeapon>{},
+    blockedBoosters: <Boosters>{},
+  );
 
   /// whether the content body is in the process of rerolling
   /// it is here to prevent certain interactions from happening
@@ -204,7 +212,9 @@ class _ContentBodyState extends State<_ContentBody>
                                                 autoCloseDuration: const Duration(
                                                   milliseconds: 2000,
                                                 ),
-                                                animationDuration: Duration.zero,
+                                                animationDuration: const Duration(
+                                                  milliseconds: 330,
+                                                ),
                                                 alignment: Alignment.bottomRight,
                                                 builder: (_, __) {
                                                   return const UINormalBox(
@@ -224,7 +234,7 @@ class _ContentBodyState extends State<_ContentBody>
                                               TextSpan(
                                                 children: <InlineSpan>[
                                                   const TextSpan(
-                                                    text: "Seed:\n",
+                                                    text: "Seed :\n",
                                                     style: TextStyle(
                                                       color: PublicTheme.loreYellow,
                                                       fontSize: 18,
@@ -241,6 +251,15 @@ class _ContentBodyState extends State<_ContentBody>
                                                 ],
                                               ),
                                             ),
+                                            if (filter.isBlocking)
+                                              const Text(
+                                                "\nInaccurate seed due to filters!",
+                                                style: TextStyle(
+                                                  color: PublicTheme.dangerRed,
+                                                  fontFamily: "Shared Tech",
+                                                  fontSize: 14,
+                                                ),
+                                              ),
                                           ],
                                         ),
                                       ),
@@ -271,7 +290,7 @@ class _ContentBodyState extends State<_ContentBody>
                 children: <Widget>[
                   Expanded(
                     child: PlayerCard(
-                          title: "Player 1",
+                          title: "Player 1 ${kPrefs.getSafeBool("be_descriptive") ? "(HOST)" : ""}",
                           name: "Woods",
                           bgImage: "assets/ingame/woods.png",
                           color: const Color.fromARGB(255, 208, 79, 116),
@@ -281,7 +300,7 @@ class _ContentBodyState extends State<_ContentBody>
                         .then(delay: const Duration(milliseconds: 140))
                         .fadeIn(duration: const Duration(milliseconds: 240), curve: Curves.easeIn)
                         .slideY(
-                          begin: -0.04,
+                          begin: -0.03,
                           end: 0,
                           duration: const Duration(milliseconds: 360),
                           curve: Curves.easeIn,
@@ -303,7 +322,7 @@ class _ContentBodyState extends State<_ContentBody>
                           begin: 0.6,
                         )
                         .slideY(
-                          begin: -0.06,
+                          begin: -0.03,
                           end: 0,
                           duration: const Duration(milliseconds: 360),
                           curve: Curves.easeIn,
@@ -325,7 +344,7 @@ class _ContentBodyState extends State<_ContentBody>
                           begin: 0.6,
                         )
                         .slideY(
-                          begin: -0.06,
+                          begin: -0.03,
                           end: 0,
                           duration: const Duration(milliseconds: 360),
                           curve: Curves.easeIn,
@@ -347,7 +366,7 @@ class _ContentBodyState extends State<_ContentBody>
                           begin: 0.6,
                         )
                         .slideY(
-                          begin: -0.06,
+                          begin: -0.03,
                           end: 0,
                           duration: const Duration(milliseconds: 360),
                           curve: Curves.easeIn,
@@ -445,7 +464,7 @@ class _ContentBodyState extends State<_ContentBody>
                               rnd.nextBool() ? 12 + rnd.nextInt(3) + 1 : 12 - rnd.nextInt(3);
                           toastification.showCustom(
                             autoCloseDuration: const Duration(milliseconds: 2500),
-                            animationDuration: Duration.zero,
+                            animationDuration: const Duration(milliseconds: 330),
                             alignment: Alignment.bottomRight,
                             builder: (BuildContext context, ToastificationItem holder) {
                               return UINormalBox(
@@ -461,17 +480,18 @@ class _ContentBodyState extends State<_ContentBody>
                             },
                           );
                           Scheduler.reductiveRelay(
-                            () =>
-                                Provider.of<CurrentRun>(
-                                  context,
-                                  listen: false,
-                                ).value = Variant1Generator.produceFrom(
-                                  Preset.vanilla,
-                                  true,
-                                  true,
-                                  null,
-                                  filter,
-                                ),
+                            () {
+                              Provider.of<CurrentRun>(
+                                context,
+                                listen: false,
+                              ).value = Variant1Generator.produceFrom(
+                                Preset.vanilla,
+                                true,
+                                true,
+                                null,
+                                filter,
+                              );
+                            },
                             times,
                             rnd.nextBool() ? 120 + rnd.nextInt(100) + 40 : 120 - (rnd.nextInt(60)),
                             120,
@@ -479,7 +499,7 @@ class _ContentBodyState extends State<_ContentBody>
                             if (context.mounted) {
                               toastification.showCustom(
                                 autoCloseDuration: const Duration(milliseconds: 3500),
-                                animationDuration: Duration.zero,
+                                animationDuration: const Duration(milliseconds: 330),
                                 alignment: Alignment.bottomRight,
                                 builder: (BuildContext context, ToastificationItem holder) {
                                   return const UINormalBox(
@@ -593,17 +613,6 @@ class _ContentBodyState extends State<_ContentBody>
                           () async => await showDialog(
                             context: context,
                             builder: (BuildContext context) {
-                              final Variant1Filter currFilter =
-                                  filter ??
-                                  // ignore: prefer_const_constructors
-                                  Variant1Filter(
-                                    blockedMissions: <Mission>{},
-                                    blockedPrimaries: <Gun>{},
-                                    blockedSpecials: <Gun>{},
-                                    blockedTools: <ToolItem>{},
-                                    blockedMelees: <MeleeWeapon>{},
-                                    blockedBoosters: <Boosters>{},
-                                  );
                               return AlertDialog(
                                 scrollable: true,
                                 title: const Text("Apply Filters"),
@@ -643,7 +652,7 @@ class _ContentBodyState extends State<_ContentBody>
                                                         actions: <Widget>[
                                                           UINormalBoxButton(
                                                             onTap: () {
-                                                              filter = currFilter;
+                                                              setState(() {});
                                                               Navigator.pop(context);
                                                             },
                                                             child: const Row(
@@ -768,7 +777,7 @@ class _ContentBodyState extends State<_ContentBody>
                                                                                       ),
                                                                                   child: DisableableWidget(
                                                                                     disabled:
-                                                                                        !currFilter.isValidMission(
+                                                                                        !filter.isValidMission(
                                                                                           Preset
                                                                                               .vanilla
                                                                                               .rundowns[i]
@@ -789,15 +798,21 @@ class _ContentBodyState extends State<_ContentBody>
                                                                                             final Mission
                                                                                             toBlock =
                                                                                                 Preset.vanilla.rundowns[i].allMissions[j];
-                                                                                            currFilter.isValidMission(
-                                                                                                  toBlock,
-                                                                                                )
-                                                                                                ? currFilter.blockedMissions.add(
-                                                                                                  toBlock,
-                                                                                                )
-                                                                                                : currFilter.blockedMissions.remove(
-                                                                                                  toBlock,
-                                                                                                );
+
+                                                                                            if (filter.isValidMission(
+                                                                                              toBlock,
+                                                                                            )) {
+                                                                                              filter.blockedMissions.add(
+                                                                                                toBlock,
+                                                                                              );
+                                                                                            } else {
+                                                                                              filter.blockedMissions.remove(
+                                                                                                toBlock,
+                                                                                              );
+                                                                                            }
+                                                                                            setState(
+                                                                                              () {},
+                                                                                            );
                                                                                             debugPrint(
                                                                                               "BLOCKED_MISSION_ENACT:  ${toBlock.canonicalName}",
                                                                                             );
@@ -864,7 +879,7 @@ class _ContentBodyState extends State<_ContentBody>
                                                       actions: <Widget>[
                                                         UINormalBoxButton(
                                                           onTap: () {
-                                                            filter = currFilter;
+                                                            setState(() {});
                                                             Navigator.pop(context);
                                                           },
                                                           child: const Row(
@@ -887,6 +902,8 @@ class _ContentBodyState extends State<_ContentBody>
                                                             "Block items from being generated by the generator by unselecting them.",
                                                             style: TextStyle(
                                                               fontWeight: FontWeight.bold,
+                                                              fontFamily: "Shared Tech",
+                                                              color: PublicTheme.loreYellow,
                                                             ),
                                                           ),
                                                           const SizedBox(height: 10),
@@ -911,11 +928,11 @@ class _ContentBodyState extends State<_ContentBody>
                                                                   message: item.canonicalName,
                                                                   child: FilterToggleItemExtended(
                                                                     toggled:
-                                                                        !currFilter.blockedPrimaries
+                                                                        !filter.blockedPrimaries
                                                                             .contains(item),
                                                                     consumer: (bool r) {
                                                                       if (!r &&
-                                                                          currFilter
+                                                                          filter
                                                                                       .blockedPrimaries
                                                                                       .length +
                                                                                   1 ==
@@ -952,10 +969,11 @@ class _ContentBodyState extends State<_ContentBody>
                                                                         );
                                                                         return false;
                                                                       } else if (!r) {
-                                                                        currFilter.blockedPrimaries
-                                                                            .add(item);
+                                                                        filter.blockedPrimaries.add(
+                                                                          item,
+                                                                        );
                                                                       } else {
-                                                                        currFilter.blockedPrimaries
+                                                                        filter.blockedPrimaries
                                                                             .remove(item);
                                                                       }
                                                                       return true;
@@ -989,7 +1007,8 @@ class _ContentBodyState extends State<_ContentBody>
                                                       actions: <Widget>[
                                                         UINormalBoxButton(
                                                           onTap: () {
-                                                            filter = currFilter;
+                                                            setState(() {});
+
                                                             Navigator.pop(context);
                                                           },
                                                           child: const Row(
@@ -1012,6 +1031,8 @@ class _ContentBodyState extends State<_ContentBody>
                                                             "Block items from being generated by the generator by unselecting them.",
                                                             style: TextStyle(
                                                               fontWeight: FontWeight.bold,
+                                                              fontFamily: "Shared Tech",
+                                                              color: PublicTheme.loreYellow,
                                                             ),
                                                           ),
                                                           const SizedBox(height: 10),
@@ -1032,11 +1053,11 @@ class _ContentBodyState extends State<_ContentBody>
                                                                   message: item.canonicalName,
                                                                   child: FilterToggleItemExtended(
                                                                     toggled:
-                                                                        !currFilter.blockedSpecials
+                                                                        !filter.blockedSpecials
                                                                             .contains(item),
                                                                     consumer: (bool r) {
                                                                       if (!r &&
-                                                                          currFilter
+                                                                          filter
                                                                                       .blockedSpecials
                                                                                       .length +
                                                                                   1 ==
@@ -1073,10 +1094,11 @@ class _ContentBodyState extends State<_ContentBody>
                                                                         );
                                                                         return false;
                                                                       } else if (!r) {
-                                                                        currFilter.blockedSpecials
-                                                                            .add(item);
+                                                                        filter.blockedSpecials.add(
+                                                                          item,
+                                                                        );
                                                                       } else {
-                                                                        currFilter.blockedSpecials
+                                                                        filter.blockedSpecials
                                                                             .remove(item);
                                                                       }
                                                                       return true;
@@ -1110,7 +1132,7 @@ class _ContentBodyState extends State<_ContentBody>
                                                       actions: <Widget>[
                                                         UINormalBoxButton(
                                                           onTap: () {
-                                                            filter = currFilter;
+                                                            setState(() {});
                                                             Navigator.pop(context);
                                                           },
                                                           child: const Row(
@@ -1153,11 +1175,11 @@ class _ContentBodyState extends State<_ContentBody>
                                                                   message: item.canonicalName,
                                                                   child: FilterToggleItemExtended(
                                                                     toggled:
-                                                                        !currFilter.blockedTools
+                                                                        !filter.blockedTools
                                                                             .contains(item),
                                                                     consumer: (bool r) {
                                                                       if (!r &&
-                                                                          currFilter
+                                                                          filter
                                                                                       .blockedTools
                                                                                       .length +
                                                                                   1 ==
@@ -1194,12 +1216,13 @@ class _ContentBodyState extends State<_ContentBody>
                                                                         );
                                                                         return false;
                                                                       } else if (!r) {
-                                                                        currFilter.blockedTools.add(
+                                                                        filter.blockedTools.add(
                                                                           item,
                                                                         );
                                                                       } else {
-                                                                        currFilter.blockedTools
-                                                                            .remove(item);
+                                                                        filter.blockedTools.remove(
+                                                                          item,
+                                                                        );
                                                                       }
                                                                       return true;
                                                                     },
@@ -1232,7 +1255,7 @@ class _ContentBodyState extends State<_ContentBody>
                                                       actions: <Widget>[
                                                         UINormalBoxButton(
                                                           onTap: () {
-                                                            filter = currFilter;
+                                                            setState(() {});
                                                             Navigator.pop(context);
                                                           },
                                                           child: const Row(
@@ -1279,11 +1302,11 @@ class _ContentBodyState extends State<_ContentBody>
                                                                           .canonicalName,
                                                                   child: FilterToggleItemExtended(
                                                                     toggled:
-                                                                        !currFilter.blockedMelees
+                                                                        !filter.blockedMelees
                                                                             .contains(item),
                                                                     consumer: (bool r) {
                                                                       if (!r &&
-                                                                          currFilter
+                                                                          filter
                                                                                       .blockedMelees
                                                                                       .length +
                                                                                   1 ==
@@ -1320,11 +1343,13 @@ class _ContentBodyState extends State<_ContentBody>
                                                                         );
                                                                         return false;
                                                                       } else if (!r) {
-                                                                        currFilter.blockedMelees
-                                                                            .add(item);
+                                                                        filter.blockedMelees.add(
+                                                                          item,
+                                                                        );
                                                                       } else {
-                                                                        currFilter.blockedMelees
-                                                                            .remove(item);
+                                                                        filter.blockedMelees.remove(
+                                                                          item,
+                                                                        );
                                                                       }
                                                                       return true;
                                                                     },
@@ -1342,7 +1367,6 @@ class _ContentBodyState extends State<_ContentBody>
                                           );
                                         },
                                         foregroundColor: PublicTheme.loreYellow,
-
                                         child: const Text("Filter Melees"),
                                       ),
                                       UINormalBoxButton(
@@ -1375,17 +1399,17 @@ class _ContentBodyState extends State<_ContentBody>
                                                                 message: "Muted Boosters",
                                                                 child: FilterToggleItem(
                                                                   toggled:
-                                                                      !currFilter.blockedBoosters
+                                                                      !filter.blockedBoosters
                                                                           .contains(Boosters.MUTED),
                                                                   consumer:
                                                                       (bool r) =>
                                                                           !r
-                                                                              ? currFilter
+                                                                              ? filter
                                                                                   .blockedBoosters
                                                                                   .add(
                                                                                     Boosters.MUTED,
                                                                                   )
-                                                                              : currFilter
+                                                                              : filter
                                                                                   .blockedBoosters
                                                                                   .remove(
                                                                                     Boosters.MUTED,
@@ -1400,17 +1424,17 @@ class _ContentBodyState extends State<_ContentBody>
                                                                 message: "Bold Boosters",
                                                                 child: FilterToggleItem(
                                                                   toggled:
-                                                                      !currFilter.blockedBoosters
+                                                                      !filter.blockedBoosters
                                                                           .contains(Boosters.BOLD),
                                                                   consumer:
                                                                       (bool r) =>
                                                                           !r
-                                                                              ? currFilter
+                                                                              ? filter
                                                                                   .blockedBoosters
                                                                                   .add(
                                                                                     Boosters.BOLD,
                                                                                   )
-                                                                              : currFilter
+                                                                              : filter
                                                                                   .blockedBoosters
                                                                                   .remove(
                                                                                     Boosters.BOLD,
@@ -1425,20 +1449,20 @@ class _ContentBodyState extends State<_ContentBody>
                                                                 message: "Aggressive Boosters",
                                                                 child: FilterToggleItem(
                                                                   toggled:
-                                                                      !currFilter.blockedBoosters
+                                                                      !filter.blockedBoosters
                                                                           .contains(
                                                                             Boosters.AGGRESIVE,
                                                                           ),
                                                                   consumer:
                                                                       (bool r) =>
                                                                           !r
-                                                                              ? currFilter
+                                                                              ? filter
                                                                                   .blockedBoosters
                                                                                   .add(
                                                                                     Boosters
                                                                                         .AGGRESIVE,
                                                                                   )
-                                                                              : currFilter
+                                                                              : filter
                                                                                   .blockedBoosters
                                                                                   .remove(
                                                                                     Boosters
@@ -1456,8 +1480,9 @@ class _ContentBodyState extends State<_ContentBody>
                                                           UINormalBoxButton(
                                                             onTap: () {
                                                               debugPrint(
-                                                                "BLOCKED_BOOSTERS = ${currFilter.blockedBoosters.toString()}",
+                                                                "BLOCKED_BOOSTERS = ${filter.blockedBoosters.toString()}",
                                                               );
+                                                              setState(() {});
                                                               Navigator.pop(context);
                                                             },
                                                             child: const Text("OK"),
@@ -1477,14 +1502,33 @@ class _ContentBodyState extends State<_ContentBody>
                                   ),
                                 ),
                                 actions: <Widget>[
-                                  UINormalBoxButton(
-                                    onTap: () => Navigator.pop(context),
-                                    foregroundColor: PublicTheme.dangerRed,
-                                    child: const Text("Cancel"),
+                                  DisableableWidget(
+                                    // if there is nothing being blocked, we tell the user thru this visual
+                                    disabled: !filter.isBlocking,
+                                    child: UINormalBoxButton(
+                                      onTap: () {
+                                        setState(() {
+                                          filter.clear();
+                                        });
+                                        toastification.showCustom(
+                                          autoCloseDuration: const Duration(milliseconds: 1400),
+                                          animationDuration: const Duration(milliseconds: 330),
+                                          alignment: Alignment.bottomRight,
+                                          builder: (_, __) {
+                                            return const UINormalBox(
+                                              foregroundColor: PublicTheme.dangerRed,
+                                              child: Text("Filters Cleared!"),
+                                            );
+                                          },
+                                        );
+                                      },
+                                      foregroundColor: PublicTheme.dangerRed,
+                                      child: const Text("Reset Filters"),
+                                    ),
                                   ),
                                   UINormalBoxButton(
                                     onTap: () {
-                                      filter = currFilter;
+                                      setState(() {});
                                       Navigator.pop(context);
                                     },
                                     child: const Text("Ok"),
@@ -1653,7 +1697,7 @@ class _ContentBodyState extends State<_ContentBody>
                                   Clipboard.setData(ClipboardData(text: seedString)).then(
                                     (_) => toastification.showCustom(
                                       autoCloseDuration: const Duration(milliseconds: 2000),
-                                      animationDuration: Duration.zero,
+                                      animationDuration: const Duration(milliseconds: 330),
                                       alignment: Alignment.bottomRight,
                                       builder: (_, __) {
                                         return const UINormalBox(
@@ -1794,11 +1838,9 @@ class _FilterToggleItemStateExtended extends State<FilterToggleItemExtended> {
                     0.0, 0.0, 0.0, 1.0, 0.0, //
                   ])
                   : const ColorFilter.matrix(<double>[
-                    // this is a grayscale filter
-                    // values from wikipedia
-                    0.2126 * 0.8, 0.7152 * 0.8, 0.0722 * 0.8, 0, 0, //
-                    0.2126 * 0.8, 0.7152 * 0.8, 0.0722 * 0.8, 0, 0, //
-                    0.2126 * 0.8, 0.7152 * 0.8, 0.0722 * 0.8, 0, 0, //
+                    0.1, 0.3, 0.02, 0, 0, //
+                    0.1, 0.3, 0.02, 0, 0, //
+                    0.1, 0.3, 0.02, 0, 0, //
                     0, 0, 0, 1, 0, //
                   ]),
           child: LoadoutItemCard(item: widget.item),

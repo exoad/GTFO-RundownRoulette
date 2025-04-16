@@ -78,6 +78,25 @@ class Variant1Filter {
   bool isValidTool(ToolItem tool) => !blockedTools.contains(tool);
   bool isValidMelee(MeleeWeapon melee) => !blockedMelees.contains(melee);
 
+  /// checks if this filter is blocking anything
+  bool get isBlocking =>
+      blockedBoosters.isNotEmpty ||
+      blockedMissions.isNotEmpty ||
+      blockedPrimaries.isNotEmpty ||
+      blockedSpecials.isNotEmpty ||
+      blockedTools.isNotEmpty ||
+      blockedMelees.isNotEmpty;
+
+  /// removes all items being blocked
+  void clear() {
+    blockedMelees.clear();
+    blockedBoosters.clear();
+    blockedMissions.clear();
+    blockedPrimaries.clear();
+    blockedSpecials.clear();
+    blockedTools.clear();
+  }
+
   List<Boosters> applyBoosters(List<Boosters> value) {
     return blockedBoosters.isEmpty
         ? value

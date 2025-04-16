@@ -7,9 +7,11 @@ class FlashingRandomTextWidget extends StatefulWidget {
   final int length;
   final Duration period;
   final TextStyle style;
+  final String? selection;
   const FlashingRandomTextWidget({
     super.key,
     required this.length,
+    this.selection,
     this.period = const Duration(milliseconds: 50),
     required this.style,
   });
@@ -80,6 +82,7 @@ const String _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
 
 class _FlashingRandomTextWidgetState extends State<FlashingRandomTextWidget> {
   late Timer _timer;
+  late final String _selection;
   String _randomString = '';
 
   static final Random _rnd = Random();
@@ -87,8 +90,12 @@ class _FlashingRandomTextWidgetState extends State<FlashingRandomTextWidget> {
   @override
   void initState() {
     super.initState();
+    _selection = widget.selection ?? _chars;
     _randomString = String.fromCharCodes(
-      Iterable<int>.generate(widget.length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))),
+      Iterable<int>.generate(
+        widget.length,
+        (_) => _selection.codeUnitAt(_rnd.nextInt(_selection.length)),
+      ),
     );
     _timer = Timer.periodic(
       widget.period,
@@ -97,7 +104,7 @@ class _FlashingRandomTextWidgetState extends State<FlashingRandomTextWidget> {
             _randomString = String.fromCharCodes(
               Iterable<int>.generate(
                 widget.length,
-                (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length)),
+                (_) => _selection.codeUnitAt(_rnd.nextInt(_selection.length)),
               ),
             ),
       ),

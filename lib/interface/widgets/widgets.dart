@@ -23,10 +23,9 @@ class DisableableWidget extends StatelessWidget {
           foregroundPainter: const DiagonalTracePainter(),
           child: ColorFiltered(
             colorFilter: const ColorFilter.matrix(<double>[
-              // values from wikipedia
-              0.2126, 0.7152, 0.0722, 0, 0, //
-              0.2126, 0.7152, 0.0722, 0, 0, //
-              0.2126, 0.7152, 0.0722, 0, 0, //
+              0.15, 0.50, 0.05, 0, 0, //
+              0.15, 0.50, 0.05, 0, 0, //
+              0.15, 0.50, 0.05, 0, 0, //
               0, 0, 0, 1, 0, //
             ]),
             child: AbsorbPointer(child: child),
