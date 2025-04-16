@@ -5,10 +5,10 @@ final class Public {
   Public._();
 
   /// Build version. With each build, this number increases by one
-  static const int build = 6;
+  static const int build = 7;
 
   /// The date of this [build]
-  static const String versionSignature = "4_12_2025";
+  static const String versionSignature = "4_16_2025";
 
   /// Determines if development mode things should be hidden or not
   static const bool isRelease = bool.fromEnvironment("RELEASE", defaultValue: false);
