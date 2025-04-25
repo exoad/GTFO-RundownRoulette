@@ -23,8 +23,8 @@ import 'package:toastification/toastification.dart';
 /// the page for using the variant 1 generator, the most basic generator in the randomizer
 ///
 /// it forwards building to [_ContentBody]
-class Variant1RootScaffold extends StatelessWidget {
-  const Variant1RootScaffold({super.key});
+class GenericGeneratorScaffold extends StatelessWidget {
+  const GenericGeneratorScaffold({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class _ContentBodyState extends State<_ContentBody>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   /// represents the current filter being used and will be applied on the next generation call
   // ignore: prefer_const_constructors
-  final Variant1Filter filter = Variant1Filter(
+  final GeneratorFilter filter = GeneratorFilter(
     blockedMissions: <Mission>{},
     blockedPrimaries: <Gun>{},
     blockedSpecials: <Gun>{},
@@ -408,7 +408,7 @@ class _ContentBodyState extends State<_ContentBody>
                           Provider.of<CurrentRun>(
                             context,
                             listen: false,
-                          ).value = Variant1Generator.produceFrom(
+                          ).value = RunGenerator.produceFrom(
                             Preset.vanilla,
                             false,
                             true,
@@ -484,7 +484,7 @@ class _ContentBodyState extends State<_ContentBody>
                               Provider.of<CurrentRun>(
                                 context,
                                 listen: false,
-                              ).value = Variant1Generator.produceFrom(
+                              ).value = RunGenerator.produceFrom(
                                 Preset.vanilla,
                                 true,
                                 true,
@@ -518,16 +518,8 @@ class _ContentBodyState extends State<_ContentBody>
                             }
                           });
                         } else {
-                          Provider.of<CurrentRun>(
-                            context,
-                            listen: false,
-                          ).value = Variant1Generator.produceFrom(
-                            Preset.vanilla,
-                            true,
-                            true,
-                            null,
-                            filter,
-                          );
+                          Provider.of<CurrentRun>(context, listen: false).value =
+                              RunGenerator.produceFrom(Preset.vanilla, true, true, null, filter);
                         }
                       },
                       child: const Icon(CommunityMaterialIcons.reload),
@@ -1551,7 +1543,7 @@ class _ContentBodyState extends State<_ContentBody>
                           Provider.of<CurrentRun>(
                             context,
                             listen: false,
-                          ).value = Variant1Generator.produceFrom(
+                          ).value = RunGenerator.produceFrom(
                             Preset.vanilla,
                             true,
                             false,
@@ -1672,7 +1664,7 @@ class _ContentBodyState extends State<_ContentBody>
                                             Provider.of<CurrentRun>(
                                               context,
                                               listen: false,
-                                            ).value = Variant1Generator.produceFrom(
+                                            ).value = RunGenerator.produceFrom(
                                               Preset.vanilla,
                                               true,
                                               true,

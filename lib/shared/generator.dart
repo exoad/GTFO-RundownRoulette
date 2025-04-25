@@ -30,18 +30,18 @@ extension IterableRandomExtension<T> on List<T> {
 ///
 /// it contains a single value [message] that will be printed out for the error
 ///
-/// see: [Error] and [Variant1Filter]
-class Variant1FilterInvarianceError extends Error {
+/// see: [Error] and [GeneratorFilter]
+class FilterInvarianceError extends Error {
   /// description of the thing that went wrong or a help message
   final String message;
   @pragma("vm:entry-point")
-  Variant1FilterInvarianceError(this.message);
+  FilterInvarianceError(this.message);
   @override
   String toString() => message;
 }
 
 /// a filter is a data class that holds what items to prevent the generator from picking
-class Variant1Filter {
+class GeneratorFilter {
   final Set<Mission> blockedMissions;
   final Set<Gun> blockedPrimaries;
   final Set<Gun> blockedSpecials;
@@ -49,7 +49,7 @@ class Variant1Filter {
   final Set<MeleeWeapon> blockedMelees;
   final Set<Boosters> blockedBoosters;
 
-  const Variant1Filter({
+  const GeneratorFilter({
     required this.blockedMissions,
     required this.blockedPrimaries,
     required this.blockedSpecials,
@@ -59,7 +59,7 @@ class Variant1Filter {
   });
 
   /// the default value where everything is available for the generator to choose from
-  static const Variant1Filter unblocked = Variant1Filter(
+  static const GeneratorFilter unblocked = GeneratorFilter(
     blockedMelees: <MeleeWeapon>{},
     blockedMissions: <Mission>{},
     blockedPrimaries: <Gun>{},
@@ -110,7 +110,7 @@ class Variant1Filter {
     }
     final List<Gun> filtered = value.where((Gun gun) => !blockedPrimaries.contains(gun)).toList();
     if (filtered.isEmpty && value.isNotEmpty) {
-      throw Variant1FilterInvarianceError(
+      throw FilterInvarianceError(
         "Filtering primaries cannot result in an empty list! Unblock at least one weapon to continue.",
       );
     }
@@ -124,7 +124,7 @@ class Variant1Filter {
     }
     final List<Gun> filtered = value.where((Gun gun) => !blockedSpecials.contains(gun)).toList();
     if (filtered.isEmpty && value.isNotEmpty) {
-      throw Variant1FilterInvarianceError(
+      throw FilterInvarianceError(
         "Filtering specials cannot result in an empty list! Unblock at least one weapon to continue.",
       );
     }
@@ -139,7 +139,7 @@ class Variant1Filter {
     final List<ToolItem> filtered =
         value.where((ToolItem tool) => !blockedTools.contains(tool)).toList();
     if (filtered.isEmpty && value.isNotEmpty) {
-      throw Variant1FilterInvarianceError(
+      throw FilterInvarianceError(
         "Filtering tools cannot result in an empty list! Unblock at least one tool to continue.",
       );
     }
@@ -154,7 +154,7 @@ class Variant1Filter {
     final List<MeleeWeapon> filtered =
         value.where((MeleeWeapon melee) => !blockedMelees.contains(melee)).toList();
     if (filtered.isEmpty && value.isNotEmpty) {
-      throw Variant1FilterInvarianceError(
+      throw FilterInvarianceError(
         "Filtering melees cannot result in an empty list! Unblock at least one melee weapon to continue.",
       );
     }
@@ -169,7 +169,7 @@ class Variant1Filter {
     final List<Mission> filtered =
         value.where((Mission mission) => !blockedMissions.contains(mission)).toList();
     if (filtered.isEmpty && value.isNotEmpty) {
-      throw Variant1FilterInvarianceError(
+      throw FilterInvarianceError(
         "Filtering missions cannot result in an empty list! Unblock at least one mission to continue.",
       );
     }
@@ -180,12 +180,12 @@ class Variant1Filter {
 /// the variant 1 is just a simple randomizer that can use a filter to decide which items to randomly
 /// choose and which to ignore. it is the most generic randomizer for choose rundowns and loadouts
 ///
-/// the [Variant1Generator.produceFrom] is the defacto function to use.
-class Variant1Generator {
+/// the [RunGenerator.produceFrom] is the defacto function to use.
+class RunGenerator {
   /// if [seed] is not provided, then one is generated using [SeededGenerator.seedFromTimeMS] and truncated
   /// to 32 bits to work for the generator.
   ///
-  /// [filter] see [Variant1Filter] on its usage and how to block certain items.
+  /// [filter] see [GeneratorFilter] on its usage and how to block certain items.
   ///
   /// [rollRundowns] and [rollWeapons] decides on whether [previous]'s values should be preserved. this means that
   /// [previous] needs to be provided (ie not null) in order to be effective. if [previous] is not provided, then
@@ -195,7 +195,7 @@ class Variant1Generator {
     bool rollRundown = true,
     bool rollWeapons = true,
     GeneratedRun? previous,
-    Variant1Filter? filter,
+    GeneratorFilter? filter,
     int? seed,
   ]) {
     if ((!rollRundown || !rollWeapons) && previous == null) {
@@ -213,13 +213,13 @@ class Variant1Generator {
     Rundown? rundown;
     Mission? mission;
     List<Sector>? sectors;
-    final Variant1Filter effectiveFilter = filter ?? Variant1Filter.unblocked;
+    final GeneratorFilter effectiveFilter = filter ?? GeneratorFilter.unblocked;
     if (rollRundown) {
       List<Rundown> availableRundowns = preset.rundowns;
       rundown = availableRundowns.pick(runRandom.nextInt(0xFFFFFFFF));
       List<Mission> availableMissions = effectiveFilter.applyMissions(rundown.allMissions);
       if (availableMissions.isEmpty) {
-        throw Variant1FilterInvarianceError(
+        throw FilterInvarianceError(
           "Filtering missions for rundown ${rundown.canonicalName} resulted in an empty list! Unblock at least one mission for this rundown.",
         );
       }

@@ -1,8 +1,8 @@
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:gtfo_rundown_roulette/interface/pages/home_page.dart';
-import 'package:gtfo_rundown_roulette/interface/pages/variant_1_page.dart';
-import 'package:gtfo_rundown_roulette/interface/pages/variant_2_page.dart';
+import 'package:gtfo_rundown_roulette/interface/pages/generic_generator_page.dart';
+import 'package:gtfo_rundown_roulette/interface/pages/auction_generator_page.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/sanctioned.dart';
 
 class Manager extends StatefulWidget {
@@ -55,7 +55,7 @@ class _ManagerState extends State<Manager> {
             child:
                 <Widget>[
                   const HomePage(),
-                  const Variant1RootScaffold(),
+                  const GenericGeneratorScaffold(),
                   const Variant2Page().sanctioned,
                 ][_selected],
           ),

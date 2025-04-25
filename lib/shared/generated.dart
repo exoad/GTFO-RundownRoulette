@@ -1,5 +1,6 @@
 import 'package:gtfo_rundown_roulette/shared/classes_loadout.dart';
 import 'package:gtfo_rundown_roulette/shared/classes_runs.dart';
+import 'package:gtfo_rundown_roulette/utils/skeleton_object.dart';
 
 final class Preset {
   final Rundowns rundowns;
@@ -409,6 +410,25 @@ final class Preset {
   }
 }
 
+class SkeletonRun with SkeletonObject<GeneratedRun> {
+  Mission? mission;
+  Rundown? rundown;
+  PlayerPool? players;
+  List<Sector>? sectors;
+  int? seed;
+
+  @override
+  GeneratedRun populate() {
+    return GeneratedRun(
+      seed!,
+      mission: mission!,
+      players: players!,
+      sectors: sectors!,
+      rundown: rundown!,
+    );
+  }
+}
+
 class GeneratedRun {
   final Mission mission;
   final Rundown rundown;
@@ -416,7 +436,7 @@ class GeneratedRun {
   final List<Sector> sectors;
   final int seed;
 
-  GeneratedRun(
+  const GeneratedRun(
     this.seed, {
     required this.mission,
     required this.players,
