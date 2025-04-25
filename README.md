@@ -42,35 +42,35 @@ to make it so that it isn't too repetitive:
 2. A majority vote can be used to trigger a reroll of the loadout or rundown. This can occur either once after the initial randomization or after a failed attempt.
 3. Boosters are optional and not mandatory. If a player is unable to bring a specific tier of booster(s), they are allowed to forgo bringing any boosters at all.
 
-### Blind
+~~### Blind~~
 
-This mode is very simple and follows similar rules to the **Generic** mode, but instead of everything being
+~~This mode is very simple and follows similar rules to the **Generic** mode, but instead of everything being
 randomized, players have the option to decide what they want to choose to remain static and what to remain
-randomized. When you make something static, this is known as *blocking* and everything here can be blocked:
+randomized. When you make something static, this is known as *blocking* and everything here can be blocked:~~
 
-1. Primary Weapon
+~~1. Primary Weapon
 2. Special Weapon
 3. Tool
 4. Melee
-5. Rundown
+5. Rundown~~
 
-Here are some common blocking methods:
+~~Here are some common blocking methods:~~
 
-#### Open Blind
+~~#### Open Blind~~
 
-This is when players block certain parts or all of their loadout, but the rundown is known later. You can
-also unblock certain areas of the loadout; for example, only blocking guns and melees but not tools.
+~~This is when players block certain parts or all of their loadout, but the rundown is known later. You can
+also unblock certain areas of the loadout; for example, only blocking guns and melees but not tools.~~
 
-There is a lot of things you can do with this, but it is limited due to potential for meta loadouts when players
-are allowed to block their entire loadout.
+~~There is a lot of things you can do with this, but it is limited due to potential for meta loadouts when players
+are allowed to block their entire loadout.~~
 
-#### Closed Blind
+~~#### Closed Blind~~
 
-This is when the players block the rundown, but are not blocking certain parts or all of their loadouts which is
-known later.
+~~This is when the players block the rundown, but are not blocking certain parts or all of their loadouts which is
+known later.~~
 
-This is good for relearning or potentially experimenting with a rundown, but it can short due to player's poor
-decisions on what rundown to go with.
+~~This is good for relearning or potentially experimenting with a rundown, but it can short due to player's poor
+decisions on what rundown to go with.~~
 
 ### Auction
 
