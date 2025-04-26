@@ -290,7 +290,7 @@ class _ContentBodyState extends State<_ContentBody>
                 children: <Widget>[
                   Expanded(
                     child: PlayerCard(
-                          title: "Player 1 ${kPrefs.getSafeBool("be_descriptive") ? "(HOST)" : ""}",
+                          title: "Player 1",
                           name: "Woods",
                           bgImage: "assets/ingame/woods.png",
                           color: const Color.fromARGB(255, 208, 79, 116),

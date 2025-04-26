@@ -56,7 +56,7 @@ class _ManagerState extends State<Manager> {
                 <Widget>[
                   const HomePage(),
                   const GenericGeneratorScaffold(),
-                  const Variant2Page().sanctioned,
+                  const AuctionGeneratorPage().sanctioned,
                 ][_selected],
           ),
         ],

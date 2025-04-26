@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gtfo_rundown_roulette/interface/provider/current_run.dart';
+import 'package:gtfo_rundown_roulette/interface/provider/current_skeleton_run.dart';
 import 'package:gtfo_rundown_roulette/interface/root.dart';
 import 'package:gtfo_rundown_roulette/public.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ class MainApp extends StatelessWidget {
       providers: <SingleChildWidget>[
         // add global providers here
         ChangeNotifierProvider<CurrentRun>.value(value: CurrentRun.instance),
+        ChangeNotifierProvider<CurrentSkeletonRun>.value(value: CurrentSkeletonRun.instance),
       ],
       builder:
           // the toastification package is used here to provide for easy use of toasts and building custom toasts
