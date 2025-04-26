@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gtfo_rundown_roulette/interface/provider/current_skeleton_run.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/core/normal_box.dart';
@@ -123,31 +124,54 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
             color: PublicTheme.normalWhite,
           ),
         ).animate(autoPlay: true).slideY(begin: 0.2, duration: const Duration(milliseconds: 240)),
+        if (!_rolling)
+          const Text(
+                "Click on each item to assign it to a player",
+                style: TextStyle(fontSize: 18, color: PublicTheme.loreYellow),
+                textAlign: TextAlign.center,
+              )
+              .animate(autoPlay: true)
+              .fadeIn(begin: 0.6, duration: const Duration(milliseconds: 240))
+              .slideY(begin: 0.2, duration: const Duration(milliseconds: 240)),
         const SizedBox(height: 22),
-        Wrap(
-          runSpacing: 8,
-          runAlignment: WrapAlignment.spaceEvenly,
-          spacing: 8,
-          children: List<Widget>.generate(_primariesPool.length, (int i) {
-            return _ItemCard(
-              display: Image.asset(_primariesPool[i].assetPath),
-              sub: Text.rich(
-                TextSpan(
-                  children: <InlineSpan>[
-                    TextSpan(
-                      text: _primariesPool[i].canonicalName,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        SingleChildScrollView(
+          child: Wrap(
+            runSpacing: 8,
+            runAlignment: WrapAlignment.spaceEvenly,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            children: List<Widget>.generate(_primariesPool.length, (int i) {
+              return _ItemCard(
+                    menuChildrenBuilder: (BuildContext _, int j) => Text("Player ${j + 1}"),
+                    display: Image.asset(_primariesPool[i].assetPath, scale: 0.94),
+                    sub: Text.rich(
+                      TextSpan(
+                        children: <InlineSpan>[
+                          TextSpan(
+                            text: _primariesPool[i].canonicalName,
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
+                          TextSpan(
+                            text: "\n${_primariesPool[i].gameName}",
+                            style: const TextStyle(fontSize: 16, color: PublicTheme.hiddenGray),
+                          ),
+                        ],
+                      ),
+                      style: const TextStyle(
+                        fontFamily: "Shared Tech",
+                        color: PublicTheme.normalWhite,
+                      ),
                     ),
-                    TextSpan(
-                      text: "\n${_primariesPool[i].gameName}",
-                      style: const TextStyle(fontSize: 16, color: PublicTheme.hiddenGray),
-                    ),
-                  ],
-                ),
-                style: const TextStyle(fontFamily: "Shared Tech", color: PublicTheme.normalWhite),
-              ),
-            );
-          }, growable: false),
+                  )
+                  .animate(autoPlay: true)
+                  .fadeIn(begin: 0.8, duration: const Duration(milliseconds: 210))
+                  .slideY(
+                    begin: -0.34,
+                    duration: const Duration(milliseconds: 330),
+                    delay: const Duration(milliseconds: 80),
+                  );
+            }, growable: false),
+          ),
         ),
       ],
     );
@@ -241,7 +265,7 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
               _goTo(2);
               _triggerPageChange(() {
                 _primariesPool.clear();
-                _primariesPool.addAll(Preset.vanilla.primaries.pickMultiple());
+                _primariesPool.addAll(Preset.vanilla.primaries.pickMultipleWithBias(4));
                 setState(() {});
               });
             },
@@ -259,7 +283,16 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
         const Icon(Icons.warning_amber_sharp, color: PublicTheme.loreYellow),
         const SizedBox(height: 6),
         const Text(
-          "This is a very hands-on mode.\nReading the USAGE INFO can offer a\nsmoother experience.",
+          "Auction",
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: PublicTheme.loreYellow,
+          ),
+        ),
+        const SizedBox(height: 6),
+        const Text(
+          "This is a very hands-on mode. Please make sure\nall players are in thegame lobby before proceeding.",
           style: TextStyle(fontFamily: "Shared Tech", color: PublicTheme.normalWhite),
           textAlign: TextAlign.center,
         ),
@@ -292,9 +325,15 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
 class _ItemCard extends StatelessWidget {
   final Widget display;
   final Widget? sub;
-  final void Function()? onTap;
+  final void Function(int)? handler;
+  final Widget Function(BuildContext, int) menuChildrenBuilder;
 
-  const _ItemCard({required this.display, this.sub, this.onTap});
+  const _ItemCard({
+    required this.display,
+    this.sub,
+    this.handler,
+    required this.menuChildrenBuilder,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -302,9 +341,16 @@ class _ItemCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[display, const SizedBox(height: 12), if (sub != null) sub!],
     );
-    return onTap == null
-        ? UINormalBox(child: child)
-        : UINormalBoxButton(onTap: onTap!, child: child);
+    return PopupMenuButton(
+      child: UINormalBox(child: child),
+      itemBuilder: (BuildContext context) => List<PopupMenuEntry<int>>.generate(
+        4,
+        (int i) => PopupMenuEntry<int>(
+          onPressed: () => handler?.call(i),
+          child: menuChildrenBuilder.call(context, i),
+        ),
+      ),
+    );
   }
 }
 

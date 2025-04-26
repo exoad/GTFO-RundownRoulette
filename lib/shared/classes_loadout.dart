@@ -1,5 +1,6 @@
 import "package:equatable/equatable.dart";
 import "package:gtfo_rundown_roulette/shared/shared.dart";
+import "package:gtfo_rundown_roulette/utils/skeleton_object.dart";
 
 typedef Melees = List<MeleeWeapon>;
 typedef PrimaryGuns = List<Gun>;
@@ -20,6 +21,25 @@ class Loadout {
     required this.special,
     required this.boosters,
   });
+}
+
+class SkeletonLoadout with SkeletonObject<Loadout> {
+  MeleeWeapon? melee;
+  ToolItem? tool;
+  Gun? primary;
+  Gun? special;
+  List<Boosters>? boosters;
+
+  @override
+  Loadout populate() {
+    return Loadout(
+      melee: melee!,
+      tool: tool!,
+      primary: primary!,
+      special: special!,
+      boosters: boosters!,
+    );
+  }
 }
 
 sealed class LoadoutItem with EquatableMixin {

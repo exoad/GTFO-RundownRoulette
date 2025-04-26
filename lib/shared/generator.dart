@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:flutter/material.dart';
 import 'package:gtfo_rundown_roulette/shared/shared.dart';
 import 'package:gtfo_rundown_roulette/utils/seeded_generator.dart';
 import 'package:xrandom/xrandom.dart';
@@ -22,6 +25,28 @@ extension IterableRandomExtension<T> on List<T> {
       }
     }
     return res;
+  }
+
+  List<T> pickMultipleWithBias(int minLength) {
+    if (isEmpty || minLength <= 0) {
+      return <T>[];
+    }
+    final Xrandom random = Xrandom();
+    late int subsetSize;
+    if (length <= minLength) {
+      subsetSize = length;
+    } else {
+      final double randomNumber = random.nextDouble();
+      subsetSize = switch (randomNumber) {
+        // pattern matching is nice
+        < 0.1331 => minLength,
+        < 0.3291 => minLength + 1,
+        < 0.4313 when length > minLength + 1 => minLength + 2,
+        _ => minLength + random.nextInt(length - minLength + 1),
+      };
+      subsetSize = min(subsetSize, length);
+    }
+    return (List<T>.from(this)..shuffle(random)).take(subsetSize).toList();
   }
 }
 

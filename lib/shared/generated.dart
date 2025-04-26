@@ -413,16 +413,18 @@ final class Preset {
 class SkeletonRun with SkeletonObject<GeneratedRun> {
   Mission? mission;
   Rundown? rundown;
-  PlayerPool? players;
+  SkeletonPlayerPool players;
   List<Sector>? sectors;
   int? seed;
+
+  SkeletonRun() : players = SkeletonPlayerPool();
 
   @override
   GeneratedRun populate() {
     return GeneratedRun(
       seed!,
       mission: mission!,
-      players: players!,
+      players: players.populate(),
       sectors: sectors!,
       rundown: rundown!,
     );

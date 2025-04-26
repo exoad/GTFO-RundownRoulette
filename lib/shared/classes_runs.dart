@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:gtfo_rundown_roulette/shared/shared.dart';
+import 'package:gtfo_rundown_roulette/utils/skeleton_object.dart';
 
 typedef Rundowns = List<Rundown>;
 
@@ -15,6 +16,29 @@ class PlayerPool {
     required this.player3,
     required this.player4,
   });
+}
+
+final class SkeletonPlayerPool with SkeletonObject<PlayerPool> {
+  final SkeletonLoadout player1;
+  final SkeletonLoadout player2;
+  final SkeletonLoadout player3;
+  final SkeletonLoadout player4;
+
+  SkeletonPlayerPool()
+    : player1 = SkeletonLoadout(),
+      player2 = SkeletonLoadout(),
+      player3 = SkeletonLoadout(),
+      player4 = SkeletonLoadout();
+
+  @override
+  PlayerPool populate() {
+    return PlayerPool(
+      player1: player1.populate(),
+      player2: player2.populate(),
+      player3: player3.populate(),
+      player4: player4.populate(),
+    );
+  }
 }
 
 enum Sector {
