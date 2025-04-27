@@ -31,6 +31,33 @@ class MainApp extends StatelessWidget {
               child: MaterialApp(
                 // theming the actual application with the proper colors and styles from gtfo
                 theme: ThemeData(
+                  scrollbarTheme: const ScrollbarThemeData(
+                    thumbColor: WidgetStatePropertyAll<Color>(PublicTheme.normalWhite),
+                    radius: Radius.zero,
+                    interactive: true,
+                    mainAxisMargin: 80,
+                    trackColor: WidgetStatePropertyAll<Color>(Colors.transparent),
+                    trackBorderColor: WidgetStatePropertyAll<Color>(Colors.transparent),
+                  ),
+                  dropdownMenuTheme: const DropdownMenuThemeData(
+                    menuStyle: MenuStyle(
+                      shape: WidgetStatePropertyAll<OutlinedBorder>(
+                        RoundedRectangleBorder(side: BorderSide(color: PublicTheme.normalWhite)),
+                      ),
+                    ),
+                  ),
+                  popupMenuTheme: const PopupMenuThemeData(
+                    position: PopupMenuPosition.over,
+                    labelTextStyle: WidgetStatePropertyAll<TextStyle>(
+                      TextStyle(color: PublicTheme.normalWhite, fontFamily: "Shared Tech"),
+                    ),
+                    menuPadding: EdgeInsets.zero,
+                    textStyle: TextStyle(color: PublicTheme.normalWhite, fontFamily: "Shared Tech"),
+                    color: PublicTheme.murkyDarkGrey,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: PublicTheme.dangerRed, width: 2),
+                    ),
+                  ),
                   textSelectionTheme: TextSelectionThemeData(
                     cursorColor: PublicTheme.normalWhite,
                     selectionColor: PublicTheme.loreYellow.withAlpha(140),

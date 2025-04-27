@@ -5,10 +5,10 @@ final class Public {
   Public._();
 
   /// Build version. With each build, this number increases by one
-  static const int build = 7;
+  static const int build = 8;
 
   /// The date of this [build]
-  static const String versionSignature = "4_16_2025";
+  static const String versionSignature = "4_26_2025";
 
   /// Determines if development mode things should be hidden or not
   static const bool isRelease = bool.fromEnvironment("RELEASE", defaultValue: false);
@@ -25,7 +25,7 @@ final class PublicTheme {
   /// #020200
   static const Color abyssBlack = Color(0xFF020200);
 
-  /// #ff7f15
+  /// #ff7f1
   static const Color highlightOrange = Color(0xFFFF7F15);
 
   /// #ffbb02

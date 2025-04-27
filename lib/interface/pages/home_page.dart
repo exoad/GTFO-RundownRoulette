@@ -1,5 +1,6 @@
 import 'package:animated_glitch/animated_glitch.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/core/normal_box.dart';
@@ -22,378 +23,387 @@ class HomePage extends StatelessWidget {
       body: DefaultTextStyle(
         style: const TextStyle(fontFamily: "Shared Tech"),
         child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20) + const EdgeInsets.only(bottom: 80),
-              child: SizedBox(
-                // we confine everything to be of the same width.
-                // this is so that the mission mock box is the same size as the other elements
-                //
-                // tldr: looks good
-                width: MediaQuery.sizeOf(context).width * 0.4,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    // a lot of the custom spacing is done through sized boxes since the flex widget's spacing cant be dynamically changed, so this is a generous solution
-                    const SizedBox(height: 48),
-                    if (context
-                        .mounted) // we need this so we make sure we only render this "costly" effect when this element is mounted in the widget tree.
-                      RepaintBoundary(
-                        child: SizedBox.square(
-                          dimension: 148,
-                          child: AnimatedGlitch(
-                            controller: AnimatedGlitchController(
-                              // frequencies have similar parameters to Title widget, but they are varied so they arent trying to refresh as similarly as possible
-                              frequency: const Duration(milliseconds: 600),
-                              chance: 60,
-                              level: 2,
-                            ),
-                            child: Image.asset(
-                              "assets/icon.png",
-                              width: 128,
-                              height: 128,
-                              cacheHeight: 128,
-                              cacheWidth: 128,
-                            ),
-                          ),
-                        ),
-                      ),
-                    const SizedBox(height: 20),
-                    // once again, we need to check if this current element is mounted in the widget tree to determine if we should render this costly effect or not
-                    if (context.mounted)
-                      const RepaintBoundary(child: SizedBox(height: 64, child: _Title())),
-                    const SizedBox(height: 8),
-                    const Text(
-                      "BUILD ${Public.build} | SIG ${Public.versionSignature} | ${Public.isRelease ? 'PUB' : 'DEV'}",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: PublicTheme.loreYellow),
-                    ),
-                    const SizedBox(height: 24),
-                    // this is the mission mock box where we try to mock the look and feel of the mission box of the GTFO game
-                    // each rundown in GTFO when you click it shows a popup of some of the information for that particular mission
-                    // this here tries to replicate that look with some minor cuts.
-                    //
-                    // additionally there is a custom widget used for the divider known as the DroopedDivider which
-                    // you can view under the 'widgets' dir. it is used to mimic the look and feel further instead of using a normal divider widget
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            UniBeveledBox(
-                              child: SizedBox(
-                                width: MediaQuery.sizeOf(context).width * 0.12,
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    FlashingRandomTextWidget(
-                                      period: Duration(milliseconds: 650),
-                                      length: 1,
-                                      style: TextStyle(
-                                        fontFamily: "Shared Tech",
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      selection: "ABCDE",
-                                    ),
-                                    FlashingRandomNumberWidget(
-                                      period: Duration(milliseconds: 700),
-                                      length: 1,
-                                      style: TextStyle(
-                                        fontFamily: "Shared Tech",
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      " : ROULETTE",
-                                      style: TextStyle(
-                                        fontFamily: "Shared Tech",
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+          child: ScrollConfiguration(
+            behavior: ScrollConfiguration.of(context).copyWith(
+              multitouchDragStrategy: MultitouchDragStrategy.sumAllPointers,
+              scrollbars: true,
+              platform: TargetPlatform.windows,
+              overscroll: false,
+              physics: const AlwaysScrollableScrollPhysics(),
+            ),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20) + const EdgeInsets.only(bottom: 80),
+                child: SizedBox(
+                  // we confine everything to be of the same width.
+                  // this is so that the mission mock box is the same size as the other elements
+                  //
+                  // tldr: looks good
+                  width: MediaQuery.sizeOf(context).width * 0.4,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      // a lot of the custom spacing is done through sized boxes since the flex widget's spacing cant be dynamically changed, so this is a generous solution
+                      const SizedBox(height: 48),
+                      if (context
+                          .mounted) // we need this so we make sure we only render this "costly" effect when this element is mounted in the widget tree.
+                        RepaintBoundary(
+                          child: SizedBox.square(
+                            dimension: 148,
+                            child: AnimatedGlitch(
+                              controller: AnimatedGlitchController(
+                                // frequencies have similar parameters to Title widget, but they are varied so they arent trying to refresh as similarly as possible
+                                frequency: const Duration(milliseconds: 600),
+                                chance: 60,
+                                level: 2,
+                              ),
+                              child: Image.asset(
+                                "assets/icon.png",
+                                width: 128,
+                                height: 128,
+                                cacheHeight: 128,
+                                cacheWidth: 128,
                               ),
                             ),
-                            const Spacer(),
-                          ],
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: PublicTheme.normalWhite, width: 2),
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                          child: const Column(
+                        ),
+                      const SizedBox(height: 20),
+                      // once again, we need to check if this current element is mounted in the widget tree to determine if we should render this costly effect or not
+                      if (context.mounted)
+                        const RepaintBoundary(child: SizedBox(height: 64, child: _Title())),
+                      const SizedBox(height: 8),
+                      const Text(
+                        "BUILD ${Public.build} | SIG ${Public.versionSignature} | ${Public.isRelease ? 'PUB' : 'DEV'}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: PublicTheme.loreYellow),
+                      ),
+                      const SizedBox(height: 24),
+                      // this is the mission mock box where we try to mock the look and feel of the mission box of the GTFO game
+                      // each rundown in GTFO when you click it shows a popup of some of the information for that particular mission
+                      // this here tries to replicate that look with some minor cuts.
+                      //
+                      // additionally there is a custom widget used for the divider known as the DroopedDivider which
+                      // you can view under the 'widgets' dir. it is used to mimic the look and feel further instead of using a normal divider widget
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 4),
-                                    child: Text(
-                                      "://Intel_",
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontFamily: "Fira Code",
-                                        fontWeight: FontWeight.bold,
-                                        color: PublicTheme.loreYellow,
+                              UniBeveledBox(
+                                child: SizedBox(
+                                  width: MediaQuery.sizeOf(context).width * 0.12,
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      FlashingRandomTextWidget(
+                                        period: Duration(milliseconds: 650),
+                                        length: 1,
+                                        style: TextStyle(
+                                          fontFamily: "Shared Tech",
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        selection: "ABCDE",
+                                      ),
+                                      FlashingRandomNumberWidget(
+                                        period: Duration(milliseconds: 700),
+                                        length: 1,
+                                        style: TextStyle(
+                                          fontFamily: "Shared Tech",
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        " : ROULETTE",
+                                        style: TextStyle(
+                                          fontFamily: "Shared Tech",
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                            ],
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: PublicTheme.normalWhite, width: 2),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                            child: const Column(
+                              children: <Widget>[
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 4),
+                                      child: Text(
+                                        "://Intel_",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontFamily: "Fira Code",
+                                          fontWeight: FontWeight.bold,
+                                          color: PublicTheme.loreYellow,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 8),
-                                    child: Text(
-                                      "Critical Pr0C3S# OffLIn&3. Prisoner disP4TcH3d t0 ?!...",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: PublicTheme.normalWhite,
+                                    SizedBox(height: 4),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 8),
+                                      child: Text(
+                                        "Critical Pr0C3S# OffLIn&3. Prisoner disP4TcH3d t0 ?!...",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: PublicTheme.normalWhite,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 12, bottom: 4),
-                                    child: DroopedDivider(
-                                      color: PublicTheme.normalWhite,
-                                      thickness: 2,
-                                      amount: 8,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 4),
-                                    child: Text(
-                                      ":://Interrupted_Communications_",
-                                      style: TextStyle(
-                                        fontFamily: "Fira Code",
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: PublicTheme.loreYellow,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 8),
-                                    child: Text.rich(
-                                      TextSpan(
-                                        children: <InlineSpan>[
-                                          TextSpan(text: ">...Wh..What!? I fucking got "),
-                                          TextSpan(
-                                            text: "NOTHING",
-                                            style: TextStyle(
-                                              fontSize: 24,
-                                              color: PublicTheme.dangerRed,
-                                            ),
-                                          ),
-                                          TextSpan(text: "...\n>...This can't get"),
-                                          TextSpan(
-                                            text: " any worse ",
-                                            style: TextStyle(
-                                              fontSize: 24,
-                                              color: PublicTheme.dangerRed,
-                                              wordSpacing: -1,
-                                            ),
-                                          ),
-                                          TextSpan(text: " right?\n>[primal roar]"),
-                                        ],
-                                      ),
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: PublicTheme.normalWhite,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 12, bottom: 4),
-                                    child: SizedBox(
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 12, bottom: 4),
                                       child: DroopedDivider(
                                         color: PublicTheme.normalWhite,
                                         thickness: 2,
                                         amount: 8,
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 4),
-                                    child: Text(
-                                      ":://Expedition_metrics_",
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontFamily: "Fira Code",
-                                        fontWeight: FontWeight.bold,
-                                        color: PublicTheme.loreYellow,
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 4),
+                                      child: Text(
+                                        ":://Interrupted_Communications_",
+                                        style: TextStyle(
+                                          fontFamily: "Fira Code",
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: PublicTheme.loreYellow,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 8),
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text(
-                                          "Drop cage target depth: ",
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            color: PublicTheme.normalWhite,
-                                            fontFamily: "Shared Tech",
-                                          ),
+                                    SizedBox(height: 4),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 8),
+                                      child: Text.rich(
+                                        TextSpan(
+                                          children: <InlineSpan>[
+                                            TextSpan(text: ">...Wh..What!? I fucking got "),
+                                            TextSpan(
+                                              text: "NOTHING",
+                                              style: TextStyle(
+                                                fontSize: 24,
+                                                color: PublicTheme.dangerRed,
+                                              ),
+                                            ),
+                                            TextSpan(text: "...\n>...This can't get"),
+                                            TextSpan(
+                                              text: " any worse ",
+                                              style: TextStyle(
+                                                fontSize: 24,
+                                                color: PublicTheme.dangerRed,
+                                                wordSpacing: -1,
+                                              ),
+                                            ),
+                                            TextSpan(text: " right?\n>[primal roar]"),
+                                          ],
                                         ),
-                                        SizedBox(width: 6),
-                                        FlashingRandomNumberWidget(
-                                          length: 4,
-                                          period: Duration(milliseconds: 150),
-                                          style: TextStyle(
-                                            color: PublicTheme.metricsYellow,
-                                            fontSize: 20,
-                                          ),
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: PublicTheme.normalWhite,
                                         ),
-                                        SizedBox(width: 6),
-                                        Text(
-                                          "m",
-                                          style: TextStyle(
-                                            color: PublicTheme.metricsYellow,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 8),
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text(
-                                          "Artifact Heat: ",
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            color: PublicTheme.normalWhite,
-                                            fontFamily: "Shared Tech",
-                                          ),
-                                        ),
-                                        SizedBox(width: 6),
-                                        Text(
-                                          "69%",
-                                          style: TextStyle(
-                                            color: PublicTheme.metricsYellow,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (!kPrefs.getSafeBool("fuck_ads")) const SizedBox(height: 26),
-                    if (!kPrefs.getSafeBool("fuck_ads"))
-                      const Text(
-                        "A randomizer focused around making playing GTFO much more enjoyable without involving the usage of that many mods if at all.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: PublicTheme.normalWhite),
-                      ),
-                    if (!kPrefs.getSafeBool("fuck_ads")) const SizedBox(height: 4),
-                    if (!kPrefs.getSafeBool("fuck_ads"))
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child:
-                            kIsWeb
-                                ? const Text(
-                                  "This app is also available for Windows desktop so you can use it offline! Visit the Source Repository to download it.",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: PublicTheme.hiddenGray,
-                                  ),
-                                )
-                                : Wrap(
-                                  alignment: WrapAlignment.center,
-                                  runAlignment: WrapAlignment.center,
-                                  crossAxisAlignment: WrapCrossAlignment.center,
-                                  children: <Widget>[
-                                    const Text(
-                                      "This app is also available in your browser! Visit it at exoad.github.io/GTFO-RundownRoulette/",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: PublicTheme.hiddenGray,
                                       ),
                                     ),
-                                    const SizedBox(width: 4),
-                                    UINormalBoxButton(
-                                      onTap:
-                                          () async => await launchUrlString(
-                                            "https://exoad.github.io/GTFO-RundownRoulette/",
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 12, bottom: 4),
+                                      child: SizedBox(
+                                        child: DroopedDivider(
+                                          color: PublicTheme.normalWhite,
+                                          thickness: 2,
+                                          amount: 8,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 4),
+                                      child: Text(
+                                        ":://Expedition_metrics_",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontFamily: "Fira Code",
+                                          fontWeight: FontWeight.bold,
+                                          color: PublicTheme.loreYellow,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 4),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 8),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: <Widget>[
+                                          Text(
+                                            "Drop cage target depth: ",
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: PublicTheme.normalWhite,
+                                              fontFamily: "Shared Tech",
+                                            ),
                                           ),
-                                      child: const Icon(Icons.open_in_browser),
+                                          SizedBox(width: 6),
+                                          FlashingRandomNumberWidget(
+                                            length: 4,
+                                            period: Duration(milliseconds: 150),
+                                            style: TextStyle(
+                                              color: PublicTheme.metricsYellow,
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                          SizedBox(width: 6),
+                                          Text(
+                                            "m",
+                                            style: TextStyle(
+                                              color: PublicTheme.metricsYellow,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 4),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 8),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: <Widget>[
+                                          Text(
+                                            "Artifact Heat: ",
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: PublicTheme.normalWhite,
+                                              fontFamily: "Shared Tech",
+                                            ),
+                                          ),
+                                          SizedBox(width: 6),
+                                          Text(
+                                            "69%",
+                                            style: TextStyle(
+                                              color: PublicTheme.metricsYellow,
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    const SizedBox(height: 24),
-                    Wrap(
-                      runAlignment: WrapAlignment.center,
-                      alignment: WrapAlignment.center,
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: <Widget>[
-                        Tooltip(
-                          message: "Configure the application",
-                          child: UINormalBoxButton(
-                            foregroundColor: PublicTheme.dangerRed,
-                            child: const Text(
-                              "SETTINGS",
-                              style: TextStyle(
-                                fontFamily: "Shared Tech",
-                                fontWeight: FontWeight.bold,
+                      if (!kPrefs.getSafeBool("fuck_ads")) const SizedBox(height: 26),
+                      if (!kPrefs.getSafeBool("fuck_ads"))
+                        const Text(
+                          "A randomizer focused around making playing GTFO much more enjoyable without involving the usage of that many mods if at all.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: PublicTheme.normalWhite),
+                        ),
+                      if (!kPrefs.getSafeBool("fuck_ads")) const SizedBox(height: 4),
+                      if (!kPrefs.getSafeBool("fuck_ads"))
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child:
+                              kIsWeb
+                                  ? const Text(
+                                    "This app is also available for Windows desktop so you can use it offline! Visit the Source Repository to download it.",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: PublicTheme.hiddenGray,
+                                    ),
+                                  )
+                                  : Wrap(
+                                    alignment: WrapAlignment.center,
+                                    runAlignment: WrapAlignment.center,
+                                    crossAxisAlignment: WrapCrossAlignment.center,
+                                    children: <Widget>[
+                                      const Text(
+                                        "This app is also available in your browser! Visit it at exoad.github.io/GTFO-RundownRoulette/",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: PublicTheme.hiddenGray,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 4),
+                                      UINormalBoxButton(
+                                        onTap:
+                                            () async => await launchUrlString(
+                                              "https://exoad.github.io/GTFO-RundownRoulette/",
+                                            ),
+                                        child: const Icon(Icons.open_in_browser),
+                                      ),
+                                    ],
+                                  ),
+                        ),
+                      const SizedBox(height: 24),
+                      Wrap(
+                        runAlignment: WrapAlignment.center,
+                        alignment: WrapAlignment.center,
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: <Widget>[
+                          Tooltip(
+                            message: "Configure the application",
+                            child: UINormalBoxButton(
+                              foregroundColor: PublicTheme.dangerRed,
+                              child: const Text(
+                                "SETTINGS",
+                                style: TextStyle(
+                                  fontFamily: "Shared Tech",
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              onTap:
+                                  () async => await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) => const _SettingsMenu(),
+                                  ),
+                            ),
+                          ),
+                          if (!kPrefs.getSafeBool("fuck_ads"))
+                            Tooltip(
+                              message: "https://github.com/exoad/GTFO-RundownRoulette",
+                              child: UINormalBoxButton(
+                                onTap:
+                                    () async => await launchUrlString(
+                                      "https://github.com/exoad/GTFO-RundownRoulette",
+                                    ),
+                                foregroundColor: PublicTheme.loreYellow,
+                                child: const Text("SOURCE CODE"),
                               ),
                             ),
-                            onTap:
-                                () async => await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) => const _SettingsMenu(),
-                                ),
-                          ),
-                        ),
-                        if (!kPrefs.getSafeBool("fuck_ads"))
-                          Tooltip(
-                            message: "https://github.com/exoad/GTFO-RundownRoulette",
-                            child: UINormalBoxButton(
-                              onTap:
-                                  () async => await launchUrlString(
-                                    "https://github.com/exoad/GTFO-RundownRoulette",
-                                  ),
-                              foregroundColor: PublicTheme.loreYellow,
-                              child: const Text("SOURCE CODE"),
+                          if (!kPrefs.getSafeBool("fuck_ads"))
+                            Tooltip(
+                              message: "https://discord.com/invite/gtfo",
+                              child: UINormalBoxButton(
+                                onTap:
+                                    () async =>
+                                        await launchUrlString("https://discord.com/invite/gtfo"),
+                                foregroundColor: PublicTheme.loreYellow,
+                                child: const Text("GTFO DISCORD"),
+                              ),
                             ),
-                          ),
-                        if (!kPrefs.getSafeBool("fuck_ads"))
-                          Tooltip(
-                            message: "https://discord.com/invite/gtfo",
-                            child: UINormalBoxButton(
-                              onTap:
-                                  () async =>
-                                      await launchUrlString("https://discord.com/invite/gtfo"),
-                              foregroundColor: PublicTheme.loreYellow,
-                              child: const Text("GTFO DISCORD"),
-                            ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                  ],
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                  ),
                 ),
               ),
             ),

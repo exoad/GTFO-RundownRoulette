@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:gtfo_rundown_roulette/shared/shared.dart';
 import 'package:gtfo_rundown_roulette/utils/seeded_generator.dart';
 import 'package:xrandom/xrandom.dart';

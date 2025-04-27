@@ -1,11 +1,15 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gtfo_rundown_roulette/interface/provider/current_skeleton_run.dart';
+import 'package:gtfo_rundown_roulette/interface/widgets/conditional_widget.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/core/normal_box.dart';
+import 'package:gtfo_rundown_roulette/interface/widgets/diagonal_text.dart';
+import 'package:gtfo_rundown_roulette/main.dart';
 import 'package:gtfo_rundown_roulette/public.dart';
 import 'package:gtfo_rundown_roulette/shared/shared.dart';
 import 'package:gtfo_rundown_roulette/utils/scheduler.dart';
+import 'package:gtfo_rundown_roulette/utils/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
 class AuctionGeneratorPage extends StatelessWidget {
@@ -134,43 +138,169 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
               .fadeIn(begin: 0.6, duration: const Duration(milliseconds: 240))
               .slideY(begin: 0.2, duration: const Duration(milliseconds: 240)),
         const SizedBox(height: 22),
-        SingleChildScrollView(
-          child: Wrap(
-            runSpacing: 8,
-            runAlignment: WrapAlignment.spaceEvenly,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 8,
-            children: List<Widget>.generate(_primariesPool.length, (int i) {
-              return _ItemCard(
-                    menuChildrenBuilder: (BuildContext _, int j) => Text("Player ${j + 1}"),
-                    display: Image.asset(_primariesPool[i].assetPath, scale: 0.94),
-                    sub: Text.rich(
-                      TextSpan(
-                        children: <InlineSpan>[
+        ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(
+            scrollbars: true,
+            multitouchDragStrategy: MultitouchDragStrategy.sumAllPointers,
+          ),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Wrap(
+              runSpacing: 8,
+              runAlignment: WrapAlignment.spaceEvenly,
+              spacing: 8,
+              children: List<Widget>.generate(_primariesPool.length, (int i) {
+                return ConditionalWidget(
+                  second: (BuildContext context, Widget normal) {
+                    if (Provider.of<CurrentSkeletonRun>(
+                          context,
+                          listen: false,
+                        ).run!.players.player1.primary ==
+                        _primariesPool[i]) {
+                      return DiagonalText(
+                        text: "PLAYER 1",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 208, 79, 116),
+                          fontFamily: "Shared Tech",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                        child: normal,
+                      );
+                    } else if (Provider.of<CurrentSkeletonRun>(
+                          context,
+                          listen: false,
+                        ).run!.players.player2.primary ==
+                        _primariesPool[i]) {
+                      return DiagonalText(
+                        text: "PLAYER 2",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 88, 224, 124),
+                          fontFamily: "Shared Tech",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                        child: normal,
+                      );
+                    } else if (Provider.of<CurrentSkeletonRun>(
+                          context,
+                          listen: false,
+                        ).run!.players.player3.primary ==
+                        _primariesPool[i]) {
+                      return DiagonalText(
+                        text: "PLAYER 3",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 77, 133, 189),
+                          fontFamily: "Shared Tech",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                        child: normal,
+                      );
+                    } else if (Provider.of<CurrentSkeletonRun>(
+                          context,
+                          listen: false,
+                        ).run!.players.player3.primary ==
+                        _primariesPool[i]) {
+                      return DiagonalText(
+                        text: "PLAYER 4",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 135, 53, 197),
+                          fontFamily: "Shared Tech",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                        child: normal,
+                      );
+                    }
+                    return null;
+                  },
+                  normal: _ItemCard(
+                        handler: (int i) {
+                          if (i == 0) {
+                            Provider.of<CurrentSkeletonRun>(context, listen: false)
+                                .run!
+                                .players
+                                .player1
+                                .primary = _primariesPool[i];
+                            setState(() {});
+                            debugPrint("Player 1 PRIMARY = ${_primariesPool[i]}");
+                          } else if (i == 1) {
+                            Provider.of<CurrentSkeletonRun>(context, listen: false)
+                                .run!
+                                .players
+                                .player2
+                                .primary = _primariesPool[i];
+                            debugPrint("Player 2 PRIMARY = ${_primariesPool[i]}");
+                            setState(() {});
+                          } else if (i == 2) {
+                            Provider.of<CurrentSkeletonRun>(context, listen: false)
+                                .run!
+                                .players
+                                .player3
+                                .primary = _primariesPool[i];
+                            setState(() {});
+                            debugPrint("Player 3 PRIMARY = ${_primariesPool[i]}");
+                          } else if (i == 3) {
+                            Provider.of<CurrentSkeletonRun>(context, listen: false)
+                                .run!
+                                .players
+                                .player4
+                                .primary = _primariesPool[i];
+                            setState(() {});
+                            debugPrint("Player 4 PRIMARY = ${_primariesPool[i]}");
+                          }
+                        },
+                        menuChildrenBuilder:
+                            (BuildContext _, int j) => UINormalBox(
+                              backgroundColor:
+                                  kPrefs.getSafeBool("color_lobby")
+                                      ? switch (i) {
+                                        1 => const Color.fromARGB(179, 88, 224, 124),
+                                        2 => const Color.fromARGB(211, 77, 133, 189),
+                                        3 => const Color.fromARGB(195, 135, 53, 197),
+                                        _ => const Color.fromARGB(206, 208, 79, 116),
+                                      }
+                                      : PublicTheme.murkyDarkGrey,
+                              child: Text(
+                                "Player ${j + 1}",
+                                style: const TextStyle(
+                                  fontFamily: "Shared Tech",
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                        display: Image.asset(_primariesPool[i].assetPath, scale: 0.94),
+                        sub: Text.rich(
                           TextSpan(
-                            text: _primariesPool[i].canonicalName,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                            children: <InlineSpan>[
+                              TextSpan(
+                                text: _primariesPool[i].canonicalName,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              TextSpan(
+                                text: "\n${_primariesPool[i].gameName}",
+                                style: const TextStyle(fontSize: 16, color: PublicTheme.hiddenGray),
+                              ),
+                            ],
                           ),
-                          TextSpan(
-                            text: "\n${_primariesPool[i].gameName}",
-                            style: const TextStyle(fontSize: 16, color: PublicTheme.hiddenGray),
+                          style: const TextStyle(
+                            fontFamily: "Shared Tech",
+                            color: PublicTheme.normalWhite,
                           ),
-                        ],
+                        ),
+                      )
+                      .animate(autoPlay: true)
+                      .fadeIn(begin: 0.8, duration: const Duration(milliseconds: 210))
+                      .slideY(
+                        begin: -0.34,
+                        duration: const Duration(milliseconds: 330),
+                        delay: const Duration(milliseconds: 80),
                       ),
-                      style: const TextStyle(
-                        fontFamily: "Shared Tech",
-                        color: PublicTheme.normalWhite,
-                      ),
-                    ),
-                  )
-                  .animate(autoPlay: true)
-                  .fadeIn(begin: 0.8, duration: const Duration(milliseconds: 210))
-                  .slideY(
-                    begin: -0.34,
-                    duration: const Duration(milliseconds: 330),
-                    delay: const Duration(milliseconds: 80),
-                  );
-            }, growable: false),
+                );
+              }, growable: false),
+            ),
           ),
         ),
       ],
@@ -341,15 +471,16 @@ class _ItemCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[display, const SizedBox(height: 12), if (sub != null) sub!],
     );
-    return PopupMenuButton(
+    return PopupMenuButton<int>(
+      requestFocus: true,
+      onSelected: handler,
+      padding: EdgeInsets.zero,
+      itemBuilder:
+          (BuildContext context) => List<PopupMenuEntry<int>>.generate(
+            4,
+            (int i) => PopupMenuItem<int>(value: i, child: menuChildrenBuilder.call(context, i)),
+          ),
       child: UINormalBox(child: child),
-      itemBuilder: (BuildContext context) => List<PopupMenuEntry<int>>.generate(
-        4,
-        (int i) => PopupMenuEntry<int>(
-          onPressed: () => handler?.call(i),
-          child: menuChildrenBuilder.call(context, i),
-        ),
-      ),
     );
   }
 }
