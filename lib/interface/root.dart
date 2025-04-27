@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:gtfo_rundown_roulette/interface/pages/home_page.dart';
 import 'package:gtfo_rundown_roulette/interface/pages/generic_generator_page.dart';
 import 'package:gtfo_rundown_roulette/interface/pages/auction_generator_page.dart';
-import 'package:gtfo_rundown_roulette/interface/widgets/sanctioned.dart';
 
 class Manager extends StatefulWidget {
   const Manager({super.key});

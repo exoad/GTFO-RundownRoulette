@@ -30,14 +30,18 @@ class _ContentBody extends StatefulWidget {
   State<_ContentBody> createState() => _ContentBodyState();
 }
 
-class _ContentBodyState extends State<_ContentBody> {
+class _ContentBodyState extends State<_ContentBody> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[_InformationRow(), Expanded(child: _PageLoader())],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 // holds all of the page switching and other related functionalities
@@ -124,57 +128,78 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        const Text(
-          "Final Review",
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-            fontFamily: "Shared Tech",
-            color: PublicTheme.dangerRed,
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              UINormalBox(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      Provider.of<CurrentRun>(context).run == null
+                          ? "???"
+                          : Provider.of<CurrentRun>(context).run!.mission.canonicalName,
+                      style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      Provider.of<CurrentRun>(context).run == null
+                          ? "???"
+                          : Provider.of<CurrentRun>(context).run!.rundown.canonicalName,
+                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 18),
-        Row(
-          spacing: 8,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Expanded(
-              child: PlayerCard(
-                title: "Player 1",
-                name: "Woods",
-                bgImage: "assets/ingame/woods.png",
-                color: const Color.fromARGB(255, 208, 79, 116),
-                loadout: Provider.of<CurrentRun>(context).run?.players.player1,
+        const SizedBox(height: 6),
+        Expanded(
+          child: Row(
+            spacing: 8,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Expanded(
+                child: PlayerCard(
+                  title: "Player 1",
+                  name: "Woods",
+                  bgImage: "assets/ingame/woods.png",
+                  color: const Color.fromARGB(255, 208, 79, 116),
+                  loadout: Provider.of<CurrentRun>(context).run?.players.player1,
+                ),
               ),
-            ),
-            Expanded(
-              child: PlayerCard(
-                title: "Player 2",
-                name: "Dauda",
-                bgImage: "assets/ingame/dauda.png",
-                color: const Color.fromARGB(255, 88, 224, 124),
-                loadout: Provider.of<CurrentRun>(context).run?.players.player2,
+              Expanded(
+                child: PlayerCard(
+                  title: "Player 2",
+                  name: "Dauda",
+                  bgImage: "assets/ingame/dauda.png",
+                  color: const Color.fromARGB(255, 88, 224, 124),
+                  loadout: Provider.of<CurrentRun>(context).run?.players.player2,
+                ),
               ),
-            ),
-            Expanded(
-              child: PlayerCard(
-                title: "Player 3",
-                name: "Hackett",
-                bgImage: "assets/ingame/hackett.png",
-                color: const Color.fromARGB(255, 77, 133, 189),
-                loadout: Provider.of<CurrentRun>(context).run?.players.player3,
+              Expanded(
+                child: PlayerCard(
+                  title: "Player 3",
+                  name: "Hackett",
+                  bgImage: "assets/ingame/hackett.png",
+                  color: const Color.fromARGB(255, 77, 133, 189),
+                  loadout: Provider.of<CurrentRun>(context).run?.players.player3,
+                ),
               ),
-            ),
-            Expanded(
-              child: PlayerCard(
-                title: "Player 4",
-                name: "Bishop",
-                bgImage: "assets/ingame/bishop.png",
-                color: const Color.fromARGB(255, 135, 53, 197),
-                loadout: Provider.of<CurrentRun>(context).run?.players.player4,
+              Expanded(
+                child: PlayerCard(
+                  title: "Player 4",
+                  name: "Bishop",
+                  bgImage: "assets/ingame/bishop.png",
+                  color: const Color.fromARGB(255, 135, 53, 197),
+                  loadout: Provider.of<CurrentRun>(context).run?.players.player4,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
