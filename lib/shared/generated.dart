@@ -422,7 +422,7 @@ class SkeletonRun with SkeletonObject<GeneratedRun> {
   @override
   GeneratedRun populate() {
     return GeneratedRun(
-      seed!,
+      seed ?? -1,
       mission: mission!,
       players: players.populate(),
       sectors: sectors!,

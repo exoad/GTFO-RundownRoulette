@@ -5,7 +5,7 @@ final class Public {
   Public._();
 
   /// Build version. With each build, this number increases by one
-  static const int build = 8;
+  static const int build = 9;
 
   /// The date of this [build]
   static const String versionSignature = "4_26_2025";

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gtfo_rundown_roulette/utils/computed_consts.dart';
 
 class DiagonalText extends StatelessWidget {
   final String text;
@@ -12,7 +13,7 @@ class DiagonalText extends StatelessWidget {
     super.key,
     required this.text,
     required this.child,
-    this.angle = -0.785,
+    this.angle = PI_DIV_4,
     this.style,
     this.alignment = Alignment.center,
   });
@@ -25,15 +26,12 @@ class DiagonalText extends StatelessWidget {
         child,
         Transform.rotate(
           angle: angle,
-          child: Align(
-            alignment: alignment,
-            child: Text(
-              text,
-              style:
-                  style ??
-                  const TextStyle(color: Colors.red, fontSize: 16.0, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
+          child: Text(
+            text,
+            style:
+                style ??
+                const TextStyle(color: Colors.red, fontSize: 16.0, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
           ),
         ),
       ],

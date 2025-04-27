@@ -26,11 +26,11 @@ extension IterableRandomExtension<T> on List<T> {
     return res;
   }
 
-  List<T> pickMultipleWithBias(int minLength) {
+  List<T> pickMultipleWithBias(int minLength, [bool allowDuplicates = false]) {
     if (isEmpty || minLength <= 0) {
       return <T>[];
     }
-    final Xrandom random = Xrandom();
+    final Random random = Random();
     late int subsetSize;
     if (length <= minLength) {
       subsetSize = length;
@@ -44,6 +44,13 @@ extension IterableRandomExtension<T> on List<T> {
         _ => minLength + random.nextInt(length - minLength + 1),
       };
       subsetSize = min(subsetSize, length);
+    }
+    if (allowDuplicates) {
+      final List<T> result = <T>[];
+      for (int i = 0; i < subsetSize; i++) {
+        result.add(this[random.nextInt(length)]);
+      }
+      return result;
     }
     return (List<T>.from(this)..shuffle(random)).take(subsetSize).toList();
   }

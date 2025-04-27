@@ -1,10 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:gtfo_rundown_roulette/interface/provider/current_run.dart';
 import 'package:gtfo_rundown_roulette/interface/provider/current_skeleton_run.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/conditional_widget.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/core/normal_box.dart';
 import 'package:gtfo_rundown_roulette/interface/widgets/diagonal_text.dart';
+import 'package:gtfo_rundown_roulette/interface/widgets/player_card.dart';
 import 'package:gtfo_rundown_roulette/main.dart';
 import 'package:gtfo_rundown_roulette/public.dart';
 import 'package:gtfo_rundown_roulette/shared/shared.dart';
@@ -33,7 +35,7 @@ class _ContentBodyState extends State<_ContentBody> {
   Widget build(BuildContext context) {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[_InformationRow(), Spacer(), _PageLoader(), Spacer()],
+      children: <Widget>[_InformationRow(), Expanded(child: _PageLoader())],
     );
   }
 }
@@ -60,12 +62,6 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
   }
 
   @pragma("vm:prefer-inline")
-  void _advanceBy(final int r) {
-    _loadedIndex += r;
-    _triggerPageChange();
-  }
-
-  @pragma("vm:prefer-inline")
   void _goTo(final int r) {
     _loadedIndex = r;
     _triggerPageChange();
@@ -73,27 +69,32 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
 
   void _triggerPageChange([void Function()? action]) {
     setState(() => _opacity = 0.0);
-    if (action != null) {
-      Future<void>.delayed(
-        const Duration(milliseconds: 100),
-        () => setState(() => _opacity = 1.0),
-      ).then(
-        (_) => Future<void>.delayed(const Duration(milliseconds: 100), () {
-          setState(() => _rolling = true);
-          Scheduler.reductiveRelay(
-            action,
-            rnd.nextInt(14) + 1,
-            rnd.nextBool() ? 120 + rnd.nextInt(100) + 40 : 120 - (rnd.nextInt(60)),
-            120,
-          ).then((_) {
-            if (context.mounted) {
-              setState(() => _rolling = false);
-            }
-          });
-        }),
-      );
-    } else {
-      Future<void>.delayed(const Duration(milliseconds: 100), () => setState(() => _opacity = 1.0));
+    if (context.mounted) {
+      if (action != null) {
+        Future<void>.delayed(
+          const Duration(milliseconds: 100),
+          () => setState(() => _opacity = 1.0),
+        ).then(
+          (_) => Future<void>.delayed(const Duration(milliseconds: 100), () {
+            setState(() => _rolling = true);
+            Scheduler.reductiveRelay(
+              action,
+              rnd.nextInt(14) + 1,
+              rnd.nextBool() ? 120 + rnd.nextInt(100) + 40 : 120 - (rnd.nextInt(60)),
+              120,
+            ).then((_) {
+              if (context.mounted) {
+                setState(() => _rolling = false);
+              }
+            });
+          }),
+        );
+      } else {
+        Future<void>.delayed(
+          const Duration(milliseconds: 100),
+          () => setState(() => _opacity = 1.0),
+        );
+      }
     }
   }
 
@@ -108,16 +109,540 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
         child: switch (_loadedIndex) {
           1 => _page1,
           2 => _page2,
+          3 => _page3,
+          4 => _page4,
+          5 => _page5,
           _ => _page0,
         }(context),
       ),
     );
   }
 
-  final List<Gun> _primariesPool = <Gun>[];
+  @pragma("vm:prefer-inline")
+  Widget _page5(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        const Text(
+          "Final Review",
+          style: TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+            fontFamily: "Shared Tech",
+            color: PublicTheme.dangerRed,
+          ),
+        ),
+        const SizedBox(height: 18),
+        Row(
+          spacing: 8,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Expanded(
+              child: PlayerCard(
+                title: "Player 1",
+                name: "Woods",
+                bgImage: "assets/ingame/woods.png",
+                color: const Color.fromARGB(255, 208, 79, 116),
+                loadout: Provider.of<CurrentRun>(context).run?.players.player1,
+              ),
+            ),
+            Expanded(
+              child: PlayerCard(
+                title: "Player 2",
+                name: "Dauda",
+                bgImage: "assets/ingame/dauda.png",
+                color: const Color.fromARGB(255, 88, 224, 124),
+                loadout: Provider.of<CurrentRun>(context).run?.players.player2,
+              ),
+            ),
+            Expanded(
+              child: PlayerCard(
+                title: "Player 3",
+                name: "Hackett",
+                bgImage: "assets/ingame/hackett.png",
+                color: const Color.fromARGB(255, 77, 133, 189),
+                loadout: Provider.of<CurrentRun>(context).run?.players.player3,
+              ),
+            ),
+            Expanded(
+              child: PlayerCard(
+                title: "Player 4",
+                name: "Bishop",
+                bgImage: "assets/ingame/bishop.png",
+                color: const Color.fromARGB(255, 135, 53, 197),
+                loadout: Provider.of<CurrentRun>(context).run?.players.player4,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 
+  final List<ToolItem> _toolsPool = <ToolItem>[];
+  @pragma("vm:prefer-inline")
+  Column _page4(BuildContext context) {
+    final bool isBuilt =
+        Provider.of<CurrentSkeletonRun>(context, listen: false).run!.players.player4.tool != null &&
+        Provider.of<CurrentSkeletonRun>(context, listen: false).run!.players.player3.tool != null &&
+        Provider.of<CurrentSkeletonRun>(context, listen: false).run!.players.player2.tool != null &&
+        Provider.of<CurrentSkeletonRun>(context, listen: false).run!.players.player1.tool != null;
+    return Column(
+      children: <Widget>[
+        const Text(
+          "Tools",
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: PublicTheme.normalWhite,
+          ),
+        ).animate(autoPlay: true).slideY(begin: 0.2, duration: const Duration(milliseconds: 240)),
+        if (!_rolling)
+          const Text(
+                "Click on each item to assign it to a player",
+                style: TextStyle(fontSize: 18, color: PublicTheme.loreYellow),
+                textAlign: TextAlign.center,
+              )
+              .animate(autoPlay: true)
+              .fadeIn(begin: 0.6, duration: const Duration(milliseconds: 240))
+              .slideY(begin: 0.2, duration: const Duration(milliseconds: 240)),
+        if (isBuilt) const SizedBox(height: 22),
+        if (isBuilt)
+          UINormalBoxButton(
+            onTap: () {
+              _toolsPool.clear();
+              _primariesPool.clear();
+              _specialsPool.clear();
+              _goTo(5);
+              Provider.of<CurrentSkeletonRun>(context, listen: false).run!.players.player1
+                ..melee = Preset.vanilla.melees.pick()
+                ..boosters = Boosters.values.pickMultiple();
+              Provider.of<CurrentSkeletonRun>(context, listen: false).run!.players.player2
+                ..melee = Preset.vanilla.melees.pick()
+                ..boosters = Boosters.values.pickMultiple();
+              Provider.of<CurrentSkeletonRun>(context, listen: false).run!.players.player3
+                ..melee = Preset.vanilla.melees.pick()
+                ..boosters = Boosters.values.pickMultiple();
+              Provider.of<CurrentSkeletonRun>(context, listen: false).run!.players.player4
+                ..melee = Preset.vanilla.melees.pick()
+                ..boosters = Boosters.values.pickMultiple();
+              Provider.of<CurrentRun>(context, listen: false).value =
+                  Provider.of<CurrentSkeletonRun>(context, listen: false).run!.populate();
+              _triggerPageChange(() => setState(() {}));
+            },
+            foregroundColor: PublicTheme.dangerRed,
+            child: const Text("To Final Review"),
+          ),
+        const SizedBox(height: 22),
+        ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(
+            scrollbars: true,
+            multitouchDragStrategy: MultitouchDragStrategy.sumAllPointers,
+          ),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Wrap(
+              runSpacing: 8,
+              runAlignment: WrapAlignment.spaceEvenly,
+              spacing: 8,
+              children: List<Widget>.generate(_toolsPool.length, (int i) {
+                return ConditionalWidget(
+                  second: (BuildContext context, Widget normal) {
+                    if (Provider.of<CurrentSkeletonRun>(
+                          context,
+                          listen: false,
+                        ).run!.players.player1.tool ==
+                        _toolsPool[i]) {
+                      return DiagonalText(
+                        text: "PLAYER 1",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 208, 79, 116),
+                          fontFamily: "Shared Tech",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 26,
+                        ),
+                        child: normal,
+                      );
+                    } else if (Provider.of<CurrentSkeletonRun>(
+                          context,
+                          listen: false,
+                        ).run!.players.player2.tool ==
+                        _toolsPool[i]) {
+                      return DiagonalText(
+                        text: "PLAYER 2",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 88, 224, 124),
+                          fontFamily: "Shared Tech",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 26,
+                        ),
+                        child: normal,
+                      );
+                    } else if (Provider.of<CurrentSkeletonRun>(
+                          context,
+                          listen: false,
+                        ).run!.players.player3.tool ==
+                        _toolsPool[i]) {
+                      return DiagonalText(
+                        text: "PLAYER 3",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 77, 133, 189),
+                          fontFamily: "Shared Tech",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 26,
+                        ),
+                        child: normal,
+                      );
+                    } else if (Provider.of<CurrentSkeletonRun>(
+                          context,
+                          listen: false,
+                        ).run!.players.player4.tool ==
+                        _toolsPool[i]) {
+                      return DiagonalText(
+                        text: "PLAYER 4",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 135, 53, 197),
+                          fontFamily: "Shared Tech",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 26,
+                        ),
+                        child: normal,
+                      );
+                    }
+                    return null;
+                  },
+                  normal: _ItemCard(
+                        handler: (int k) {
+                          debugPrint("GOT $i");
+                          if (k == 0) {
+                            Provider.of<CurrentSkeletonRun>(context, listen: false)
+                                .run!
+                                .players
+                                .player1
+                                .tool = _toolsPool[i];
+                            setState(() {});
+                            debugPrint("Player 1 TOOL = ${_toolsPool[i]}");
+                          } else if (k == 1) {
+                            Provider.of<CurrentSkeletonRun>(context, listen: false)
+                                .run!
+                                .players
+                                .player2
+                                .tool = _toolsPool[i];
+                            debugPrint("Player 2 TOOL = ${_toolsPool[i]}");
+                            setState(() {});
+                          } else if (k == 2) {
+                            Provider.of<CurrentSkeletonRun>(context, listen: false)
+                                .run!
+                                .players
+                                .player3
+                                .tool = _toolsPool[i];
+                            setState(() {});
+                            debugPrint("Player 3 TOOL = ${_toolsPool[i]}");
+                          } else if (k == 3) {
+                            Provider.of<CurrentSkeletonRun>(context, listen: false)
+                                .run!
+                                .players
+                                .player4
+                                .tool = _toolsPool[i];
+                            setState(() {});
+                            debugPrint("Player 4 TOOL = ${_toolsPool[i]}");
+                          }
+                        },
+                        menuChildrenBuilder:
+                            (BuildContext _, int j) => UINormalBox(
+                              backgroundColor:
+                                  kPrefs.getSafeBool("color_lobby")
+                                      ? switch (j) {
+                                        1 => const Color.fromARGB(179, 88, 224, 124),
+                                        2 => const Color.fromARGB(211, 77, 133, 189),
+                                        3 => const Color.fromARGB(195, 135, 53, 197),
+                                        _ => const Color.fromARGB(206, 208, 79, 116),
+                                      }
+                                      : PublicTheme.murkyDarkGrey,
+                              child: Text(
+                                "Player ${j + 1}",
+                                style: const TextStyle(
+                                  fontFamily: "Shared Tech",
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                        display: Image.asset(
+                          _toolsPool[i].assetPath,
+                          scale: 0.94,
+                          filterQuality: FilterQuality.low,
+                        ),
+                        sub: Text.rich(
+                          TextSpan(
+                            children: <InlineSpan>[
+                              TextSpan(
+                                text: _toolsPool[i].canonicalName,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              TextSpan(
+                                text: "\n${_toolsPool[i].gameName}",
+                                style: const TextStyle(fontSize: 16, color: PublicTheme.hiddenGray),
+                              ),
+                            ],
+                          ),
+                          style: const TextStyle(
+                            fontFamily: "Shared Tech",
+                            color: PublicTheme.normalWhite,
+                          ),
+                        ),
+                      )
+                      .animate(autoPlay: true)
+                      .fadeIn(begin: 0.8, duration: const Duration(milliseconds: 210))
+                      .slideY(
+                        begin: -0.34,
+                        duration: const Duration(milliseconds: 330),
+                        delay: const Duration(milliseconds: 80),
+                      ),
+                );
+              }, growable: false),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  final List<Gun> _specialsPool = <Gun>[];
+  @pragma("vm:prefer-inline")
+  Column _page3(BuildContext context) {
+    final bool isBuilt =
+        Provider.of<CurrentSkeletonRun>(context, listen: false).run!.players.player4.special !=
+            null &&
+        Provider.of<CurrentSkeletonRun>(context, listen: false).run!.players.player3.special !=
+            null &&
+        Provider.of<CurrentSkeletonRun>(context, listen: false).run!.players.player2.special !=
+            null &&
+        Provider.of<CurrentSkeletonRun>(context, listen: false).run!.players.player1.special !=
+            null;
+    return Column(
+      children: <Widget>[
+        const Text(
+          "Specials",
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: PublicTheme.normalWhite,
+          ),
+        ).animate(autoPlay: true).slideY(begin: 0.2, duration: const Duration(milliseconds: 240)),
+        if (!_rolling)
+          const Text(
+                "Click on each item to assign it to a player",
+                style: TextStyle(fontSize: 18, color: PublicTheme.loreYellow),
+                textAlign: TextAlign.center,
+              )
+              .animate(autoPlay: true)
+              .fadeIn(begin: 0.6, duration: const Duration(milliseconds: 240))
+              .slideY(begin: 0.2, duration: const Duration(milliseconds: 240)),
+        if (isBuilt) const SizedBox(height: 22),
+        if (isBuilt)
+          UINormalBoxButton(
+            onTap: () {
+              _goTo(4);
+              _triggerPageChange(() {
+                _toolsPool.clear();
+                _toolsPool.addAll(
+                  Preset.vanilla.tools.pickMultipleWithBias(6),
+                ); // tools have a lot of duplicates
+                setState(() {});
+              });
+            },
+            foregroundColor: PublicTheme.dangerRed,
+            child: const Text("To Tools"),
+          ),
+        const SizedBox(height: 22),
+        ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(
+            scrollbars: true,
+            multitouchDragStrategy: MultitouchDragStrategy.sumAllPointers,
+          ),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Wrap(
+              runSpacing: 8,
+              runAlignment: WrapAlignment.spaceEvenly,
+              spacing: 8,
+              children: List<Widget>.generate(_specialsPool.length, (int i) {
+                return ConditionalWidget(
+                  second: (BuildContext context, Widget normal) {
+                    if (Provider.of<CurrentSkeletonRun>(
+                          context,
+                          listen: false,
+                        ).run!.players.player1.special ==
+                        _specialsPool[i]) {
+                      return DiagonalText(
+                        text: "PLAYER 1",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 208, 79, 116),
+                          fontFamily: "Shared Tech",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 26,
+                        ),
+                        child: normal,
+                      );
+                    } else if (Provider.of<CurrentSkeletonRun>(
+                          context,
+                          listen: false,
+                        ).run!.players.player2.special ==
+                        _specialsPool[i]) {
+                      return DiagonalText(
+                        text: "PLAYER 2",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 88, 224, 124),
+                          fontFamily: "Shared Tech",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 26,
+                        ),
+                        child: normal,
+                      );
+                    } else if (Provider.of<CurrentSkeletonRun>(
+                          context,
+                          listen: false,
+                        ).run!.players.player3.special ==
+                        _specialsPool[i]) {
+                      return DiagonalText(
+                        text: "PLAYER 3",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 77, 133, 189),
+                          fontFamily: "Shared Tech",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 26,
+                        ),
+                        child: normal,
+                      );
+                    } else if (Provider.of<CurrentSkeletonRun>(
+                          context,
+                          listen: false,
+                        ).run!.players.player4.special ==
+                        _specialsPool[i]) {
+                      return DiagonalText(
+                        text: "PLAYER 4",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 135, 53, 197),
+                          fontFamily: "Shared Tech",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 26,
+                        ),
+                        child: normal,
+                      );
+                    }
+                    return null;
+                  },
+                  normal: _ItemCard(
+                        handler: (int k) {
+                          debugPrint("GOT $i");
+                          if (k == 0) {
+                            Provider.of<CurrentSkeletonRun>(context, listen: false)
+                                .run!
+                                .players
+                                .player1
+                                .special = _specialsPool[i];
+                            setState(() {});
+                            debugPrint("Player 1 SPECIAL = ${_specialsPool[i]}");
+                          } else if (k == 1) {
+                            Provider.of<CurrentSkeletonRun>(context, listen: false)
+                                .run!
+                                .players
+                                .player2
+                                .special = _specialsPool[i];
+                            debugPrint("Player 2 SPECIAL = ${_specialsPool[i]}");
+                            setState(() {});
+                          } else if (k == 2) {
+                            Provider.of<CurrentSkeletonRun>(context, listen: false)
+                                .run!
+                                .players
+                                .player3
+                                .special = _specialsPool[i];
+                            setState(() {});
+                            debugPrint("Player 3 SPECIAL = ${_specialsPool[i]}");
+                          } else if (k == 3) {
+                            Provider.of<CurrentSkeletonRun>(context, listen: false)
+                                .run!
+                                .players
+                                .player4
+                                .special = _specialsPool[i];
+                            setState(() {});
+                            debugPrint("Player 4 SPECIAL = ${_specialsPool[i]}");
+                          }
+                        },
+                        menuChildrenBuilder:
+                            (BuildContext _, int j) => UINormalBox(
+                              backgroundColor:
+                                  kPrefs.getSafeBool("color_lobby")
+                                      ? switch (j) {
+                                        1 => const Color.fromARGB(179, 88, 224, 124),
+                                        2 => const Color.fromARGB(211, 77, 133, 189),
+                                        3 => const Color.fromARGB(195, 135, 53, 197),
+                                        _ => const Color.fromARGB(206, 208, 79, 116),
+                                      }
+                                      : PublicTheme.murkyDarkGrey,
+                              child: Text(
+                                "Player ${j + 1}",
+                                style: const TextStyle(
+                                  fontFamily: "Shared Tech",
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                        display: Image.asset(
+                          _specialsPool[i].assetPath,
+                          scale: 0.94,
+                          filterQuality: FilterQuality.low,
+                        ),
+                        sub: Text.rich(
+                          TextSpan(
+                            children: <InlineSpan>[
+                              TextSpan(
+                                text: _specialsPool[i].canonicalName,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              TextSpan(
+                                text: "\n${_specialsPool[i].gameName}",
+                                style: const TextStyle(fontSize: 16, color: PublicTheme.hiddenGray),
+                              ),
+                            ],
+                          ),
+                          style: const TextStyle(
+                            fontFamily: "Shared Tech",
+                            color: PublicTheme.normalWhite,
+                          ),
+                        ),
+                      )
+                      .animate(autoPlay: true)
+                      .fadeIn(begin: 0.8, duration: const Duration(milliseconds: 210))
+                      .slideY(
+                        begin: -0.34,
+                        duration: const Duration(milliseconds: 330),
+                        delay: const Duration(milliseconds: 80),
+                      ),
+                );
+              }, growable: false),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  final List<Gun> _primariesPool = <Gun>[];
   @pragma("vm:prefer-inline")
   Column _page2(BuildContext context) {
+    final bool isBuilt =
+        Provider.of<CurrentSkeletonRun>(context, listen: false).run!.players.player4.primary !=
+            null &&
+        Provider.of<CurrentSkeletonRun>(context, listen: false).run!.players.player3.primary !=
+            null &&
+        Provider.of<CurrentSkeletonRun>(context, listen: false).run!.players.player2.primary !=
+            null &&
+        Provider.of<CurrentSkeletonRun>(context, listen: false).run!.players.player1.primary !=
+            null;
     return Column(
       children: <Widget>[
         const Text(
@@ -137,6 +662,20 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
               .animate(autoPlay: true)
               .fadeIn(begin: 0.6, duration: const Duration(milliseconds: 240))
               .slideY(begin: 0.2, duration: const Duration(milliseconds: 240)),
+        if (isBuilt) const SizedBox(height: 22),
+        if (isBuilt)
+          UINormalBoxButton(
+            onTap: () {
+              _goTo(3);
+              _triggerPageChange(() {
+                _specialsPool.clear();
+                _specialsPool.addAll(Preset.vanilla.specials.pickMultipleWithBias(4));
+                setState(() {});
+              });
+            },
+            foregroundColor: PublicTheme.dangerRed,
+            child: const Text("To Specials"),
+          ),
         const SizedBox(height: 22),
         ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
@@ -163,7 +702,7 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
                           color: Color.fromARGB(255, 208, 79, 116),
                           fontFamily: "Shared Tech",
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          fontSize: 26,
                         ),
                         child: normal,
                       );
@@ -178,7 +717,7 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
                           color: Color.fromARGB(255, 88, 224, 124),
                           fontFamily: "Shared Tech",
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          fontSize: 26,
                         ),
                         child: normal,
                       );
@@ -193,14 +732,14 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
                           color: Color.fromARGB(255, 77, 133, 189),
                           fontFamily: "Shared Tech",
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          fontSize: 26,
                         ),
                         child: normal,
                       );
                     } else if (Provider.of<CurrentSkeletonRun>(
                           context,
                           listen: false,
-                        ).run!.players.player3.primary ==
+                        ).run!.players.player4.primary ==
                         _primariesPool[i]) {
                       return DiagonalText(
                         text: "PLAYER 4",
@@ -208,7 +747,7 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
                           color: Color.fromARGB(255, 135, 53, 197),
                           fontFamily: "Shared Tech",
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          fontSize: 26,
                         ),
                         child: normal,
                       );
@@ -216,8 +755,9 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
                     return null;
                   },
                   normal: _ItemCard(
-                        handler: (int i) {
-                          if (i == 0) {
+                        handler: (int k) {
+                          debugPrint("GOT $i");
+                          if (k == 0) {
                             Provider.of<CurrentSkeletonRun>(context, listen: false)
                                 .run!
                                 .players
@@ -225,7 +765,7 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
                                 .primary = _primariesPool[i];
                             setState(() {});
                             debugPrint("Player 1 PRIMARY = ${_primariesPool[i]}");
-                          } else if (i == 1) {
+                          } else if (k == 1) {
                             Provider.of<CurrentSkeletonRun>(context, listen: false)
                                 .run!
                                 .players
@@ -233,7 +773,7 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
                                 .primary = _primariesPool[i];
                             debugPrint("Player 2 PRIMARY = ${_primariesPool[i]}");
                             setState(() {});
-                          } else if (i == 2) {
+                          } else if (k == 2) {
                             Provider.of<CurrentSkeletonRun>(context, listen: false)
                                 .run!
                                 .players
@@ -241,7 +781,7 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
                                 .primary = _primariesPool[i];
                             setState(() {});
                             debugPrint("Player 3 PRIMARY = ${_primariesPool[i]}");
-                          } else if (i == 3) {
+                          } else if (k == 3) {
                             Provider.of<CurrentSkeletonRun>(context, listen: false)
                                 .run!
                                 .players
@@ -255,7 +795,7 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
                             (BuildContext _, int j) => UINormalBox(
                               backgroundColor:
                                   kPrefs.getSafeBool("color_lobby")
-                                      ? switch (i) {
+                                      ? switch (j) {
                                         1 => const Color.fromARGB(179, 88, 224, 124),
                                         2 => const Color.fromARGB(211, 77, 133, 189),
                                         3 => const Color.fromARGB(195, 135, 53, 197),
@@ -271,7 +811,11 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
                                 ),
                               ),
                             ),
-                        display: Image.asset(_primariesPool[i].assetPath, scale: 0.94),
+                        display: Image.asset(
+                          _primariesPool[i].assetPath,
+                          scale: 0.94,
+                          filterQuality: FilterQuality.low,
+                        ),
                         sub: Text.rich(
                           TextSpan(
                             children: <InlineSpan>[
@@ -472,6 +1016,7 @@ class _ItemCard extends StatelessWidget {
       children: <Widget>[display, const SizedBox(height: 12), if (sub != null) sub!],
     );
     return PopupMenuButton<int>(
+      tooltip: "Assign to player",
       requestFocus: true,
       onSelected: handler,
       padding: EdgeInsets.zero,

@@ -1648,7 +1648,7 @@ class _ContentBodyState extends State<_ContentBody>
                                     DisableableWidget(
                                       disabled: rerolling,
                                       child: UINormalBoxButton(
-                                        child: const Text("REGENERATE"),
+                                        foregroundColor: PublicTheme.dangerRed,
                                         onTap: () {
                                           if (customSeed != null) {
                                             debugPrint("Regenerating with seed: $customSeed");
@@ -1674,6 +1674,7 @@ class _ContentBodyState extends State<_ContentBody>
                                             );
                                           }
                                         },
+                                        child: const Text("REGENERATE"),
                                       ),
                                     ),
                                   ],
@@ -1702,9 +1703,9 @@ class _ContentBodyState extends State<_ContentBody>
                                 },
                               ),
                             UINormalBoxButton(
-                              foregroundColor: PublicTheme.dangerRed,
+                              foregroundColor: PublicTheme.hiddenGray,
                               onTap: () => Navigator.pop(context),
-                              child: const Text("OK"),
+                              child: const Text("CANCEL"),
                             ),
                           ],
                         );
