@@ -1,3 +1,5 @@
+import "dart:math";
+
 import "package:xrandom/xrandom.dart";
 
 typedef RandomGeneration<T> = ({List<T> picked, int seed});
@@ -10,7 +12,9 @@ typedef RandomGeneration<T> = ({List<T> picked, int seed});
 /// of more than 32 bits, there will be an error thrown.
 class SeededGenerator {
   /// uses [DateTime]'s millisecondsSinceEpoch method to get a seed
-  static int get seedFromTimeMS => DateTime.now().millisecondsSinceEpoch & 0xFFFFFFFF;
+  static int get seedFromTimeMS =>
+      Random.secure().nextInt(4294967296) &
+      0xFFFFFFFF; // the 2^53 standard as basis for the web support
 
   /// picks [amountToPick] from [list] using a seed.
   ///
