@@ -419,12 +419,8 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
                         ),
                       )
                       .animate(autoPlay: true)
-                      .fadeIn(begin: 0.8, duration: const Duration(milliseconds: 210))
-                      .slideY(
-                        begin: -0.34,
-                        duration: const Duration(milliseconds: 330),
-                        delay: const Duration(milliseconds: 80),
-                      ),
+                      .fadeIn(duration: const Duration(milliseconds: 280), begin: 0.78)
+                      .scaleXY(duration: const Duration(milliseconds: 280), begin: 0.88),
                 );
               }, growable: false),
             ),
@@ -641,12 +637,8 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
                         ),
                       )
                       .animate(autoPlay: true)
-                      .fadeIn(begin: 0.8, duration: const Duration(milliseconds: 210))
-                      .slideY(
-                        begin: -0.34,
-                        duration: const Duration(milliseconds: 330),
-                        delay: const Duration(milliseconds: 80),
-                      ),
+                      .fadeIn(duration: const Duration(milliseconds: 280), begin: 0.78)
+                      .scaleXY(duration: const Duration(milliseconds: 280), begin: 0.88),
                 );
               }, growable: false),
             ),
@@ -861,12 +853,8 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
                         ),
                       )
                       .animate(autoPlay: true)
-                      .fadeIn(begin: 0.8, duration: const Duration(milliseconds: 210))
-                      .slideY(
-                        begin: -0.34,
-                        duration: const Duration(milliseconds: 330),
-                        delay: const Duration(milliseconds: 80),
-                      ),
+                      .fadeIn(duration: const Duration(milliseconds: 280), begin: 0.78)
+                      .scaleXY(duration: const Duration(milliseconds: 280), begin: 0.88),
                 );
               }, growable: false),
             ),
@@ -917,10 +905,8 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
                 message: "MAIN",
                 child: Image.asset("assets/ingame/sector_main.png", width: 64)
                     .animate(autoPlay: true)
-                    .fade(
-                      duration: const Duration(milliseconds: 400),
-                      delay: const Duration(milliseconds: 400),
-                    ),
+                    .fadeIn(duration: const Duration(milliseconds: 280), begin: 0.78)
+                    .scaleXY(duration: const Duration(milliseconds: 280), begin: 0.88),
               ),
               if (Provider.of<CurrentSkeletonRun>(context).run!.sectors!.contains(Sector.secondary))
                 Tooltip(
@@ -928,20 +914,16 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
                       child: Image.asset("assets/ingame/sector_secondary.png", width: 64),
                     )
                     .animate(autoPlay: true)
-                    .fade(
-                      duration: const Duration(milliseconds: 400),
-                      delay: const Duration(milliseconds: 440),
-                    ),
+                    .fadeIn(duration: const Duration(milliseconds: 280), begin: 0.78)
+                    .scaleXY(duration: const Duration(milliseconds: 280), begin: 0.88),
               if (Provider.of<CurrentSkeletonRun>(context).run!.sectors!.contains(Sector.overload))
                 Tooltip(
                       message: "OVERLOAD",
                       child: Image.asset("assets/ingame/sector_overload.png", width: 64),
                     )
                     .animate(autoPlay: true)
-                    .fade(
-                      duration: const Duration(milliseconds: 400),
-                      delay: const Duration(milliseconds: 480),
-                    ),
+                    .fadeIn(duration: const Duration(milliseconds: 280), begin: 0.78)
+                    .scaleXY(duration: const Duration(milliseconds: 280), begin: 0.88),
               if (Provider.of<CurrentSkeletonRun>(
                     context,
                   ).run!.sectors!.contains(Sector.secondary) &&
@@ -951,26 +933,30 @@ class _PageLoaderState extends State<_PageLoader> with AutomaticKeepAliveClientM
                       child: Image.asset("assets/ingame/prisoner_efficiency.png", width: 64),
                     )
                     .animate(autoPlay: true)
-                    .fade(
-                      duration: const Duration(milliseconds: 400),
-                      delay: const Duration(milliseconds: 500),
-                    ),
+                    .fadeIn(duration: const Duration(milliseconds: 280), begin: 0.78)
+                    .scaleXY(duration: const Duration(milliseconds: 280), begin: 0.88),
             ],
           ),
         if (!_rolling) const SizedBox(height: 18),
         if (!_rolling)
           UINormalBoxButton(
-            onTap: () {
-              _goTo(2);
-              _triggerPageChange(() {
-                _primariesPool.clear();
-                _primariesPool.addAll(Preset.vanilla.primaries.pickMultipleWithBias(4));
-                setState(() {});
-              });
-            },
-            foregroundColor: PublicTheme.dangerRed,
-            child: const Text("To Primaries"),
-          ).animate(autoPlay: true).slideY(begin: 0.2, duration: const Duration(milliseconds: 140)),
+                onTap: () {
+                  _goTo(2);
+                  _triggerPageChange(() {
+                    _primariesPool.clear();
+                    _primariesPool.addAll(Preset.vanilla.primaries.pickMultipleWithBias(4));
+                    setState(() {});
+                  });
+                },
+                foregroundColor: PublicTheme.dangerRed,
+                child: const Text("To Primaries"),
+              )
+              .animate(autoPlay: true)
+              .slideY(
+                begin: -0.04,
+                duration: const Duration(milliseconds: 220),
+                curve: Curves.easeIn,
+              ),
       ],
     );
   }

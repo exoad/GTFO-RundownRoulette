@@ -37,7 +37,7 @@ final class Scheduler {
     int delayStep, [
     NumericalAggregator? aggregator,
   ]) async {
-    aggregator ??= slowOutAggregatorFunction;
+    aggregator ??= slotMachineDecayFunction;
     if (times <= 0) {
       return;
     }
