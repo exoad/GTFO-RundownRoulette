@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gtfo_rundown_roulette/interface/app_entry.dart';
 import 'package:gtfo_rundown_roulette/public.dart';
 import 'package:gtfo_rundown_roulette/shared/classes_effects.dart';
 import 'package:gtfo_rundown_roulette/shared/generator.dart';
@@ -19,6 +20,6 @@ void main() {
     debugPrint(
       "Picked Items:\n${Effect.builtin.pickUntil(4).map((Effect efx) => efx.title.toLowerCase()).join(", ")}",
     );
-    // runApp(const MainApp());
+    runApp(const MainApp());
   });
 }
