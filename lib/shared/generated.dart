@@ -23,7 +23,6 @@ final class Preset {
       ]),
       Rundown("ALT://Rundown 2.0 \"Infection\"", const <Mission>[
         Mission(canonicalName: "R2A1 \"THE DIG\"", tier: "A", number: 1),
-
         Mission(canonicalName: "R2B1 \"SACRIFICE\"", tier: "B", number: 1),
         Mission(canonicalName: "R2B2 \"POWER CORRUPTS\"", tier: "B", number: 2),
         Mission(canonicalName: "R2B3 \"PATHFINDER\"", tier: "B", number: 3),

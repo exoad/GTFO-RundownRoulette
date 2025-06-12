@@ -121,7 +121,7 @@ class _UINormalBoxInputState extends State<UINormalBoxInput> {
       onChanged: widget.onChanged,
       autocorrect: false,
       enableSuggestions: false,
-      maxLength: 9,
+      maxLength: 20,
       enableInteractiveSelection: true,
       enableIMEPersonalizedLearning: false,
       maxLengthEnforcement: MaxLengthEnforcement.enforced,

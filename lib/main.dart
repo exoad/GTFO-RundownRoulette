@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gtfo_rundown_roulette/interface/app_entry.dart';
 import 'package:gtfo_rundown_roulette/public.dart';
+import 'package:gtfo_rundown_roulette/shared/classes_effects.dart';
+import 'package:gtfo_rundown_roulette/shared/generator.dart';
 import 'package:gtfo_rundown_roulette/utils/configurator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,6 +16,9 @@ void main() {
     Configurator.initialize();
     debugPrint("IS_RELEASE_MODE=${Public.isRelease}");
     debugPrint("Loaded Preferences Values:\n${kPrefs.getKeys()}");
-    runApp(const MainApp());
+    debugPrint(
+      "Picked Items:\n${Effect.builtin.pickUntil(4).map((Effect efx) => efx.title.toLowerCase()).join(", ")}",
+    );
+    // runApp(const MainApp());
   });
 }

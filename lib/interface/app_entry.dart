@@ -95,7 +95,7 @@ class MainApp extends StatelessWidget {
                     ),
                     hintStyle: TextStyle(fontFamily: "Fira Code", color: PublicTheme.hiddenGray),
                   ),
-                  dialogTheme: const DialogTheme(
+                  dialogTheme: const DialogThemeData(
                     titleTextStyle: TextStyle(
                       color: PublicTheme.normalWhite,
                       fontFamily: "Shared Tech",
@@ -120,8 +120,8 @@ class MainApp extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  expansionTileTheme: ExpansionTileThemeData(
-                    collapsedShape: const Border(
+                  expansionTileTheme: const ExpansionTileThemeData(
+                    collapsedShape: Border(
                       left: BorderSide(color: PublicTheme.hiddenGray, width: 5),
                       bottom: BorderSide(color: PublicTheme.hiddenGray, width: 2),
                       top: BorderSide(color: PublicTheme.hiddenGray, width: 2),
@@ -134,10 +134,8 @@ class MainApp extends StatelessWidget {
                     backgroundColor: PublicTheme.murkyDarkGrey,
                     collapsedBackgroundColor: PublicTheme.abyssBlack,
                     textColor: PublicTheme.normalWhite,
-                    expansionAnimationStyle: AnimationStyle(
-                      duration: const Duration(milliseconds: 80),
-                    ),
-                    shape: const Border(
+                    expansionAnimationStyle: AnimationStyle(duration: Duration(milliseconds: 80)),
+                    shape: Border(
                       left: BorderSide(color: PublicTheme.normalWhite, width: 5),
                       bottom: BorderSide(color: PublicTheme.normalWhite, width: 2),
                       top: BorderSide(color: PublicTheme.normalWhite, width: 2),
